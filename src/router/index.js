@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Room from '@/views/Room.vue';
+import Room from "@/views/Room.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,7 +11,8 @@ const router = createRouter({
     {
       path: "/login",
       component: () => import("@/views/account/LoginPage.vue"),
-    },{
+    },
+    {
       path: "/register",
       component: () => import("@/views/account/Register.vue"),
     },
@@ -22,14 +23,20 @@ const router = createRouter({
     {
       path: "/:pathMatch(.*)*",
       component: () => import("@/views/NotFound.vue"),
-    },{
+    },
+    {
       path: "/tweetPage",
       component: () => import("@/views/tweet/TweetMainPage.vue"),
-    },{
-      path:'/RoomP',
-      name: 'RoomP',
-      component: Room
-  }
+    },
+    {
+      path: "/RoomP",
+      name: "RoomP",
+      component: Room,
+    },
+    {
+      path: "/activity",
+      component: () => import("@/views/activity/ActivityMainPage.vue"),
+    },
   ],
 });
 
