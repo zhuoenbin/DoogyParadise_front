@@ -17,7 +17,7 @@ const router = createRouter({
     },
     {
       path: "/profile",
-      component: () => import("@/views/MemberProfile.vue"),
+      component: () => import("@/views/member/MemberProfile.vue"),
     },
     {
       path: "/:pathMatch(.*)*",
@@ -25,6 +25,12 @@ const router = createRouter({
     },{
       path: "/tweetPage",
       component: () => import("@/views/tweet/TweetMainPage.vue"),
+      children:[
+        {
+          path:"a_page",
+          component:()=>import("@/views/tweet/TweetTest.vue")
+        }
+      ]
     },{
       path:'/RoomP',
       name: 'RoomP',
