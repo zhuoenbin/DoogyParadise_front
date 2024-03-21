@@ -74,6 +74,7 @@ onMounted(() => {
   });
 });
 
+// 判斷那幾間房型符合 dog 的體型
 const filteredRooms = computed(() => {
   if (!selectedDog.value) return rooms.value;
   return rooms.value.filter((room) => {
@@ -93,6 +94,13 @@ const filteredRooms = computed(() => {
   });
 });
 
+const roomSizeText = (size) => {
+  if (size === 1) return "小型犬";
+  else if (size === 2) return "中型犬";
+  else return "大型犬";
+};
+
+// datepicker 設定
 const en = {
   days: [
     "Sunday",
@@ -140,6 +148,7 @@ const en = {
   firstDay: 0,
 };
 
+// datepicker 設定
 const datepickerOptions = {
   locale: en,
   range: true,
@@ -171,29 +180,37 @@ const bookRoom = (room) => {
       const day = ("0" + d.getDate()).slice(-2);
       return `${year}-${month}-${day}`;
     });
-    alert(
-      `訂房成功！ 寵物Name: ${selectedDog.value.dogName}, 房間Id: ${
-        room.roomId
-      }, 訂房時間 ${formattedDates.join(" - ")}`
-    );
-
-    console.log(formattedDates[0]); // 訂房開始時間
-    console.log(formattedDates[1]); // 訂房結束時間
 
     const dateRange = calculateDateRange(formattedDates[0], formattedDates[1]);
-    console.log(dateRange); // 訂房日期範圍
+    console.log(`訂房日期範圍: ${dateRange}`); // 訂房日期範圍
 
-    console.log(`roomId: ${room.roomId},
-            dogId: ${selectedDog.value.dogId},
-            startTime: ${formattedDates[0]},
-            endTime: ${formattedDates[1]},
-            totalPrice: ${dateRange.length * room.roomPrice},
-            reservationTime: "2024-03-25",
-            cancelTime: "",
-            cancelDirection: "",
-            paymentMethod: "credit card",
-            paymentStatus: "paid`);
+    let hasConflict = false; // 標記是否存在衝突
 
+    for (let i = 0; i < reservations.value.length; i++) {
+      if (room.roomId == reservations.value[i][0]) {
+        for (let date of dateRange) {
+          for (let j = 1; j < reservations.value[i].length; j++) {
+            if (date == reservations.value[i][j]) {
+              hasConflict = true;
+              break; // 如果存在衝突，退出迴圈
+            }
+          }
+        }
+      }
+    }
+
+    if (hasConflict) {
+      alert(`房號: ${room.roomId} 在選定日期已被預訂`);
+    } else {
+      alert(
+        `訂房成功！ 寵物名稱: ${selectedDog.value.dogName}, 房間Id: ${
+          room.roomId
+        }, 訂房時間 ${formattedDates.join(" - ")}`
+      );
+      GOregister();
+    }
+
+    // 新增訂房明細
     const GOregister = () => {
       axios.post(
         `http://localhost:8080/roomReservation?roomId=${room.roomId}`,
@@ -201,8 +218,8 @@ const bookRoom = (room) => {
           dogId: selectedDog.value.dogId,
           startTime: formattedDates[0],
           endTime: formattedDates[1],
-          totalPrice: dateRange.length * room.roomPrice,
-          reservationTime: "2024-03-25",
+          totalPrice: (dateRange.length - 1) * room.roomPrice,
+          reservationTime: "",
           cancelTime: "",
           cancelDirection: "",
           paymentMethod: "credit card",
@@ -210,17 +227,9 @@ const bookRoom = (room) => {
         }
       );
     };
-    GOregister();
   } else {
     alert(selectedDates.value.length === 0 ? "請選擇日期" : "請選擇寵物");
   }
-};
-
-// 判斷那幾間房型符合 dog 的體型
-const roomSizeText = (size) => {
-  if (size === 1) return "小型犬";
-  else if (size === 2) return "中型犬";
-  else return "大型犬";
 };
 
 // 預訂房間的日期
