@@ -183,38 +183,34 @@ const bookRoom = (room) => {
     const dateRange = calculateDateRange(formattedDates[0], formattedDates[1]);
     console.log(dateRange); // 訂房日期範圍
 
-    const roomData = {
-      roomId: room.roomId,
-      dogId: selectedDog.value.dogId,
-      startTime: formattedDates[0],
-      endTime: formattedDates[1],
-      totalPrice: 150,
-      reservationTime: "2024-03-05 10:00:00",
-      cancelTime: "Null",
-      cancelDirection: "Null",
-      paymentMethod: "credit card",
-      paymentStatus: "paid",
+    console.log(`roomId: ${room.roomId},
+            dogId: ${selectedDog.value.dogId},
+            startTime: ${formattedDates[0]},
+            endTime: ${formattedDates[1]},
+            totalPrice: ${dateRange.length * room.roomPrice},
+            reservationTime: "2024-03-25",
+            cancelTime: "",
+            cancelDirection: "",
+            paymentMethod: "credit card",
+            paymentStatus: "paid`);
+
+    const GOregister = () => {
+      axios.post(
+        `http://localhost:8080/roomReservation?roomId=${room.roomId}`,
+        {
+          dogId: selectedDog.value.dogId,
+          startTime: formattedDates[0],
+          endTime: formattedDates[1],
+          totalPrice: dateRange.length * room.roomPrice,
+          reservationTime: "2024-03-25",
+          cancelTime: "",
+          cancelDirection: "",
+          paymentMethod: "credit card",
+          paymentStatus: "paid",
+        }
+      );
     };
-    console.log(`roomData: ${roomData}`);
-
-    addRoom(roomData)
-      .then((addedRoom) => {
-        // 房間成功添加，可以進行相應的處理
-        console.log("成功添加的房間：", addedRoom);
-      })
-      .catch((error) => {
-        // 處理添加房間失敗時的錯誤
-        console.error("添加房間失敗：", error);
-      });
-
-    // axios
-    //   .post("http://localhost:8080/roomReservation", roomData)
-    //   .then((response) => {
-    //     console.log("成功發送請求:", response);
-    //   })
-    //   .catch((error) => {
-    //     console.error("發送請求時出現錯誤:", error);
-    //   });
+    GOregister();
   } else {
     alert(selectedDates.value.length === 0 ? "請選擇日期" : "請選擇寵物");
   }
@@ -236,22 +232,6 @@ const RoomsDate = () => {
       // }
     });
   });
-};
-
-// 在前端發送 POST 請求以新增房間
-const addRoom = async (roomData) => {
-  try {
-    const response = await axios.post(
-      "http://localhost:8080/roomReservation",
-      roomData
-    );
-    // 返回的 response.data 將是後端控制器方法 addRoom 返回的房間物件
-    console.log("新增的房間：", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("添加房間時出現錯誤：", error);
-    throw error; // 可以根據需要處理錯誤
-  }
 };
 </script>
 
