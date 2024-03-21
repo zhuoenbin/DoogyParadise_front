@@ -13,7 +13,7 @@
                         <router-link to="" class="nav-link px-2 text-white">論壇</router-link>
                     </li>
                     <li>
-                        <router-link to="" class="nav-link px-2 text-white">動態牆</router-link>
+                        <router-link to="/tweetPage" class="nav-link px-2 text-white">動態牆</router-link>
                     </li>
                     <li>
                         <router-link to="" class="nav-link px-2 text-white">活動</router-link>

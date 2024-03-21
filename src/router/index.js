@@ -21,6 +21,9 @@ const router = createRouter({
     {
       path: "/:pathMatch(.*)*",
       component: () => import("@/views/NotFound.vue"),
+    },{
+      path: "/tweetPage",
+      component: () => import("@/views/tweet/TweetMainPage.vue"),
     },
   ],
 });
