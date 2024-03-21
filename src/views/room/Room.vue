@@ -1,0 +1,311 @@
+<template>
+  <div id="app" class="main">
+    <div class="left">
+      <select v-model="selectedDog" @change="RoomsDate" class="select-dog">
+        <option disabled>請選擇要住宿的寵物</option>
+        <option v-for="(dog, dogId) in dogs" :key="dogId" :value="dog">
+          {{ dog.dogName }}
+        </option>
+      </select>
+
+      <div
+        class="room-container"
+        v-for="(room, roomId) in filteredRooms"
+        :key="roomId"
+      >
+        <span>
+          {{ room.roomImgPath }}
+          <!-- <img :src="room.roomImgPath" alt="Room Image" /> -->
+        </span>
+        <span>
+          <div class="room-details">
+            <p>
+              <strong>房間Id: </strong> <span>{{ room.roomId }}</span>
+            </p>
+            <p>
+              <strong>房間名稱: </strong> <span>{{ room.roomName }}</span>
+            </p>
+            <p>
+              <strong>房間適用於: </strong>
+              <span>{{ roomSizeText(room.roomSize) }}</span>
+            </p>
+            <p>
+              <strong>房間價格(一天): </strong>
+              <span>{{ room.roomPrice }}</span>
+            </p>
+            <button @click="bookRoom(room)">訂房</button>
+          </div>
+        </span>
+        <br />
+      </div>
+    </div>
+    <div class="right">
+      <VueDatePicker
+        v-model="selectedDates"
+        range
+        :options="datepickerOptions"
+        :enable-time-picker="false"
+        :min-date="new Date()"
+      />
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted, computed } from "vue";
+import axios from "axios";
+import VueDatePicker from "@vuepic/vue-datepicker";
+
+const rooms = ref([]);
+const dogs = ref([]);
+const reservations = ref([]);
+const selectedDog = ref(null);
+const selectedDates = ref([]); // 用於存儲所選日期的範圍
+
+onMounted(() => {
+  axios.get("http://localhost:8080/room").then((response) => {
+    rooms.value = response.data;
+  });
+  axios.get("http://localhost:8080/dog").then((response) => {
+    dogs.value = response.data;
+  });
+  axios.get("http://localhost:8080/room/reservation").then((response) => {
+    reservations.value = response.data;
+  });
+});
+
+const filteredRooms = computed(() => {
+  if (!selectedDog.value) return rooms.value;
+  return rooms.value.filter((room) => {
+    if (selectedDog.value.dogWeight <= 10 && room.roomSize === 1) {
+      return true;
+    } else if (
+      selectedDog.value.dogWeight > 10 &&
+      selectedDog.value.dogWeight <= 25 &&
+      room.roomSize === 2
+    ) {
+      return true;
+    } else if (selectedDog.value.dogWeight > 25 && room.roomSize === 3) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+});
+
+const en = {
+  days: [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ],
+  daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+  months: [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ],
+  monthsShort: [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ],
+  today: "Today",
+  clear: "Clear",
+  dateFormat: "MM/dd/yyyy",
+  timeFormat: "hh:mm aa",
+  firstDay: 0,
+};
+
+const datepickerOptions = {
+  locale: en,
+  range: true,
+  multipleDateSeparator: " - ",
+};
+
+// 拿到目前訂單的日期 Array
+const calculateDateRange = (startDate, endDate) => {
+  const dates = [];
+  const currentDate = new Date(startDate);
+  const endDateObj = new Date(endDate);
+  while (currentDate <= endDateObj) {
+    const year = currentDate.getFullYear();
+    const month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+    const day = ("0" + currentDate.getDate()).slice(-2);
+    dates.push(`${year}-${month}-${day}`);
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return dates;
+};
+
+// 點擊訂房
+const bookRoom = (room) => {
+  if (selectedDog.value && selectedDates.value.length > 0) {
+    const formattedDates = selectedDates.value.map((date) => {
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = ("0" + (d.getMonth() + 1)).slice(-2);
+      const day = ("0" + d.getDate()).slice(-2);
+      return `${year}-${month}-${day}`;
+    });
+    alert(
+      `訂房成功！ 寵物Name: ${selectedDog.value.dogName}, 房間Id: ${
+        room.roomId
+      }, 訂房時間 ${formattedDates.join(" - ")}`
+    );
+
+    console.log(formattedDates[0]); // 訂房開始時間
+    console.log(formattedDates[1]); // 訂房結束時間
+
+    const dateRange = calculateDateRange(formattedDates[0], formattedDates[1]);
+    console.log(dateRange); // 訂房日期範圍
+
+    const roomData = {
+      roomId: room.roomId,
+      dogId: selectedDog.value.dogId,
+      startTime: formattedDates[0],
+      endTime: formattedDates[1],
+      totalPrice: 150,
+      reservationTime: "2024-03-05 10:00:00",
+      cancelTime: "Null",
+      cancelDirection: "Null",
+      paymentMethod: "credit card",
+      paymentStatus: "paid",
+    };
+    console.log(`roomData: ${roomData}`);
+
+    addRoom(roomData)
+      .then((addedRoom) => {
+        // 房間成功添加，可以進行相應的處理
+        console.log("成功添加的房間：", addedRoom);
+      })
+      .catch((error) => {
+        // 處理添加房間失敗時的錯誤
+        console.error("添加房間失敗：", error);
+      });
+
+    // axios
+    //   .post("http://localhost:8080/roomReservation", roomData)
+    //   .then((response) => {
+    //     console.log("成功發送請求:", response);
+    //   })
+    //   .catch((error) => {
+    //     console.error("發送請求時出現錯誤:", error);
+    //   });
+  } else {
+    alert(selectedDates.value.length === 0 ? "請選擇日期" : "請選擇寵物");
+  }
+};
+
+// 判斷那幾間房型符合 dog 的體型
+const roomSizeText = (size) => {
+  if (size === 1) return "小型犬";
+  else if (size === 2) return "中型犬";
+  else return "大型犬";
+};
+
+// 預訂房間的日期
+const RoomsDate = () => {
+  filteredRooms.value.forEach((room) => {
+    reservations.value.forEach((reservation) => {
+      // if (reservation[0] == room.roomId) {
+      //   console.log(reservation);
+      // }
+    });
+  });
+};
+
+// 在前端發送 POST 請求以新增房間
+const addRoom = async (roomData) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:8080/roomReservation",
+      roomData
+    );
+    // 返回的 response.data 將是後端控制器方法 addRoom 返回的房間物件
+    console.log("新增的房間：", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("添加房間時出現錯誤：", error);
+    throw error; // 可以根據需要處理錯誤
+  }
+};
+</script>
+
+<style>
+.main {
+  display: flex;
+  justify-content: space-around; /* 將左右兩側分開 */
+  padding: 0 100px; /* 一次性設置 padding */
+  min-height: 90vh;
+}
+
+.left {
+  width: 60%;
+}
+
+.left select {
+  width: 40%; /* 使選擇框填滿父容器 */
+  padding: 10px; /* 添加內邊距 */
+  font-size: 16px;
+  border-radius: 4px;
+  outline: none;
+}
+
+.left .room-container {
+  margin-top: 20px; /* 房間容器之間的間距 */
+}
+
+.left .room-container img {
+  max-width: 100px; /* 設置圖片最大寬度 */
+  height: auto; /* 自適應高度 */
+  border-radius: 4px; /* 圓角 */
+}
+
+.left .room-container .room-details {
+  margin-left: 10px;
+}
+
+.left .room-container .room-details p {
+  margin: 5px 0;
+}
+
+.left .room-container .room-details button {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.5s; /* 將所有屬性的變化都進行動畫過渡 */
+}
+
+.left .room-container .room-details button:hover {
+  background-color: #6bb2fe;
+}
+</style>
