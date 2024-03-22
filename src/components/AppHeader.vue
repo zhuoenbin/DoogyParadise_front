@@ -37,6 +37,11 @@
               >寵物旅館</router-link
             >
           </li>
+          <li>
+            <router-link to="/EmployeeP" class="nav-link px-2 text-white"
+              >員工後臺</router-link
+            >
+          </li>
         </ul>
 
         <div class="text-end">

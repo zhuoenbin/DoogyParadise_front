@@ -184,30 +184,24 @@ const bookRoom = (room) => {
     const dateRange = calculateDateRange(formattedDates[0], formattedDates[1]);
     console.log(`訂房日期範圍: ${dateRange}`); // 訂房日期範圍
 
-    let hasConflict = false; // 標記是否存在衝突
+    let conflict = false;
+    let arr = [];
+    let addedDates = {}; // 使用物件來追蹤已經添加的日期
 
     for (let i = 0; i < reservations.value.length; i++) {
       if (room.roomId == reservations.value[i][0]) {
+        console.log(`1. ${reservations.value[i][0]}`);
         for (let date of dateRange) {
+          console.log(`2. ${date}`);
           for (let j = 1; j < reservations.value[i].length; j++) {
-            if (date == reservations.value[i][j]) {
-              hasConflict = true;
-              break; // 如果存在衝突，退出迴圈
+            if (date == reservations.value[i][j] && !addedDates[date]) {
+              conflict = true;
+              arr.push(date);
+              addedDates[date] = true; // 將已經添加的日期標記為 true
             }
           }
         }
       }
-    }
-
-    if (hasConflict) {
-      alert(`房號: ${room.roomId} 在選定日期已被預訂`);
-    } else {
-      alert(
-        `訂房成功！ 寵物名稱: ${selectedDog.value.dogName}, 房間Id: ${
-          room.roomId
-        }, 訂房時間 ${formattedDates.join(" - ")}`
-      );
-      GOregister();
     }
 
     // 新增訂房明細
@@ -227,6 +221,20 @@ const bookRoom = (room) => {
         }
       );
     };
+    console.log(`formattedDates.length: ${formattedDates[1]}`);
+
+    if (!conflict && formattedDates[1] != "1970-01-01") {
+      alert(
+        `訂房成功！ 寵物Name: ${selectedDog.value.dogName}, 房間Id: ${
+          room.roomId
+        }, 訂房時間 ${formattedDates.join(" - ")}`
+      );
+      GOregister();
+    } else if (formattedDates[1] == "1970-01-01") {
+      alert("請選擇結束時間");
+    } else {
+      alert(`房號: ${room.roomId} 在 ${arr} 已被預訂`);
+    }
   } else {
     alert(selectedDates.value.length === 0 ? "請選擇日期" : "請選擇寵物");
   }

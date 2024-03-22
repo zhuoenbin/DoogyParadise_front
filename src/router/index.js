@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Room from '@/views/room/Room.vue';
+import Employee from '@/views/employee/Employee.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,15 +19,19 @@ const router = createRouter({
     {
       path: "/profile",
       component: () => import("@/views/MemberProfile.vue"),
-    },
-    {
-      path: "/:pathMatch(.*)*",
-      component: () => import("@/views/NotFound.vue"),
     },{
       path:'/RoomP',
       name: 'RoomP',
       component: Room
-  }
+    },{
+      path:'/EmployeeP',
+      name: 'EmployeeP',
+      component: Employee
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      component: () => import("@/views/NotFound.vue"),
+    }
   ],
 });
 
