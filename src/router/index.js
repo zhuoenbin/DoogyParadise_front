@@ -27,20 +27,27 @@ const router = createRouter({
     {
       path: "/tweetPage",
       component: () => import("@/views/tweet/TweetMainPage.vue"),
-      children:[
+      children: [
         {
-          path:"a_page",
-          component:()=>import("@/views/tweet/TweetTest.vue")
-        }
-      ]
-    },{
-      path:'/RoomP',
-      name: 'RoomP',
-      component: Room
-  },
+          path: "a_page",
+          component: () => import("@/views/tweet/TweetTest.vue"),
+        },
+      ],
+    },
+    {
+      path: "/RoomP",
+      name: "RoomP",
+      component: Room,
+    },
     {
       path: "/activity",
       component: () => import("@/views/activity/ActivityMainPage.vue"),
+      children: [
+        {
+          path: "create",
+          component: () => import("@/views/activity/CreateActivity.vue"),
+        },
+      ],
     },
   ],
 });
