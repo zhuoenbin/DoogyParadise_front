@@ -29,16 +29,22 @@ const router = createRouter({
         }
       ]
     },{
-      path:'/RoomP',
-      name: 'RoomP',
+      path:'/Room',
+      name: 'Room',
       component: Room
     },{
       path: "/activity",
       component: () => import("@/views/activity/ActivityMainPage.vue"),
     },{
-      path:'/EmployeeP',
-      name: 'EmployeeP',
-      component: Employee
+      path:'/Employee',
+      name: 'Employee',
+      component: Employee,
+      children:[
+        {
+          path:"e_page",
+          component:()=>import("@/views/employee/EmpSidebar.vue")
+        }
+      ]
     },
     {
       path: "/:pathMatch(.*)*",
