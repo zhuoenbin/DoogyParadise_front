@@ -1,52 +1,54 @@
 <template>
-  <div id="app" class="main">
-    <div class="left">
-      <select v-model="selectedDog" @change="RoomsDate" class="select-dog">
-        <option disabled>請選擇要住宿的寵物</option>
-        <option v-for="(dog, dogId) in dogs" :key="dogId" :value="dog">
-          {{ dog.dogName }}
-        </option>
-      </select>
+  <div id="app">
+    <div class="main">
+      <div class="left">
+        <select v-model="selectedDog" @change="RoomsDate" class="select-dog">
+          <option disabled>請選擇要住宿的寵物</option>
+          <option v-for="(dog, dogId) in dogs" :key="dogId" :value="dog">
+            {{ dog.dogName }}
+          </option>
+        </select>
 
-      <div
-        class="room-container"
-        v-for="(room, roomId) in filteredRooms"
-        :key="roomId"
-      >
-        <span>
-          {{ room.roomImgPath }}
-          <!-- <img :src="room.roomImgPath" alt="Room Image" /> -->
-        </span>
-        <span>
-          <div class="room-details">
-            <p>
-              <strong>房間Id: </strong> <span>{{ room.roomId }}</span>
-            </p>
-            <p>
-              <strong>房間名稱: </strong> <span>{{ room.roomName }}</span>
-            </p>
-            <p>
-              <strong>房間適用於: </strong>
-              <span>{{ roomSizeText(room.roomSize) }}</span>
-            </p>
-            <p>
-              <strong>房間價格(一天): </strong>
-              <span>{{ room.roomPrice }}</span>
-            </p>
-            <button @click="bookRoom(room)">訂房</button>
-          </div>
-        </span>
-        <br />
+        <div
+          class="room-container"
+          v-for="(room, roomId) in filteredRooms"
+          :key="roomId"
+        >
+          <span>
+            {{ room.roomImgPath }}
+            <!-- <img :src="room.roomImgPath" alt="Room Image" /> -->
+          </span>
+          <span>
+            <div class="room-details">
+              <p>
+                <strong>房間Id: </strong> <span>{{ room.roomId }}</span>
+              </p>
+              <p>
+                <strong>房間名稱: </strong> <span>{{ room.roomName }}</span>
+              </p>
+              <p>
+                <strong>房間適用於: </strong>
+                <span>{{ roomSizeText(room.roomSize) }}</span>
+              </p>
+              <p>
+                <strong>房間價格(一天): </strong>
+                <span>{{ room.roomPrice }}</span>
+              </p>
+              <button @click="bookRoom(room)">訂房</button>
+            </div>
+          </span>
+          <br />
+        </div>
       </div>
-    </div>
-    <div class="right">
-      <VueDatePicker
-        v-model="selectedDates"
-        range
-        :options="datepickerOptions"
-        :enable-time-picker="false"
-        :min-date="new Date()"
-      />
+      <div class="right">
+        <VueDatePicker
+          v-model="selectedDates"
+          range
+          :options="datepickerOptions"
+          :enable-time-picker="false"
+          :min-date="new Date()"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -252,12 +254,12 @@ const RoomsDate = () => {
 };
 </script>
 
-<style>
+<style scoped>
 .main {
   display: flex;
   justify-content: space-around; /* 將左右兩側分開 */
   padding: 0 100px; /* 一次性設置 padding */
-  min-height: 90vh;
+  min-height: 80vh;
 }
 
 .left {
