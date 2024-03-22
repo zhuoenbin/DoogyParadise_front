@@ -6,7 +6,7 @@ export const useMemberStore = defineStore("memberStore",{
             memberId:"",
             memberName:"",
             memberRole:"",
-            // memberPhoto:"",
+            memberPhoto:"",
             isLoggedIn:false
         };
     },
@@ -16,14 +16,14 @@ export const useMemberStore = defineStore("memberStore",{
             this.memberId=member.userId;
             this.memberName=member.username;
             this.memberRole=member.role;
-            // this.memberPhoto=member.memberPhoto;
+            this.memberPhoto=member.photoUrl;
             this.isLoggedIn=true;
         },
         logout(){
             this.memberId="";
             this.memberName="";
             this.memberRole="";
-            // this.memberPhoto="";
+            this.memberPhoto="";
             this.isLoggedIn=false;
         },
     },

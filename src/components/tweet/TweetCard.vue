@@ -3,17 +3,34 @@
         <div>tweetID: {{ tweet.tweetId }}</div>
         <div>tweetName: {{ tweet.userName }}</div>
         <div>tweetContent: {{ tweet.tweetContent }}</div>
+
+        <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0">
+            <div>Tweet Galleries:</div>
+            <div v-for="(gallery, index) in tweet.tweetGalleries" :key="index">
+
+                <img :src="getImageUrl(gallery.imgPath)" alt="Gallery Image">
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+
+
 export default {
+
     props: {
         tweet: {
             type: Object,
             required: true
         }
+    },
+    methods: {
+        getImageUrl(imgPath) {
+            return `${this.API_URL}/tweet/getImage/${imgPath}`;
+        }
     }
+
 };
 </script>
 

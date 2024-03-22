@@ -10,7 +10,6 @@ import TweetItem from '@/components/tweet/TweetCard.vue';
 export default {
     components: {
         TweetItem,
-        // Sidebar
     },
     data() {
         return {

@@ -7,7 +7,7 @@
                 <h2>狀態欄</h2>
             </div>
             <div class="sidebar-buttons">
-                <router-link to="/tweetPage/a_page"><button
+                <router-link to="/tweetPage/tweetsWallPage"><button
                         class="sidebar-button custom-router-link">首頁</button></router-link>
                 <button class="sidebar-button" @click="showModal">發文</button>
                 <!-- <PostModal v-if="isModalOpen" @close="closeModal" /> -->
@@ -29,15 +29,31 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">互動視窗</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">發個動態~</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">...</div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <textarea v-model="postTweetContent" class="form-control" id="tweetContent"
+                            placeholder="What's happening?" rows="3"></textarea>
+                    </div>
+                    <!-- 其他仿推特功能 -->
+                    <div class="mb-3">
+                        <label for="imageUpload" class="form-label">Upload Image:</label>
+                        <input type="file" class="form-control" id="imageUpload" ref="imageUpload">
+                    </div>
+                    <div class="mb-3">
+                        <label for="tagFriends" class="form-label">Tag Friends:</label>
+                        <input type="text" class="form-control" id="tagFriends" placeholder="Tag friends...">
+                    </div>
+
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         Close
                     </button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary" @click="postTweet"
+                        data-bs-dismiss="modal">Post</button>
                 </div>
             </div>
         </div>
@@ -46,18 +62,17 @@
 </template>
 <script>
 import axios from 'axios';
-import TweetItem from '@/components/tweet/TweetCard.vue';
-// import Sidebar from '@/components/tweet/TweetSidebar.vue';
+import { useMemberStore } from '@/stores/memberStore';
 
 export default {
     components: {
-        TweetItem,
+        // TweetItem,
         // Sidebar
     },
     data() {
         return {
-            tweets: [],
-            isModalOpen: false
+            postTweetContent: "",
+            isModalOpen: false,
         }
     },
     mounted() {
@@ -69,6 +84,46 @@ export default {
             const myModal = new bootstrap.Modal(this.$refs.myModal);
             myModal.show()
         },
+        postTweet() {
+            const memberStore = useMemberStore();
+
+            const formData = new FormData();
+            formData.append('memberId', memberStore.memberId);
+            formData.append('tweetContent', this.postTweetContent);
+            if (this.$refs.imageUpload.files.length > 0) {
+                formData.append('image', this.$refs.imageUpload.files[0]);
+                axios.post(`${this.API_URL}/tweet/postTweetWithPhoto`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                    .then(response => {
+                        console.log("發文成功:", response.data);
+                        // 清空推文内容
+                        this.postTweetContent = "";
+                        this.$refs.imageUpload.value = "";
+                    })
+                    .catch(error => {
+                        console.error("發文失败:", error);
+                    })
+            } else {
+                axios.post(`${this.API_URL}/tweet/postTweetOnlyText`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                    .then(response => {
+                        console.log("發文成功:", response.data);
+                        // 清空推文内容
+                        this.postTweetContent = "";
+                    })
+                    .catch(error => {
+                        console.error("發文失败:", error);
+                    })
+            }
+
+
+        }
     }
 
 }
