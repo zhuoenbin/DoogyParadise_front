@@ -35,6 +35,12 @@ const router = createRouter({
         {
           path:"tweetsWallPage",
           component:()=>import("@/views/tweet/TweetsWall.vue")
+        },{
+          path:"tweetsMyWallPage",
+          component:()=>import("@/views/tweet/TweetMyWall.vue")
+        },{
+          path:"tweetsOthersWallPage",
+          component:()=>import("@/views/tweet/TweetOthersWall.vue")
         }
       ]
     },{

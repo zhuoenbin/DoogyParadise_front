@@ -1,4 +1,5 @@
 <template>
+    <h3>我的推文</h3>
     <div class="tweet-container">
         <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" />
     </div>
@@ -6,6 +7,7 @@
 <script>
 import axios from 'axios';
 import TweetItem from '@/components/tweet/TweetCard.vue';
+import { useMemberStore } from '@/stores/memberStore';
 
 export default {
     components: {
@@ -17,7 +19,8 @@ export default {
         }
     },
     mounted() {
-        axios.get(`${this.API_URL}/tweet/getAllTweet`).then(re => {
+        const memberStore = useMemberStore();
+        axios.get(`${this.API_URL}/tweet/getTweetsByUserId/${memberStore.memberId}`).then(re => {
             this.tweets = re.data;
         })
     },
