@@ -12,18 +12,17 @@
           </button></router-link
         >
         <button class="sidebar-button" @click="showModal">發文</button>
-        <!-- <PostModal v-if="isModalOpen" @close="closeModal" /> -->
+        <router-link to="/tweetPage/tweetsMyWallPage"
+          ><button class="sidebar-button custom-router-link">
+            我的發文
+          </button></router-link
+        >
         <button class="sidebar-button">訊息</button>
         <button class="sidebar-button">通知</button>
-        <!-- 其他按鈕 -->
       </div>
     </div>
 
-    <!-- 本體 -->
     <router-view></router-view>
-    <!-- <div class="tweet-container">
-            <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" />
-        </div> -->
   </div>
 
   <!-- 發文的彈出式視窗 -->
@@ -117,6 +116,10 @@ export default {
       // https://bootstrap5.hexschool.com/docs/5.1/components/modal/#via-javascript
       const myModal = new bootstrap.Modal(this.$refs.myModal);
       myModal.show();
+    },
+    reloadPage() {
+      // 调用 window.location.reload() 方法重新加载页面
+      window.location.reload();
     },
     postTweet() {
       const memberStore = useMemberStore();

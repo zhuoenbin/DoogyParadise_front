@@ -10,11 +10,16 @@ const router = createRouter({
     },
     {
       path: "/login",
+      name: "login",
       component: () => import("@/views/account/LoginPage.vue"),
     },
     {
       path: "/register",
       component: () => import("@/views/account/Register.vue"),
+    },
+    {
+      path: "/forgetPassword",
+      component: () => import("@/views/account/ForgetPassword.vue"),
     },
     {
       path: "/profile",
@@ -31,6 +36,14 @@ const router = createRouter({
         {
           path: "tweetsWallPage",
           component: () => import("@/views/tweet/TweetsWall.vue"),
+        },
+        {
+          path: "tweetsMyWallPage",
+          component: () => import("@/views/tweet/TweetMyWall.vue"),
+        },
+        {
+          path: "tweetsOthersWallPage",
+          component: () => import("@/views/tweet/TweetOthersWall.vue"),
         },
       ],
     },
