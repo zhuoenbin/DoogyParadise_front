@@ -33,12 +33,12 @@
             >
           </li>
           <li>
-            <router-link to="/Room" class="nav-link px-2 text-white"
+            <router-link to="/room/b_page" class="nav-link px-2 text-white"
               >寵物旅館</router-link
             >
           </li>
           <li>
-            <router-link to="/Employee" class="nav-link px-2 text-white"
+            <router-link to="/employee" class="nav-link px-2 text-white"
               >員工後臺</router-link
             >
           </li>

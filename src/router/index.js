@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Room from '@/views/room/Room.vue';
-import Employee from '@/views/employee/Employee.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,20 +27,24 @@ const router = createRouter({
         }
       ]
     },{
-      path:'/Room',
-      name: 'Room',
-      component: Room
+      path: "/room",
+      component: () => import("@/views/room/Room.vue"),
+      children:[
+        {
+          path:"b_page",
+          component:()=>import("@/views/room/Booking.vue")
+        }
+      ]
     },{
       path: "/activity",
       component: () => import("@/views/activity/ActivityMainPage.vue"),
     },{
-      path:'/Employee',
-      name: 'Employee',
-      component: Employee,
+      path: "/employee",
+      component: () => import("@/views/employee/Employee.vue"),
       children:[
         {
-          path:"e_page",
-          component:()=>import("@/views/employee/EmpSidebar.vue")
+          path:"r_page",
+          component:()=>import("@/views/employee/RoomReservation.vue")
         }
       ]
     },
