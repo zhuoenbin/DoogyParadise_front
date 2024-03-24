@@ -1,28 +1,31 @@
 <template>
+    <h3>{{ name }}</h3>
     <div class="tweet-container">
         <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" />
     </div>
 </template>
 <script>
-import axios from 'axios';
 import TweetItem from '@/components/tweet/TweetCard.vue';
+import { useTweetStore } from '@/stores/tweetStore';
 
 export default {
     components: {
         TweetItem,
-        // Sidebar
     },
     data() {
         return {
             tweets: [],
+            name: ""
         }
     },
     mounted() {
-        axios.get(`${this.API_URL}/tweet/getAllTweet`).then(re => {
+        const tweetStore = useTweetStore();
+        this.tweets = tweetStore.tweets;
+        this.name = tweetStore.user;
 
-            this.tweets = re.data;
-        })
-    },
+        tweetStore.clearMsg();
+    }
+
 
 }
 </script>

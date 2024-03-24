@@ -2,9 +2,10 @@
     <main class="container col-xl-10 col-xxl-8 px-4 py-5">
         <div class="row align-items-center g-lg-5 py-5">
             <div class="col-lg-7 text-center text-lg-start">
-                <h1 @click="check" class="display-4 fw-bold lh-1 mb-3">歡迎來到<br/> Doggy Paradise!</h1>
+                <h1 @click="check" class="display-4 fw-bold lh-1 mb-3">歡迎來到<br /> Doggy Paradise!</h1>
                 <p class="col-lg-10 fs-4">
-                    由指尖開始探索Doggy Paradise!<br/>您寵寵物，我們寵你!提供您各式狗狗用品、寵平台社交，預訂寵物旅館，参加精彩活動，一站式滿足您與寵物的所有需求，一切由您的指尖玩轉，享受樂園般的寵生活體驗！
+                    由指尖開始探索Doggy
+                    Paradise!<br />您寵寵物，我們寵你!提供您各式狗狗用品、寵平台社交，預訂寵物旅館，参加精彩活動，一站式滿足您與寵物的所有需求，一切由您的指尖玩轉，享受樂園般的寵生活體驗！
                 </p>
             </div>
             <div class="col-md-10 mx-auto col-lg-5">
@@ -27,7 +28,10 @@
                     <div class="text-danger text-center mt-3">{{ message }}</div>
                     <div class="d-flex justify-content-between mt-3">
                         <button class="btn btn-outline-primary" @click.prevent="redirectToRegisterPage">註冊</button>
-                        <button class="btn btn-outline-primary">忘記密碼</button>
+
+                        <button class="btn btn-outline-primary"
+                            @click.prevent="redirectToForgetPassWordPage">忘記密碼</button>
+
                         <button class="btn btn-outline-danger" @click.prevent="gotoGoogleLoginPage">Google登入</button>
                     </div>
 
@@ -82,6 +86,9 @@ export default {
         gotoGoogleLoginPage() {
             window.location.href = "http://localhost:8080/google-login";
 
+        },
+        redirectToForgetPassWordPage() {
+            this.$router.push("/forgetPassword");
         }
     }
 }

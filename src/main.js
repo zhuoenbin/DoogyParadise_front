@@ -11,6 +11,9 @@ import "@vuepic/vue-datepicker/dist/main.css";
 //sidebar
 import VueSidebarMenu from "vue-sidebar-menu";
 import "vue-sidebar-menu/dist/vue-sidebar-menu.css";
+//element plus
+import ElementPlus from "element-plus";
+import "element-plus/dist/index.css";
 
 const API_URL = "http://localhost:8080";
 
@@ -29,6 +32,7 @@ app.use(createPinia());
 app.use(router);
 app.component("VueDatePicker", VueDatePicker);
 app.use(VueSidebarMenu);
+app.use(ElementPlus);
 app.config.globalProperties.API_URL = API_URL;
 
 app.mount("#app");
