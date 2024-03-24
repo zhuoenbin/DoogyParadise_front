@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <div class="main">
+      <h2>訂房</h2>
       <div class="top flex">
         <span>請選擇要住宿的寵物:</span>
         <select v-model="selectedDog" @change="RoomsDate" class="select-dog">
@@ -257,7 +258,7 @@ const bookRoom = (room) => {
 }
 
 .top span {
-  margin: 1rem;
+  margin: 1rem 0;
 }
 
 select {
@@ -307,7 +308,7 @@ select {
 .card {
   flex-direction: row;
   align-items: center;
-  background-color: #324c54;
+  background-color: #37474e;
   color: #f3f3f3;
 }
 

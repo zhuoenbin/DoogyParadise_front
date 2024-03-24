@@ -33,6 +33,12 @@ const router = createRouter({
         {
           path:"b_page",
           component:()=>import("@/views/room/Booking.vue")
+        },{
+          path:"o_page",
+          component:()=>import("@/views/room/Order.vue")
+        },{
+          path:"h_page",
+          component:()=>import("@/views/room/History.vue")
         }
       ]
     },{
