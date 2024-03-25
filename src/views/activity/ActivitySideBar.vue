@@ -18,34 +18,34 @@ export default {
           icon: "fa-solid fa-seedling",
           child: [
             {
+              href: "/activity/all",
+              title: "所有活動",
+            },
+            {
               href: "/activity/create",
               title: "舉辦活動",
             },
             {
-              href: "/charts/sublink",
-              title: "ppp",
-            },
-            {
-              href: "/charts/sublink",
-              title: "000",
+              href: "/",
+              title: "",
             },
           ],
         },
         {
-          href: "/charts",
+          href: "/venues",
           title: "場地租借",
           icon: "fa fa-chart-area",
           child: [
             {
-              href: "/charts/sublink",
+              href: "/activity/venuesIntro",
               title: "場地介紹",
             },
             {
-              href: "/charts/sublink",
+              href: "/activity/venueRental",
               title: "租借場地",
             },
             {
-              href: "/charts/sublink",
+              href: "/activity/myVenuesRental",
               title: "我的租借",
             },
           ],

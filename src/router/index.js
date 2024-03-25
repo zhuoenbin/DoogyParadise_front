@@ -60,6 +60,22 @@ const router = createRouter({
           path: "create",
           component: () => import("@/views/activity/CreateActivity.vue"),
         },
+        {
+          path: "all",
+          component: () => import("@/views/activity/ActivityWall.vue"),
+        },
+        {
+          path: "venuesIntro",
+          component: () => import("@/views/activity/VenuesIntro.vue"),
+        },
+        {
+          path: "myVenuesRental",
+          component: () => import("@/views/activity/MyVenueRental.vue"),
+        },
+        {
+          path: "venueRental",
+          component: () => import("@/views/activity/VenueRental.vue"),
+        },
       ],
     },
   ],
