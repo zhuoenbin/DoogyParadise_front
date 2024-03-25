@@ -2,11 +2,13 @@
     <div class="tweet-item">
         <div v-if="tweet.preNode != 0">此則為留言</div>
         <div>tweetID: {{ tweet.tweetId }}</div>
+        <div>發文時間 : {{ tweet.postDate }}</div>
         <div @click="goOthersPage(tweet.userName, tweet.tweetId)">tweetName: {{ tweet.userName }}</div>
+
         <div>tweetContent: {{ tweet.tweetContent }}</div>
 
         <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0">
-            <div>Tweet Galleries:</div>
+            <!-- <div>Tweet Galleries:</div> -->
             <div v-for="(gallery, index) in tweet.tweetGalleries" :key="index">
                 <img :src="getImageUrl(gallery.imgPath)" alt="Gallery Image" class="gallery-image">
             </div>
@@ -16,15 +18,9 @@
         <!-- 讚功能 -->
         <div v-if="this.tweetLikeNum != 0" @click="showLikeList">
             {{ tweetLikeNum }} 個讚
-            <!-- 按讚名單
-            <template v-if="showPopup">
-                <div v-for="t in this.userLikeList" class="popup">
-                    {{ t.lastName }}
-                </div>
-            </template> -->
         </div>
 
-        <!-- 發文的彈出式視窗 -->
+        <!--按讚名單的彈出式視窗 -->
         <div ref="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -56,6 +52,30 @@
             <button @click="getCommentsLink(tweet.tweetId)">有{{ this.numOfComment }}則留言</button>
         </div>
 
+
+        <!-- 回覆推文的文字框 -->
+        <button @click="showReply">回覆</button>
+        <!--回覆推文的彈出式視窗 -->
+        <div ref="myReplyModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <!-- Modal content -->
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">回覆推文</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <textarea v-model="replyContent" placeholder="在此輸入回覆內容"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" @click="postReply"
+                            data-bs-dismiss="modal">發布回覆</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 子留言，內容 -->
         <div v-if="showComments">
 
@@ -84,6 +104,7 @@ export default {
             liked: false,
             userId: useMemberStore().memberId,
             userLikeList: [],
+            replyContent: '',
         }
     },
     props: {
@@ -95,7 +116,6 @@ export default {
     mounted() {
         axios.get(`${this.API_URL}/tweet/getNumOfComment/${this.tweet.tweetId}`)
             .then(response => {
-                // console.log("tweetId: " + this.tweet.tweetId + "有" + response.data + "則回覆")
                 this.numOfComment = response.data;
             })
             .catch(error => {
@@ -151,12 +171,10 @@ export default {
                     this.$router.push("/tweetPage/tweetsOthersWallPage")
                 })
             } else {
-                console.log("do else")
                 this.$router.push("/tweetPage/tweetsMyWallPage")
             }
         },
         likeTweet() {
-            console.log("like");
             this.liked = !this.liked;
             this.tweetLikeNum += 1;
 
@@ -164,13 +182,11 @@ export default {
             fd.append("tweetId", this.tweet.tweetId);
             fd.append("userId", this.userId);
 
-            axios.post(`${this.API_URL}/tweet/getLikeLink`, fd) // 這裡補完了 axios.post 的內容，將 FormData 物件傳遞給後端
+            axios.post(`${this.API_URL}/tweet/getLikeLink`, fd)
                 .then(response => {
-                    // 在這裡處理後端回傳的 response，例如更新介面顯示或其他相應的操作
                     console.log(response);
                 })
                 .catch(error => {
-                    // 在這裡處理錯誤情況，例如顯示錯誤訊息給使用者
                     console.error(error);
                 });
         },
@@ -182,23 +198,17 @@ export default {
             fd.append("tweetId", this.tweet.tweetId);
             fd.append("userId", this.userId);
 
-            axios.post(`${this.API_URL}/tweet/removeLikeLink`, fd) // 這裡補完了 axios.post 的內容，將 FormData 物件傳遞給後端
+            axios.post(`${this.API_URL}/tweet/removeLikeLink`, fd)
                 .then(response => {
-                    // 在這裡處理後端回傳的 response，例如更新介面顯示或其他相應的操作
                     console.log(response);
                 })
                 .catch(error => {
-                    // 在這裡處理錯誤情況，例如顯示錯誤訊息給使用者
                     console.error(error);
                 });
         },
         showLikeList() {
             const myModal = new bootstrap.Modal(this.$refs.myModal);
             myModal.show()
-
-
-
-
             axios.get(`${this.API_URL}/tweet/getTweetLikesUser`, {
                 params: {
                     tweetId: this.tweet.tweetId,
@@ -207,10 +217,36 @@ export default {
                 console.log("getTweetLikesUser" + re.data)
                 this.userLikeList = re.data
             })
-
         },
         hideLikeList() {
             this.userLikeList = [];
+        },
+        showReply() {
+            const myReplyModal = new bootstrap.Modal(this.$refs.myReplyModal);
+            myReplyModal.show()
+        },
+        postReply() {
+            const memberStore = useMemberStore();
+
+            const formData = new FormData();
+            formData.append('memberId', memberStore.memberId);
+            formData.append('tweetId', this.tweet.tweetId);
+            formData.append('tweetContent', this.replyContent);
+            axios.post(`${this.API_URL}/tweet/replyTweet`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+                .then(response => {
+                    console.log("回文成功:", response.data);
+                    // 清空推文内容
+                    this.replyContent = "";
+                    this.numOfComment += 1;
+                    // this.$router.go(0)
+                })
+                .catch(error => {
+                    console.error("發文失败:", error);
+                })
 
         }
     }
@@ -233,25 +269,5 @@ export default {
 .gallery-image {
     max-width: 100%;
     max-height: 100%;
-}
-
-.popup {
-    /* position: fixed;
-    top: 80%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    border: 1px solid black;
-    padding: 20px; */
-
-
-    position: absolute;
-    top: 100%;
-    left: 30%;
-    background-color: white;
-    border: 1px solid black;
-    padding: 20px;
-
-
 }
 </style>

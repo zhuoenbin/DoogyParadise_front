@@ -105,6 +105,7 @@ export default {
                         // 清空推文内容
                         this.postTweetContent = "";
                         this.$refs.imageUpload.value = "";
+                        this.$router.go(0)
                     })
                     .catch(error => {
                         console.error("發文失败:", error);
@@ -119,6 +120,7 @@ export default {
                         console.log("發文成功:", response.data);
                         // 清空推文内容
                         this.postTweetContent = "";
+                        this.$router.go(0)
                     })
                     .catch(error => {
                         console.error("發文失败:", error);
