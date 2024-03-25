@@ -1,30 +1,55 @@
 <template>
   <header class="p-3 text-bg-dark mb-3">
     <div class="container">
-      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+      <div
+        class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
+      >
+        <ul
+          class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
+        >
           <li>
-            <router-link to="/" class="nav-link px-2 text-secondary">首頁</router-link>
+            <router-link to="/" class="nav-link px-2 text-secondary"
+              >首頁</router-link
+            >
           </li>
           <li>
-            <router-link to="/shop" class="nav-link px-2 text-white">商城</router-link>
+            <router-link to="/shop" class="nav-link px-2 text-white"
+              >商城</router-link
+            >
           </li>
           <li>
-            <router-link to="" class="nav-link px-2 text-white">論壇</router-link>
+            <router-link to="/cart" class="nav-link px-2 text-white"
+              >購物車</router-link
+            >
           </li>
           <li>
-            <router-link to="/tweetPage" class="nav-link px-2 text-white">動態牆</router-link>
+            <router-link to="" class="nav-link px-2 text-white"
+              >論壇</router-link
+            >
           </li>
           <li>
-            <router-link to="" class="nav-link px-2 text-white">活動</router-link>
+            <router-link to="/tweetPage" class="nav-link px-2 text-white"
+              >動態牆</router-link
+            >
           </li>
           <li>
-            <router-link to="/RoomP" class="nav-link px-2 text-white">寵物旅館</router-link>
+            <router-link to="" class="nav-link px-2 text-white"
+              >活動</router-link
+            >
+          </li>
+          <li>
+            <router-link to="/RoomP" class="nav-link px-2 text-white"
+              >寵物旅館</router-link
+            >
           </li>
         </ul>
 
         <div class="text-end">
-          <router-link v-if="!isloggedIn" to="/login" class="text-decoration-none">
+          <router-link
+            v-if="!isloggedIn"
+            to="/login"
+            class="text-decoration-none"
+          >
             <button type="button" class="btn btn-outline-light me-2">
               登入
             </button>
@@ -34,7 +59,8 @@
             <router-link to="/profile" class="text-decoration-none">
               <button type="button" class="btn btn-warning">
                 {{ name }}
-              </button></router-link>
+              </button></router-link
+            >
             <img :src="photo" width="8%" class="mx-2" />
 
             <button @click="logout" type="button" class="btn btn-outline-light">

@@ -22,14 +22,24 @@ const router = createRouter({
     {
       path: "/:pathMatch(.*)*",
       component: () => import("@/views/NotFound.vue"),
-    },{
+    },
+    {
       path: "/tweetPage",
       component: () => import("@/views/tweet/TweetMainPage.vue"),
-    },{
+    },
+    {
       path:'/RoomP',
       name: 'RoomP',
       component: Room
-  }
+    },
+    {
+      path: "/shop",
+      component: () => import("@/views/ShopPage.vue"),
+    },
+    {
+      path: "/cart",
+      component: () => import("@/views/ShoppingCart.vue"),
+    },
   ],
 });
 
