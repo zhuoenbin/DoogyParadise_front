@@ -104,6 +104,18 @@
             />
             <label>活動主題</label>
           </div>
+          <div class="input-group mb-3">
+            <input
+              type="file"
+              class="form-control"
+              id="mainImgUpload"
+              ref="mainImgUpload"
+              accept="image/*"
+            />
+            <label class="input-group-text" for="inputGroupFile02"
+              >主題圖片上傳</label
+            >
+          </div>
 
           <div class="form-floating mb-3">
             <textarea
@@ -128,6 +140,19 @@
               v-model="activityNotice"
             ></textarea>
             <label>注意事項</label>
+          </div>
+          <div class="input-group mb-3">
+            <input
+              type="file"
+              class="form-control"
+              id="normalImage"
+              ref="normalImage"
+              accept="image/*"
+              multiple
+            />
+            <label class="input-group-text" for="inputGroupFile02"
+              >其他說明圖片上傳</label
+            >
           </div>
 
           <div class="row g-2">
@@ -224,6 +249,7 @@
 <script>
 import axios from "axios";
 import { useMemberStore } from "@/stores/memberStore";
+import { useActivityStore } from "@/stores/activityStore";
 
 export default {
   mounted() {
@@ -277,6 +303,49 @@ export default {
     },
   },
   methods: {
+    mainImgUpload() {
+      const activityStore = useActivityStore();
+      if (activityStore.activityId != null) {
+        if (this.$refs.mainImgUpload.files.length > 0) {
+          const fd = new FormData();
+          fd.append("activityId", activityStore.activityId);
+          fd.append("mainImg", this.$refs.mainImgUpload.files[0]);
+          axios
+            .post(`${this.API_URL}/activity/api/official/addMainImg`, fd)
+            .then((response) => {
+              console.log("主題圖片新增成功!", response.data);
+            })
+            .catch((error) => {
+              console.error("主題圖片新增失敗", error);
+            });
+        } else {
+          console.log("沒有選擇任何圖片");
+        }
+      }
+    },
+    normalImgUpload() {
+      const activityStore = useActivityStore();
+      if (activityStore.activityId != null) {
+      }
+      if (this.$refs.normalImage.files.length > 0) {
+        const fd = new FormData();
+        fd.append("activityId", activityStore.activityId);
+        // fd.append("normalImages", this.$refs.normalImage.files);
+        Array.from(this.$refs.normalImage.files).forEach((file) => {
+          fd.append("normalImages", file);
+        });
+        axios
+          .post(`${this.API_URL}/activity/api/official/addNormalImg`, fd)
+          .then((response) => {
+            console.log("說明圖片新增成功!", response.data);
+          })
+          .catch((error) => {
+            console.error("說明圖片新增失敗", error);
+          });
+      } else {
+        console.log("沒有選擇任何圖片");
+      }
+    },
     create() {
       const memberStore = useMemberStore();
       console.log("是員工嗎?", memberStore.memberRole);
@@ -308,6 +377,15 @@ export default {
           })
           .then((rs) => {
             this.message = "";
+            const activityStore = useActivityStore();
+            activityStore.createSuccess(rs.data);
+            console.log(rs.data);
+            console.log(activityStore.activityTitle);
+            console.log(activityStore.activityId);
+            this.mainImgUpload();
+            if (this.$refs.normalImage.files.length > 0) {
+              this.normalImgUpload();
+            }
             this.$router.push("/");
           })
           .catch((error) => {
@@ -318,26 +396,16 @@ export default {
         this.message = "你沒有資格";
       }
     },
-
-    check() {
-      axios.get(`${this.API_URL}/check`).then((re) => console.log(re.data));
-    },
-    redirectToRegisterPage() {
-      this.$router.push("/register");
-    },
-    gotoGoogleLoginPage() {
-      window.location.href = "http://localhost:8080/google-login";
-    },
   },
   watch: {
     activityTypeId: function (newValue, oldValue) {
-      console.log("您选择的活动类型的值是:", newValue);
+      console.log("活動類型是:", newValue);
     },
     venueId: function (newValue, oldValue) {
-      console.log("您选择的場地的值是:", newValue);
+      console.log("場地是:", newValue);
     },
     activityDate: function (newValue, oldValue) {
-      console.log("您选择活動日期是:", newValue);
+      console.log("活動日期是:", newValue);
     },
     activityStart: function (newValue, oldValue) {
       console.log("活動開始時間是:", newValue);
