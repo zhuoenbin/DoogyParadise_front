@@ -278,42 +278,33 @@ export default {
   },
   methods: {
     create() {
-      const fd = new FormData();
-      fd.append("activityTypeId", this.activityTypeId);
-      fd.append("venueId", this.venueId);
-      fd.append("activityDate", new Date(this.activityDate));
-      fd.append(
-        "activityStart",
-        new Date(`${this.activityDate}T${this.activityStart}`)
-      );
-      fd.append(
-        "activityEnd",
-        new Date(`${this.activityDate}T${this.activityEnd}`)
-      );
-      fd.append("activityTitle", this.activityTitle);
-      fd.append("activityDescription", this.activityDescription);
-      fd.append("activityProcess", this.activityProcess);
-      fd.append("activityNotice", this.activityNotice);
-      fd.append("activityCost", this.activityCost);
-      fd.append("activityCostDescription", this.activityCostDescription);
-      fd.append("activityClosingDate", new Date(this.activityClosingDate));
-      fd.append("contactInfo", this.contactInfo);
-      fd.append("contactPhone", this.contactPhone);
-      fd.append("contactMail", this.contactMail);
-      fd.append("activityDogNumber", this.activityDogNumber);
-      console.log(this.venueId);
-
       const memberStore = useMemberStore();
       console.log("是員工嗎?", memberStore.memberRole);
-      console.log(fd);
       if (memberStore.memberRole.startsWith("ROLE")) {
-        fd.append("employeeId", memberStore.memberId);
-        console.log(memberStore.memberId);
+        console.log(new Date(this.activityClosingDate));
+        console.log(new Date(this.activityDate));
+        console.log(new Date(`${this.activityDate}T${this.activityStart}`));
         axios
-          .post(`${this.API_URL}/activity/api/official/add`, fd, {
-            headers: {
-              "Content-Type": "application/json",
-            },
+          .post(`${this.API_URL}/activity/api/official/addActivity`, {
+            activityTypeId: this.activityTypeId,
+            venueId: this.venueId,
+            employeeId: memberStore.memberId,
+            activityTitle: this.activityTitle,
+            activityDate: new Date(this.activityDate),
+            activityStart: new Date(
+              `${this.activityDate}T${this.activityStart}`
+            ),
+            activityEnd: new Date(`${this.activityDate}T${this.activityEnd}`),
+            activityDescription: this.activityDescription,
+            activityProcess: this.activityProcess,
+            activityNotice: this.activityNotice,
+            activityClosingDate: new Date(this.activityClosingDate),
+            activityDogNumber: this.activityDogNumber,
+            activityCost: this.activityCost,
+            activityCostDescription: this.activityCostDescription,
+            contactInfo: this.contactInfo,
+            contactMail: this.contactMail,
+            contactPhone: this.contactPhone,
           })
           .then((rs) => {
             this.message = "";
