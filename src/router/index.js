@@ -10,13 +10,14 @@ const router = createRouter({
     },
     {
       path: "/login",
-      name:"login",
+      name: "login",
       component: () => import("@/views/account/LoginPage.vue"),
     },
     {
       path: "/register",
       component: () => import("@/views/account/Register.vue"),
-    },{
+    },
+    {
       path: "/forgetPassword",
       component: () => import("@/views/account/ForgetPassword.vue"),
     },
@@ -31,26 +32,35 @@ const router = createRouter({
     {
       path: "/tweetPage",
       component: () => import("@/views/tweet/TweetMainPage.vue"),
-      children:[
+      children: [
         {
-          path:"tweetsWallPage",
-          component:()=>import("@/views/tweet/TweetsWall.vue")
-        },{
-          path:"tweetsMyWallPage",
-          component:()=>import("@/views/tweet/TweetMyWall.vue")
-        },{
-          path:"tweetsOthersWallPage",
-          component:()=>import("@/views/tweet/TweetOthersWall.vue")
-        }
-      ]
-    },{
-      path:'/RoomP',
-      name: 'RoomP',
-      component: Room
-  },
+          path: "tweetsWallPage",
+          component: () => import("@/views/tweet/TweetsWall.vue"),
+        },
+        {
+          path: "tweetsMyWallPage",
+          component: () => import("@/views/tweet/TweetMyWall.vue"),
+        },
+        {
+          path: "tweetsOthersWallPage",
+          component: () => import("@/views/tweet/TweetOthersWall.vue"),
+        },
+      ],
+    },
+    {
+      path: "/RoomP",
+      name: "RoomP",
+      component: Room,
+    },
     {
       path: "/activity",
       component: () => import("@/views/activity/ActivityMainPage.vue"),
+      children: [
+        {
+          path: "create",
+          component: () => import("@/views/activity/CreateActivity.vue"),
+        },
+      ],
     },
   ],
 });

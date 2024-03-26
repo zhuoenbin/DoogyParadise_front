@@ -1,26 +1,24 @@
 <template>
     <div class="main-container">
-
         <!-- sideBar -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>狀態欄</h2>
             </div>
             <div class="sidebar-buttons">
-                <router-link to="/tweetPage/tweetsWallPage"><button
-                        class="sidebar-button custom-router-link">首頁</button></router-link>
+                <router-link to="/tweetPage/tweetsWallPage"><button class="sidebar-button custom-router-link">
+                        首頁
+                    </button></router-link>
                 <button class="sidebar-button" @click="showModal">發文</button>
-                <router-link to="/tweetPage/tweetsMyWallPage"><button
-                        class="sidebar-button custom-router-link">我的發文</button></router-link>
+                <router-link to="/tweetPage/tweetsMyWallPage"><button class="sidebar-button custom-router-link">
+                        我的發文
+                    </button></router-link>
                 <button class="sidebar-button">訊息</button>
                 <button class="sidebar-button">通知</button>
-
             </div>
         </div>
 
-
         <router-view></router-view>
-
     </div>
 
     <!-- 發文的彈出式視窗 -->
@@ -39,29 +37,28 @@
                     <!-- 其他仿推特功能 -->
                     <div class="mb-3">
                         <label for="imageUpload" class="form-label">Upload Image:</label>
-                        <input type="file" class="form-control" id="imageUpload" ref="imageUpload">
+                        <input type="file" class="form-control" id="imageUpload" ref="imageUpload" />
                     </div>
                     <div class="mb-3">
                         <label for="tagFriends" class="form-label">Tag Friends:</label>
-                        <input type="text" class="form-control" id="tagFriends" placeholder="Tag friends...">
+                        <input type="text" class="form-control" id="tagFriends" placeholder="Tag friends..." />
                     </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         Close
                     </button>
-                    <button type="button" class="btn btn-primary" @click="postTweet"
-                        data-bs-dismiss="modal">Post</button>
+                    <button type="button" class="btn btn-primary" @click="postTweet" data-bs-dismiss="modal">
+                        Post
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-
 </template>
 <script>
-import axios from 'axios';
-import { useMemberStore } from '@/stores/memberStore';
+import axios from "axios";
+import { useMemberStore } from "@/stores/memberStore";
 
 export default {
     components: {
@@ -72,16 +69,14 @@ export default {
         return {
             postTweetContent: "",
             isModalOpen: false,
-        }
+        };
     },
-    mounted() {
-
-    },
+    mounted() { },
     methods: {
         showModal() {
             // https://bootstrap5.hexschool.com/docs/5.1/components/modal/#via-javascript
             const myModal = new bootstrap.Modal(this.$refs.myModal);
-            myModal.show()
+            myModal.show();
         },
         reloadPage() {
             // 调用 window.location.reload() 方法重新加载页面
@@ -143,8 +138,6 @@ export default {
     /* 將 tweet-container 擴展以填滿剩餘空間 */
     padding: 20px;
 }
-
-
 
 /* Sidebar 的外觀和佈局 */
 .sidebar {
