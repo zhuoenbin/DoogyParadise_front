@@ -24,22 +24,24 @@ const router = createRouter({
       path: "/profile",
       component: () => import("@/views/member/MemberProfile.vue"),
     },
-    
+
     {
       path: "/tweetPage",
       component: () => import("@/views/tweet/TweetMainPage.vue"),
-      children:[
+      children: [
         {
-          path:"tweetsWallPage",
-          component:()=>import("@/views/tweet/TweetsWall.vue")
-        },{
-          path:"tweetsMyWallPage",
-          component:()=>import("@/views/tweet/TweetMyWall.vue")
-        },{
-          path:"tweetsOthersWallPage",
-          component:()=>import("@/views/tweet/TweetOthersWall.vue")
-        }
-      ]
+          path: "tweetsWallPage",
+          component: () => import("@/views/tweet/TweetsWall.vue"),
+        },
+        {
+          path: "tweetsMyWallPage",
+          component: () => import("@/views/tweet/TweetMyWall.vue"),
+        },
+        {
+          path: "tweetsOthersWallPage",
+          component: () => import("@/views/tweet/TweetOthersWall.vue"),
+        },
+      ],
     },
     {
       path: "/room",
@@ -47,17 +49,17 @@ const router = createRouter({
       children: [
         {
           path: "b_page",
-          component: () => import("@/views/room/Booking.vue")
+          component: () => import("@/views/room/Booking.vue"),
         },
         {
           path: "o_page",
-          component: () => import("@/views/room/Order.vue")
+          component: () => import("@/views/room/Order.vue"),
         },
         {
           path: "h_page",
-          component: () => import("@/views/room/History.vue")
-        }
-      ]
+          component: () => import("@/views/room/History.vue"),
+        },
+      ],
     },
     {
       path: "/activity",
@@ -91,26 +93,26 @@ const router = createRouter({
       children: [
         {
           path: "r_page",
-          component: () => import("@/views/employee/RoomReservation.vue")
-        }
-      ]
+          component: () => import("@/views/employee/RoomReservation.vue"),
+        },
+      ],
     },
     {
       path: "/forum/:id",
-      component: () => import("@/views/Forum.vue"),
+      component: () => import("@/views/forum/Forum.vue"),
     },
     {
       path: "/:pathMatch(.*)*",
       component: () => import("@/views/NotFound.vue"),
     },
-  {
-    path: "/shop",
-    component: () => import("@/views/ShopPage.vue"),
-  },
-  {
-    path: "/cart",
-    component: () => import("@/views/ShoppingCart.vue"),
-  },
+    {
+      path: "/shop",
+      component: () => import("@/views/ShopPage.vue"),
+    },
+    {
+      path: "/cart",
+      component: () => import("@/views/ShoppingCart.vue"),
+    },
   ],
 });
 

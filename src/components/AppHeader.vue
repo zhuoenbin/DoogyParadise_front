@@ -23,7 +23,7 @@
             >
           </li>
           <li>
-            <router-link to="" class="nav-link px-2 text-white"
+            <router-link to="/forum/1" class="nav-link px-2 text-white"
               >論壇</router-link
             >
           </li>
@@ -114,12 +114,9 @@ export default {
   },
 };
 </script>
-<<<<<<< HEAD
-<style></style>
-=======
+
 <style scoped>
 * {
   margin: 0;
 }
 </style>
->>>>>>> 30e20ec073cbc792d626df67f2c081adf8dc61ba

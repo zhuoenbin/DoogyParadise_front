@@ -3,33 +3,24 @@
     <div class="container mb-3">
       <div class="row align-items-center text-center">
         <div class="col-1">
-          <label for="inputPassword6" class="col-form-label">名稱</label>
+          <label for="inputPassword6" class="col-form-label">文章名稱：</label>
         </div>
         <div class="col-4">
           <input type="text" class="form-control" />
         </div>
 
         <div class="col-1">
-          <label for="inputPassword6" class="col-form-label">價格</label>
+          <label for="inputPassword6" class="col-form-label">文章種類：</label>
         </div>
         <div class="col-2">
-          <input
-            type="number"
-            class="form-control"
-            placeholder="最小值"
-            min="0"
-          />
+          <select>
+            <option selected="selected" value="1">綜合討論</option>
+            <option value="2">飼養心得</option>
+            <option value="3">疑難雜症</option>
+          </select>
         </div>
         <div class="col-2">
-          <input
-            type="number"
-            class="form-control"
-            placeholder="最大值"
-            min="0"
-          />
-        </div>
-        <div class="col-2">
-          <button class="btn btn-primary">查詢</button>
+          <button @click="loadArticles" class="btn btn-primary">查詢</button>
         </div>
       </div>
     </div>
@@ -63,16 +54,38 @@
         </div>
       </div>
     </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 text-center">
+      <div class="col" v-for="a in articles" :key="a.articleId">
+        <div class="card shadow-sm">
+          <p class="card-text mt-2 px-3 text-truncate">
+            {{ a.articleTitle }}
+          </p>
+          <p>{{ a.userName }}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="m-3">
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary m-2"
+              >
+                <i class="fa-solid fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 <script>
 import axios from "axios";
+import { useMemberStore } from "@/stores/memberStore";
 export default {
   data() {
     return {
       currentPage: 1,
       totalPage: 0,
-      products: [],
+      articles: [],
+      category: [],
     };
   },
   methods: {
@@ -82,18 +95,23 @@ export default {
         console.log(this.currentPage);
       }
     },
-    loadProducts() {
+    loadArticles() {
       axios.get(`${this.API_URL}/forum/${this.currentPage}`).then((re) => {
         this.totalPage = re.data.totalPages;
-        this.products = re.data.content;
+        this.articles = re.data.content;
+      });
+    },
+    loadCategory() {
+      axios.get(`${this.API_URL}/forum/category`).then((re) => {
+        this.category = re.data.categoryName;
       });
     },
   },
   mounted() {
-    axios.get(`${this.API_URL}/products/${this.currentPage}`).then((re) => {
+    axios.get(`${this.API_URL}/forum/${this.currentPage}`).then((re) => {
       this.currentPage = re.data.number;
       this.totalPage = re.data.totalPages;
-      this.products = re.data.content;
+      this.articles = re.data.content;
     });
   },
   computed: {
@@ -122,7 +140,7 @@ export default {
   },
   watch: {
     currentPage(newValue, oldValue) {
-      this.loadProducts();
+      this.loadArticles();
     },
   },
 };
