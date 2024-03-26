@@ -24,13 +24,20 @@ const router = createRouter({
       path: "/profile",
       component: () => import("@/views/member/MemberProfile.vue"),
     },
+    
     {
       path: "/tweetPage",
       component: () => import("@/views/tweet/TweetMainPage.vue"),
-      children: [
+      children:[
         {
-          path: "a_page",
-          component: () => import("@/views/tweet/TweetTest.vue")
+          path:"tweetsWallPage",
+          component:()=>import("@/views/tweet/TweetsWall.vue")
+        },{
+          path:"tweetsMyWallPage",
+          component:()=>import("@/views/tweet/TweetMyWall.vue")
+        },{
+          path:"tweetsOthersWallPage",
+          component:()=>import("@/views/tweet/TweetOthersWall.vue")
         }
       ]
     },
