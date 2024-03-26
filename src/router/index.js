@@ -9,15 +9,10 @@ const router = createRouter({
     },
     {
       path: "/login",
-      name: "login",
       component: () => import("@/views/account/LoginPage.vue"),
     },{
       path: "/register",
       component: () => import("@/views/account/Register.vue"),
-    },
-    {
-      path: "/forgetPassword",
-      component: () => import("@/views/account/ForgetPassword.vue"),
     },
     {
       path: "/profile",
@@ -25,10 +20,16 @@ const router = createRouter({
     },{
       path: "/tweetPage",
       component: () => import("@/views/tweet/TweetMainPage.vue"),
-      children: [
+      children:[
         {
-          path:"a_page",
-          component:()=>import("@/views/tweet/TweetTest.vue")
+          path:"tweetsWallPage",
+          component:()=>import("@/views/tweet/TweetsWall.vue")
+        },{
+          path:"tweetsMyWallPage",
+          component:()=>import("@/views/tweet/TweetMyWall.vue")
+        },{
+          path:"tweetsOthersWallPage",
+          component:()=>import("@/views/tweet/TweetOthersWall.vue")
         }
       ]
     },{
@@ -40,10 +41,15 @@ const router = createRouter({
           component:()=>import("@/views/room/Booking.vue")
         },{
           path:"o_page",
+          name:"o_page",
           component:()=>import("@/views/room/Order.vue")
         },{
           path:"h_page",
           component:()=>import("@/views/room/History.vue")
+        },{
+          path:"u_page/:reservationId/:str",
+          name:"u_page",
+          component:()=>import("@/views/room/UpdateFrom.vue")
         }
       ]
     },{

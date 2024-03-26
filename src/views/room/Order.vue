@@ -1,11 +1,11 @@
 <template>
-  <h2>歷史訂房紀錄</h2>
+  <h2>預約訂房管理</h2>
   <div
     class="room-container"
     v-for="(reservation, reservationId) in reservations"
     :key="reservationId"
   >
-    <div v-if="!isEndDateAfterToday(reservation.endTime)">
+    <div v-if="isEndDateAfterToday(reservation.endTime)">
       <div class="card card-body">
         <span>
           訂房時段: {{ formatDate(reservation.startTime) }} -
@@ -13,23 +13,53 @@
         </span>
         <span> 訂房Id: {{ reservation.reservationId }} </span>
         <span> 房間Id: {{ reservation.room.roomId }} </span>
-        <span> DogId: {{ reservation.dog.dogId }} </span>
-        <span> DogName: {{ reservation.dog.dogName }} </span>
-        <!-- <button>投訴</button> -->
+        <span> 寵物名稱: {{ reservation.dog.dogName }} </span>
+        <span> 費用: {{ reservation.totalPrice }} </span>
+        <div v-if="formatDate(reservation.cancelTime) != '1970/01/01'">
+          <div>取消時間: {{ formatDate(reservation.cancelTime) }}</div>
+          <div>取消原因: {{ reservation.cancelDirection }}</div>
+        </div>
+        <div
+          class="flex"
+          v-if="
+            !isStartDateWithinThreeDays(reservation.startTime) &&
+            formatDate(reservation.cancelTime) == '1970/01/01'
+          "
+        >
+          <button
+            class="btn btn-primary"
+            @click="
+              handleModifyReservation(reservation.reservationId, 'update')
+            "
+          >
+            修改時段
+          </button>
+          <button
+            class="btn btn-primary"
+            @click="
+              handleModifyReservation(reservation.reservationId, 'cancel')
+            "
+          >
+            取消訂房
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </template>
+
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import axios from "axios";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const reservations = ref([]);
 
 onMounted(() => {
   axios.get("http://localhost:8080/employee/room").then((response) => {
     reservations.value = response.data;
-    console.log(reservations.value);
   });
 });
 
@@ -47,17 +77,37 @@ const isEndDateAfterToday = (endDate) => {
   const end = new Date(endDate);
   return end > today;
 };
+
+const isStartDateWithinThreeDays = (startDate) => {
+  const today = new Date();
+  const start = new Date(startDate);
+  const differenceInTime = start.getTime() - today.getTime();
+  const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+  return differenceInDays <= 3;
+};
+
+const handleModifyReservation = (reservationId, str) => {
+  router.push({
+    name: "u_page",
+    params: { reservationId: reservationId, str: str },
+  });
+};
 </script>
+
 <style scoped>
-.room-container {
-  width: 40%;
-}
-
-p button {
-  margin: 2rem 1rem 0 0;
-}
-
 .card.card-body {
-  margin-top: 2rem;
+  width: 40%;
+  margin: 2rem;
+  margin-left: 0;
+  padding: 1.5rem;
+}
+
+button {
+  margin: 0.5rem;
+  margin-left: 0;
+}
+
+.flex {
+  display: flex;
 }
 </style>
