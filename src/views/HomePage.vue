@@ -2,9 +2,9 @@
     <main>
         <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
             <div class="col-md-5 p-lg-5 mx-auto my-5">
-                <h1 class="display-4 fw-normal">Nono商城</h1>
+                <h2 class="display-4 fw-normal">Doggy Paradise</h2>
                 <p class="lead fw-normal">
-                    (ChatGPT產生)歡迎來到NonoShop，您的一站式線上購物天堂！涵蓋3C產品、美食、流行服飾、日常用品等，滿足各式購物需求，讓您輕鬆享受購物樂趣。
+                    您寵寵物，我們寵你!<br />提供您各式狗狗用品、寵平台社交、預訂寵物旅館、参加精彩活動，一站式滿足您與寵物的所有需求，一切由您的指尖玩轉，享受樂園般的寵生活體驗！
                 </p>
                 <a class="btn btn-outline-secondary" href="#">Check now</a>
             </div>
@@ -50,6 +50,7 @@ import { useMemberStore } from '@/stores/memberStore';
 export default {
     mounted() {
         axios.get(`${this.API_URL}/api/users/map`).then(re => {
+            console.log("in homepage axios.get(`${this.API_URL}/api/users/map`)")
             const memberStore = useMemberStore(); //pinia
             memberStore.loginSuccess(re.data); //pinia
             this.message = "";
