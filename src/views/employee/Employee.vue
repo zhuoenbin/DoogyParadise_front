@@ -3,22 +3,31 @@
     <!-- sideBar -->
     <div class="sidebar">
       <div class="sidebar-header">
-        <h2>寵物旅館</h2>
+        <h2>後臺管理</h2>
       </div>
       <div class="sidebar-buttons">
-        <router-link to="/room/b_page"
+        <router-link to="/"
           ><button class="sidebar-button custom-router-link">
-            訂房
+            商城首頁
           </button></router-link
         >
-        <router-link to="/room/h_page"
+        <router-link to="/"
           ><button class="sidebar-button custom-router-link">
-            預約訂房管理
+            檢舉管理
           </button></router-link
         >
-        <router-link to="/room/o_page"
+        <router-link to="/employee/r_page"
           ><button class="sidebar-button custom-router-link">
-            歷史訂房紀錄
+            訂房管理
+          </button></router-link
+        >
+        <router-link to="/"
+          ><button class="sidebar-button custom-router-link">
+            商品管理
+          </button></router-link
+        ><router-link to="/"
+          ><button class="sidebar-button custom-router-link">
+            退貨處理
           </button></router-link
         >
         <!-- 其他按鈕 -->
@@ -34,8 +43,7 @@
 <script setup></script>
 <style scoped>
 .main {
-  width: 80%;
-  padding: 40px 0 0 80px;
+  padding: 40px;
 }
 
 .main-container {
