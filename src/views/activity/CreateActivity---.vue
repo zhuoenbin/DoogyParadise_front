@@ -327,16 +327,6 @@ export default {
         this.message = "你沒有資格";
       }
     },
-
-    check() {
-      axios.get(`${this.API_URL}/check`).then((re) => console.log(re.data));
-    },
-    redirectToRegisterPage() {
-      this.$router.push("/register");
-    },
-    gotoGoogleLoginPage() {
-      window.location.href = "http://localhost:8080/google-login";
-    },
   },
   watch: {
     activityTypeId: function (newValue, oldValue) {
