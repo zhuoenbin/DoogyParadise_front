@@ -1,10 +1,6 @@
 <template>
   <h2>歷史訂房紀錄</h2>
-  <div
-    class="room-container"
-    v-for="(reservation, reservationId) in reservations"
-    :key="reservationId"
-  >
+  <div class="room-container" v-for="(reservation, reservationId) in reservations" :key="reservationId">
     <div v-if="!isEndDateAfterToday(reservation.endTime)">
       <div class="card card-body">
         <span>
@@ -13,8 +9,9 @@
         </span>
         <span> 訂房Id: {{ reservation.reservationId }} </span>
         <span> 房間Id: {{ reservation.room.roomId }} </span>
-        <span> DogId: {{ reservation.dog.dogId }} </span>
-        <span> DogName: {{ reservation.dog.dogName }} </span>
+        {{ reservation.dog }}
+        <!-- <span> DogId: {{ reservation.dog.dogId }} </span>
+        <span> DogName: {{ reservation.dog.dogName }} </span> -->
         <!-- <button>投訴</button> -->
       </div>
     </div>
@@ -28,6 +25,7 @@ const reservations = ref([]);
 
 onMounted(() => {
   axios.get("http://localhost:8080/employee/room").then((response) => {
+    console.log(response.data)
     reservations.value = response.data;
   });
 });

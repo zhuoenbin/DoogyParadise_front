@@ -33,8 +33,6 @@ export default {
         <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" />
     </div>
 
-    <!-- <button id="loadMoreBtn" @click="loadMoreTweets">Load More</button> -->
-
 </template>
 
 <script>
