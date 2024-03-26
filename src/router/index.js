@@ -9,7 +9,6 @@ const router = createRouter({
     },
     {
       path: "/login",
-      name: "login",
       component: () => import("@/views/account/LoginPage.vue"),
     },
     {
@@ -17,14 +16,9 @@ const router = createRouter({
       component: () => import("@/views/account/Register.vue"),
     },
     {
-      path: "/forgetPassword",
-      component: () => import("@/views/account/ForgetPassword.vue"),
-    },
-    {
       path: "/profile",
       component: () => import("@/views/member/MemberProfile.vue"),
     },
-    
     {
       path: "/tweetPage",
       component: () => import("@/views/tweet/TweetMainPage.vue"),
@@ -47,14 +41,17 @@ const router = createRouter({
       children: [
         {
           path: "b_page",
+          name: "b_page",
           component: () => import("@/views/room/Booking.vue")
         },
         {
           path: "o_page",
+          name: "o_page",
           component: () => import("@/views/room/Order.vue")
         },
         {
           path: "h_page",
+          name: "h_page",
           component: () => import("@/views/room/History.vue")
         }
       ]

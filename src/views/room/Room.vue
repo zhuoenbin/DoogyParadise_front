@@ -11,12 +11,12 @@
             訂房
           </button></router-link
         >
-        <router-link to="/room/h_page"
+        <router-link to="/room/o_page"
           ><button class="sidebar-button custom-router-link">
             預約訂房管理
           </button></router-link
         >
-        <router-link to="/room/o_page"
+        <router-link to="/room/h_page"
           ><button class="sidebar-button custom-router-link">
             歷史訂房紀錄
           </button></router-link
