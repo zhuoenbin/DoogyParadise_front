@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <header class="p-3 text-bg-dark mb-3">
     <div class="container">
       <div
@@ -36,15 +37,46 @@
             <router-link to="" class="nav-link px-2 text-white"
               >寵物旅館</router-link
             >
+=======
+  <header class="p-3 text-bg-dark">
+    <div class="container">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+          <li>
+            <router-link to="/" class="nav-link px-2 text-secondary">首頁</router-link>
+          </li>
+          <li>
+            <router-link to="/shop" class="nav-link px-2 text-white">商城</router-link>
+          </li>
+          <li>
+            <router-link to="/cart" class="nav-link px-2 text-white">購物車</router-link>
+          </li>
+          <li>
+            <router-link to="" class="nav-link px-2 text-white">論壇</router-link>
+          </li>
+          <li>
+            <router-link to="/activity" class="nav-link px-2 text-white">寵活動</router-link>
+            <router-link to="/tweetPage/tweetsWallPage" class="nav-link px-2 text-white">動態牆</router-link>
+          </li>
+          <li>
+            <router-link to="/room/b_page" class="nav-link px-2 text-white">寵物旅館</router-link>
+          </li>
+          <li>
+            <router-link to="/employee" class="nav-link px-2 text-white">員工後臺</router-link>
+>>>>>>> 30e20ec073cbc792d626df67f2c081adf8dc61ba
           </li>
         </ul>
 
         <div class="text-end">
+<<<<<<< HEAD
           <router-link
             v-if="!isloggedIn"
             to="/login"
             class="text-decoration-none"
           >
+=======
+          <router-link v-if="!isloggedIn" to="/login" class="text-decoration-none">
+>>>>>>> 30e20ec073cbc792d626df67f2c081adf8dc61ba
             <button type="button" class="btn btn-outline-light me-2">
               登入
             </button>
@@ -54,8 +86,12 @@
             <router-link to="/profile" class="text-decoration-none">
               <button type="button" class="btn btn-warning">
                 {{ name }}
+<<<<<<< HEAD
               </button></router-link
             >
+=======
+              </button></router-link>
+>>>>>>> 30e20ec073cbc792d626df67f2c081adf8dc61ba
             <img :src="photo" width="8%" class="mx-2" />
 
             <button @click="logout" type="button" class="btn btn-outline-light">
@@ -104,4 +140,12 @@ export default {
   },
 };
 </script>
+<<<<<<< HEAD
 <style></style>
+=======
+<style scoped>
+* {
+  margin: 0;
+}
+</style>
+>>>>>>> 30e20ec073cbc792d626df67f2c081adf8dc61ba
