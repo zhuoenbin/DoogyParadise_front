@@ -74,6 +74,71 @@
         </div>
       </div>
     </div>
+    <!-- <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 text-center">
+      <tr class="b-list__row">
+        <td class="b-list__summary">
+          <a name="{{a.articleId}}"></a>
+          <p class="b-list__summary__sort">
+            <a>{{}}</a>
+          </p>
+          <span class="b-list__summary__gp b-gp b-gp--best">2728</span>
+          <div
+            title="精華"
+            class="b-list__summary__mark b-mark b-mark--feature"
+          >
+            <i class="material-icons feature"></i>
+          </div>
+        </td>
+        <td class="b-list__main">
+          <a
+            data-gtm="B頁文章列表-清單"
+            href="C.php?bsn=23805&amp;snA=610529&amp;tnum=19796"
+            class="b-list__main__title"
+            >【討論】神魔問答室 ಠ_ಠ</a
+          ><span class="b-list__main__pages"
+            ><a
+              data-gtm="B頁文章列表-清單"
+              href="C.php?bsn=23805&amp;snA=610529&amp;tnum=19796&amp;page=988"
+              >988</a
+            ><a
+              data-gtm="B頁文章列表-清單"
+              href="C.php?bsn=23805&amp;snA=610529&amp;tnum=19796&amp;page=989"
+              >989</a
+            ><a
+              data-gtm="B頁文章列表-清單"
+              href="C.php?bsn=23805&amp;snA=610529&amp;tnum=19796&amp;page=990"
+              >990</a
+            ></span
+          >
+        </td>
+        <td class="b-list__count">
+          <p class="b-list__count__number">
+            <span title="互動：20,147">20147</span>/
+            <span title="人氣：5,776,749">5776749</span>
+          </p>
+          <p class="b-list__count__user">
+            <a href="https://home.gamer.com.tw/Sheep1219" target="_blank"
+              >Sheep1219</a
+            >
+          </p>
+        </td>
+        <td class="b-list__time">
+          <p class="b-list__time__edittime">
+            <a
+              data-gtm="B頁文章列表-清單"
+              title="觀看最新回覆文章"
+              href="C.php?bsn=23805&amp;snA=610529&amp;tnum=19796&amp;last=1"
+              >1 小時前</a
+            >
+          </p>
+          <p class="b-list__time__user">
+            <a href="https://home.gamer.com.tw/king22332233" target="_blank"
+              >king22332233</a
+            >
+          </p>
+        </td>
+      </tr>
+    </div> -->
   </main>
 </template>
 <script>
@@ -99,6 +164,7 @@ export default {
       axios.get(`${this.API_URL}/forum/${this.currentPage}`).then((re) => {
         this.totalPage = re.data.totalPages;
         this.articles = re.data.content;
+        console.log(re.data);
       });
     },
     loadCategory() {
@@ -108,10 +174,11 @@ export default {
     },
   },
   mounted() {
-    axios.get(`${this.API_URL}/forum/${this.currentPage}`).then((re) => {
+    axios.get(`${this.API_URL}/forum/0`).then((re) => {
       this.currentPage = re.data.number;
       this.totalPage = re.data.totalPages;
       this.articles = re.data.content;
+      console.log(re.data);
     });
   },
   computed: {

@@ -98,7 +98,7 @@ const router = createRouter({
       ],
     },
     {
-      path: "/forum/:id",
+      path: "/forum",
       component: () => import("@/views/forum/Forum.vue"),
     },
     {

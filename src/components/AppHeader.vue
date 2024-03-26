@@ -23,7 +23,7 @@
             >
           </li>
           <li>
-            <router-link to="/forum/1" class="nav-link px-2 text-white"
+            <router-link to="/forum" class="nav-link px-2 text-white"
               >論壇</router-link
             >
           </li>
