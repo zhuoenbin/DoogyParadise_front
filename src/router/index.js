@@ -95,6 +95,10 @@ const router = createRouter({
           path: "r_page",
           component: () => import("@/views/employee/RoomReservation.vue"),
         },
+        {
+          path: "pm_page",
+          component: () => import("@/views/employee/ProductManage.vue"),
+        },
       ],
     },
     {

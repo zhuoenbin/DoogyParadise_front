@@ -5,6 +5,7 @@ import App from "./App.vue";
 import router from "./router";
 import axios from "axios";
 import { useMemberStore } from "./stores/memberStore";
+import { useemployeeStore } from "./stores/employeeStore";
 // 日期選擇器
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
@@ -24,6 +25,13 @@ axios.get(`${API_URL}/check`).then((re) => {
   if (re.data) {
     const loginMember = JSON.parse(sessionStorage.getItem("loggedInMenber"));
     useMemberStore().loginSuccess(loginMember);
+  }
+});
+
+axios.get(`${API_URL}/check`).then((re) => {
+  if (re.data) {
+    const loginemployee = JSON.parse(sessionStorage.getItem("loginInEmployee"));
+    useemployeeStore().loginSuccess(loginemployee);
   }
 });
 

@@ -174,7 +174,7 @@ export default {
     },
   },
   mounted() {
-    axios.get(`${this.API_URL}/forum/0`).then((re) => {
+    axios.get(`${this.API_URL}/forum/${this.currentPage}`).then((re) => {
       this.currentPage = re.data.number;
       this.totalPage = re.data.totalPages;
       this.articles = re.data.content;
