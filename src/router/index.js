@@ -18,6 +18,15 @@ const router = createRouter({
     {
       path: "/profile",
       component: () => import("@/views/member/MemberProfile.vue"),
+      children:[
+        {
+          path:"detail",
+          component:()=>import("@/views/member/MemberDetail.vue")
+        },{
+          path:"mydog",
+          component:()=>import("@/views/member/MemberDog.vue")
+        },
+      ]
     },
     {
       path: "/tweetPage",
