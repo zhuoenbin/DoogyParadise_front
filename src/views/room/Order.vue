@@ -58,9 +58,11 @@ const router = useRouter();
 const reservations = ref([]);
 
 onMounted(() => {
-  axios.get("http://localhost:8080/employee/room").then((response) => {
-    reservations.value = response.data;
-  });
+  axios
+    .get("http://localhost:8080/room/allRoomReservationByUser")
+    .then((response) => {
+      reservations.value = response.data;
+    });
 });
 
 const formatDate = (dateString) => {

@@ -38,21 +38,22 @@ const router = createRouter({
     {
       path: "/room",
       component: () => import("@/views/room/Room.vue"),
-      children: [
+      children:[
         {
-          path: "b_page",
-          name: "b_page",
-          component: () => import("@/views/room/Booking.vue")
-        },
-        {
-          path: "o_page",
-          name: "o_page",
-          component: () => import("@/views/room/Order.vue")
-        },
-        {
-          path: "h_page",
-          name: "h_page",
-          component: () => import("@/views/room/History.vue")
+          path:"b_page",
+          component:()=>import("@/views/room/Booking.vue")
+        },{
+          path:"o_page",
+          name:"o_page",
+          component:()=>import("@/views/room/Order.vue")
+        },{
+          path:"h_page",
+          name:"h_page",
+          component:()=>import("@/views/room/History.vue")
+        },{
+          path:"u_page/:reservationId/:str",
+          name:"u_page",
+          component:()=>import("@/views/room/UpdateFrom.vue")
         }
       ]
     },

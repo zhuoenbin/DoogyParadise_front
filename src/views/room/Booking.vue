@@ -2,9 +2,9 @@
   <div id="app">
     <div class="main">
       <h2>訂房</h2>
-      <div class="top flex">
+      <div class="top flex" v-if="dogs.length != 0">
         <span>請選擇要住宿的寵物:</span>
-        <select v-model="selectedDog" @change="RoomsDate" class="select-dog">
+        <select v-model="selectedDog" @change="RoomsDate()" class="select-dog">
           <option v-for="(dog, dogId) in dogs" :key="dogId" :value="dog">
             {{ dog.dogName }}
           </option>
@@ -18,34 +18,108 @@
           :options="datepickerOptions"
           :enable-time-picker="false"
           :min-date="new Date()"
+          @blur="RoomsDate($event)"
         />
       </div>
-      <div
-        class="room-container"
-        v-for="(room, roomId) in filteredRooms"
-        :key="roomId"
-      >
-        <div class="card" style="width: 30rem">
-          <img src="/not_found.jpg" class="card-img-top" alt="..." />
-          <!-- {{ room.roomImgPath }} -->
-          <div class="card-body">
-            <h5 class="card-title">房間Id: {{ room.roomId }}</h5>
-            <p class="card-text">
-              房間名稱: {{ room.roomName }} <br />房間適用於:
-              {{ roomSizeText(room.roomSize) }}<br />房間價格(一天):
-              {{ room.roomPrice }}<br />
-            </p>
-            <a
-              @click="bookRoom(room)"
-              class="btn btn-primary"
+      <span v-for="(room, roomId) in filteredRooms" :key="roomId">
+        <div
+          class="room-container"
+          v-if="!noVacancies.includes(`${room.roomId}`)"
+        >
+          <div class="card" style="width: 30rem">
+            <img
+              src="/not_found.jpg"
+              class="card-img-top"
+              alt="..."
               data-bs-toggle="modal"
-              data-bs-target="#exampleModal"
-              >訂房</a
+              :data-bs-target="'#exampleModal_' + room.roomId"
+            />
+            <!-- {{ room.roomImgPath }} -->
+            <div class="card-body">
+              <h5 class="card-title">房間名稱: {{ room.roomName }}</h5>
+              <p class="card-text">
+                房間適用於:
+                {{ roomSizeText(room.roomSize) }}<br />房間價格(一天):
+                {{ room.roomPrice }}<br />
+              </p>
+              <a
+                @click="bookRoom(room)"
+                class="btn btn-primary"
+                v-if="dogs.length != 0"
+                >訂房</a
+              >
+            </div>
+            <!-- Modal -->
+            <div
+              class="modal fade"
+              :id="'exampleModal_' + room.roomId"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
             >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                      房間名稱: {{ room.roomName }}
+                    </h5>
+                    <!-- <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button> -->
+                  </div>
+                  <div class="modal-body">
+                    <img src="/not_found.jpg" />
+                    <br />
+                    <span>房間適用於: {{ roomSizeText(room.roomSize) }}</span>
+                    <hr />
+                    <span>房間說明:</span>
+                    <br />
+                    <div style="white-space: pre-wrap">
+                      {{ room.roomIntroduction }}
+                    </div>
+                    <hr />
+                    房間評價:
+                    <div
+                      v-for="(
+                        roomReservation, roomReservationId
+                      ) in roomReservations"
+                      :key="roomReservationId"
+                    >
+                      <!-- {{ roomReservation.dog }} -->
+                      <div
+                        v-if="
+                          roomReservation.room.roomId == room.roomId &&
+                          roomReservation.star != null
+                        "
+                      >
+                        <hr />
+                        訂房明細Id: {{ roomReservation.reservationId }}
+                        <br />
+                        評分星數: {{ roomReservation.star }}
+                        <br />
+                        評分說明: {{ roomReservation.conments }}
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                  </div> -->
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <br />
-      </div>
+      </span>
     </div>
   </div>
 </template>
@@ -54,9 +128,12 @@
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import VueDatePicker from "@vuepic/vue-datepicker";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const rooms = ref([]);
 const dogs = ref([]);
+const roomReservations = ref([]);
 const reservations = ref([]);
 const selectedDog = ref(null);
 const selectedDates = ref([]); // 用於存儲所選日期的範圍
@@ -71,7 +148,17 @@ onMounted(() => {
   axios.get("http://localhost:8080/room/reservation").then((response) => {
     reservations.value = response.data;
   });
+  // 所有訂單
+  axios
+    .get("http://localhost:8080/room/allRoomReservation")
+    .then((response) => {
+      roomReservations.value = response.data;
+    });
 });
+
+// roomReservations.forEach((roomReservation) => {
+//   console.log(roomReservation.startTime);
+// });
 
 // 判斷那幾間房型符合 dog 的體型
 const filteredRooms = computed(() => {
@@ -171,7 +258,7 @@ const calculateDateRange = (startDate, endDate) => {
 
 // 點擊訂房
 const bookRoom = (room) => {
-  console.log(selectedDog.value);
+  // console.log(selectedDog.value);
   if (selectedDog.value && selectedDates.value.length > 0) {
     const formattedDates = selectedDates.value.map((date) => {
       const d = new Date(date);
@@ -182,7 +269,7 @@ const bookRoom = (room) => {
     });
 
     const dateRange = calculateDateRange(formattedDates[0], formattedDates[1]);
-    console.log(`訂房日期範圍: ${dateRange}`); // 訂房日期範圍
+    // console.log(`訂房日期範圍: ${dateRange}`); // 訂房日期範圍
 
     let conflict = false;
     let arr = [];
@@ -203,7 +290,7 @@ const bookRoom = (room) => {
     }
 
     // 新增訂房明細
-    const GOregister = () => {
+    const roomReservation = () => {
       axios.post(
         `http://localhost:8080/room/roomReservation?roomId=${room.roomId}&dogId=${selectedDog.value.dogId}`,
         {
@@ -225,7 +312,11 @@ const bookRoom = (room) => {
           room.roomId
         }, 訂房時間 ${formattedDates.join(" - ")}`
       );
-      GOregister();
+      roomReservation();
+      // 成功的話頁面跳轉到 o_page 並重新加載
+      router.push({ name: "o_page" }).then(() => {
+        window.location.reload();
+      });
     } else if (formattedDates[1] == "1970-01-01") {
       alert("請選擇結束時間");
     } else {
@@ -236,16 +327,51 @@ const bookRoom = (room) => {
   }
 };
 
-// 預訂房間的日期
-// const RoomsDate = () => {
-//   filteredRooms.value.forEach((room) => {
-//     reservations.value.forEach((reservation) => {
-//       // if (reservation[0] == room.roomId) {
-//       //   console.log(reservation);
-//       // }
-//     });
-//   });
-// };
+let noVacancies = [];
+
+// 判斷哪些房間不能選取
+const RoomsDate = () => {
+  // console.log(selectedDates.value[0]);
+
+  // 原始的 RoomsDate 邏輯
+  let arr = calculateDateRange(selectedDates.value[0], selectedDates.value[1]);
+
+  // 清空 noVacancies 陣列
+  noVacancies = [];
+
+  arr.forEach((arr) => {
+    // 所有 Room
+    roomReservations.value.forEach((roomReservation) => {
+      filteredRooms.value.forEach((room) => {
+        // 所有訂房明細的 roomId 和訂房時間 List
+        reservations.value.forEach((reservation) => {
+          // 當訂房明細的 roomId 和 room.roomId 相同時
+          if (reservation[0] == room.roomId) {
+            // 訂房時間
+            // console.log(reservation);
+            for (let i = 0; i < reservation.length; i++) {
+              if (
+                reservation[i] == arr &&
+                roomReservation.reservationId == reservation[1] &&
+                roomReservation.cancelTime == null
+              ) {
+                console.log(reservation[1]);
+                console.log(`RoomId: ${reservation[0]}`);
+                console.log(`重複日期: ${reservation[i]}`);
+                noVacancies.push(reservation[0]);
+              }
+            }
+          }
+        });
+      });
+    });
+  });
+
+  // 刪除 noVacancies 陣列中的重複值
+  noVacancies = [...new Set(noVacancies)];
+  // console.log(noVacancies);
+  // console.log(noVacancies.includes("2"));
+};
 </script>
 
 <style scoped>
@@ -255,6 +381,7 @@ const bookRoom = (room) => {
 
 .main {
   min-height: 82vh;
+  margin-bottom: 2rem;
 }
 
 .top span {
@@ -318,5 +445,10 @@ select {
   height: auto;
   border-radius: 4px;
   border: 1px solid black;
+}
+
+.modal-header,
+.modal-body {
+  color: #000;
 }
 </style>

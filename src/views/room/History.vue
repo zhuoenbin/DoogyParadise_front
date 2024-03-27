@@ -13,23 +13,33 @@
         </span>
         <span> 訂房Id: {{ reservation.reservationId }} </span>
         <span> 房間Id: {{ reservation.room.roomId }} </span>
-        <span> DogId: {{ reservation.dog.dogId }} </span>
+        <!-- <span> DogId: {{ reservation.dog.dogId }} </span> -->
         <span> DogName: {{ reservation.dog.dogName }} </span>
-        <!-- <button>投訴</button> -->
+        <br />
+        <button
+          class="btn btn-primary"
+          @click="handleModifyReservation(reservation.reservationId, 'score')"
+        >
+          評分
+        </button>
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import axios from "axios";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const reservations = ref([]);
 
 onMounted(() => {
-  axios.get("http://localhost:8080/employee/room").then((response) => {
-    reservations.value = response.data;
-  });
+  axios
+    .get("http://localhost:8080/room/allRoomReservationByUser")
+    .then((response) => {
+      reservations.value = response.data;
+    });
 });
 
 const formatDate = (dateString) => {
@@ -45,6 +55,13 @@ const isEndDateAfterToday = (endDate) => {
   const today = new Date();
   const end = new Date(endDate);
   return end > today;
+};
+
+const handleModifyReservation = (reservationId, str) => {
+  router.push({
+    name: "u_page",
+    params: { reservationId: reservationId, str: str },
+  });
 };
 </script>
 <style scoped>

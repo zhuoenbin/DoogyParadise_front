@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h2>預約訂房管理</h2>
+    <h2 v-if="str === 'update'">修改預約時段</h2>
+    <h2 v-if="str === 'cancel'">取消訂房</h2>
+    <h2 v-if="str === 'score'">評分</h2>
     <div class="mb-3 row">
-      <span>訂房Id: {{ reservation.reservationId }}</span>
+      <!-- <span>訂房Id: {{ reservation.reservationId }}</span> -->
       <span>
         訂房時段: {{ formatDate(reservation.startTime) }} -
         {{ formatDate(reservation.endTime) }}
@@ -39,13 +41,32 @@
       <option>選錯房間</option>
       <option>行程取消</option>
       <option>找到其他家更便宜的旅館</option>
+      <option>其他原因</option>
     </select>
-    <button class="btn btn-primary" @click="cancel()">取消訂單</button>
+    <input value="請說明原因" v-if="direction == '其他原因'" />
+    <br />
+    <button class="btn btn-primary" @click="cancel(direction)">取消訂單</button>
+  </div>
+
+  <div v-if="str === 'score'" class="star-rating">
+    <span
+      v-for="rating in maxRating"
+      :key="rating"
+      class="star"
+      @click="rate(rating)"
+      @mouseover="hover(rating)"
+    >
+      {{ rating <= currentRating ? "★" : "☆" }}
+    </span>
+    <br />
+    <textarea v-model="comments"></textarea>
+    <br />
+    <button class="btn btn-primary" @click="score(comments)">送出評分</button>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, defineProps, defineEmits } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
@@ -61,6 +82,8 @@ const reservation = ref([]);
 const reservations = ref([]);
 // 取消原因
 const direction = ref(null);
+// 評分說明
+const comments = ref(""); // 修改了变量名和添加了初始值
 
 onMounted(() => {
   axios
@@ -74,7 +97,6 @@ onMounted(() => {
     reservations.value = response.data;
   });
 });
-console.log(reservation);
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -170,7 +192,7 @@ const bookRoom = (room) => {
     }
   }
 
-  // 修改訂房明細1111
+  // 修改訂房明細
   const GOregister = () => {
     axios.post(
       `http://localhost:8080/room/updateRoom?roomReservationId=${reservationId}`,
@@ -192,9 +214,9 @@ const bookRoom = (room) => {
       )}`
     );
     GOregister();
-    // 成功的話頁面跳轉到 o_page
-    router.push({
-      name: "o_page",
+    // 成功的話頁面跳轉到 o_page 並重新加載
+    router.push({ name: "o_page" }).then(() => {
+      window.location.reload();
     });
   } else if (formattedDates.length == 0) {
     alert("請選擇時間");
@@ -221,13 +243,69 @@ const calculateDateRange = (startDate, endDate) => {
 };
 
 // 取消訂單
-const cancel = () => {
-  axios.post(
-    `http://localhost:8080/room/cancel?roomReservationId=${reservationId}&cancelDirection=${direction.value}`
-  );
-  router.push({
-    name: "o_page",
-  });
+const cancel = (direction) => {
+  if (direction != null) {
+    axios.post(
+      `http://localhost:8080/room/cancel?roomReservationId=${reservationId}`,
+      { cancelDirection: direction }
+    );
+    // 成功的話頁面跳轉到 o_page 並重新加載
+    router.push({ name: "o_page" }).then(() => {
+      window.location.reload();
+    });
+  } else {
+    alert("請選擇取消原因");
+  }
+};
+
+// 評分
+// Props
+const props = defineProps({
+  value: {
+    type: Number,
+    default: 0,
+  },
+  maxRating: {
+    type: Number,
+    default: 5,
+  },
+});
+
+// 使用 defineEmits 创建 emit 函数
+const emit = defineEmits();
+
+// State
+const currentRating = ref(props.value);
+
+// Methods
+const rate = (rating) => {
+  currentRating.value = rating;
+  emit("update:value", rating); // 使用 emit 函数
+  console.log(`星星數: ${currentRating.value}`);
+};
+
+const hover = (rating) => {
+  currentRating.value = rating;
+  console.log(`星星數: ${currentRating.value}`);
+};
+
+const score = (comments) => {
+  if (currentRating.value != 0) {
+    axios.post(
+      `http://localhost:8080/room/score?roomReservationId=${reservationId}`,
+      {
+        star: currentRating.value,
+        conments: comments,
+        conmentsTime: new Date(),
+      }
+    );
+    // 成功的話頁面跳轉到 h_page 並重新加載
+    router.push({ name: "h_page" }).then(() => {
+      window.location.reload();
+    });
+  } else {
+    alert("請給星");
+  }
 };
 </script>
 
@@ -254,5 +332,12 @@ button {
 select {
   width: 24%;
   margin-right: 1rem;
+}
+
+/* 評分 */
+.star {
+  font-size: 24px;
+  cursor: pointer;
+  color: gold;
 }
 </style>
