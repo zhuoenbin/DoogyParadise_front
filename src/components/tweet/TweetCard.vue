@@ -1,24 +1,36 @@
 <template>
     <div class="tweet-item">
-        <div v-if="tweet.preNode != 0">此則為留言</div>
-        <div>tweetID: {{ tweet.tweetId }}</div>
-        <div>發文時間 : {{ tweet.postDate }}</div>
-        <div @click="goOthersPage(tweet.userName, tweet.tweetId)">tweetName: {{ tweet.userName }}</div>
+        <div v-if="tweet.preNode != 0" @click="goPreNodeTweetPage" class="reply-message">此則為回覆{{ preNodeUserName }}的留言
+        </div>
+        <!-- <div class="tweet-id">Tweet ID: {{ tweet.tweetId }}</div> -->
 
-        <div>tweetContent: {{ tweet.tweetContent }}</div>
 
-        <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0">
+        <h4 @click="goOthersPage(tweet.userName, tweet.tweetId)" class="tweet-name like-count">{{ tweet.userName }} :
+        </h4>
+
+        <div class="content-wrapper">
+            <div class="tweet-content">{{ tweet.tweetContent }}</div>
+        </div>
+
+        <br>
+        <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0" class="tweet-galleries">
             <!-- <div>Tweet Galleries:</div> -->
-            <div v-for="(gallery, index) in tweet.tweetGalleries" :key="index">
+            <div v-for="(gallery, index) in tweet.tweetGalleries" :key="index" class="gallery-item">
                 <img :src="getImageUrl(gallery.imgPath)" alt="Gallery Image" class="gallery-image">
             </div>
         </div>
 
-
+        <br>
         <!-- 讚功能 -->
-        <div v-if="this.tweetLikeNum != 0" @click="showLikeList">
+        <span v-if="tweetLikeNum !== 0" @click="showLikeList" class="like-count">
             {{ tweetLikeNum }} 個讚
-        </div>
+        </span>
+        <span> <!-- 按讚按钮 -->
+            <button v-if="!this.liked" @click="likeTweet" class="btn btn-primary">按讚</button>
+            <button v-else @click="unlikeTweet" class="btn btn-secondary">取消讚</button>
+            發文時間: {{ formatPostDate(tweet.postDate) }}</span>
+
+        <hr>
 
         <!--按讚名單的彈出式視窗 -->
         <div ref="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -42,19 +54,18 @@
         </div>
 
 
-        <!-- 按讚按钮 -->
-        <div>
-            <button v-if="!this.liked" @click="likeTweet">按讚</button>
-            <button v-else @click="unlikeTweet">取消讚</button>
-        </div>
+
         <!-- 顯示留言數 -->
-        <div v-if="this.numOfComment > 0">
-            <button @click="getCommentsLink(tweet.tweetId)">有{{ this.numOfComment }}則留言</button>
-        </div>
+        <span v-if="this.numOfComment > 0" class="comment-count" style="margin-right: 10px;">
+            <button @click="getCommentsLink(tweet.tweetId)" class="btn btn-info">有{{ this.numOfComment }}則留言</button>
+        </span>
+        <span>
+            <!-- 回覆推文的文字框 -->
+            <button @click="showReply" class="btn btn-success">回覆</button>
+        </span>
 
 
-        <!-- 回覆推文的文字框 -->
-        <button @click="showReply">回覆</button>
+
         <!--回覆推文的彈出式視窗 -->
         <div ref="myReplyModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <!-- Modal content -->
@@ -65,7 +76,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <textarea v-model="replyContent" placeholder="在此輸入回覆內容"></textarea>
+                        <textarea v-model="replyContent" placeholder="在此輸入回覆內容" rows="5" cols="50"></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
@@ -77,10 +88,11 @@
         </div>
 
         <!-- 子留言，內容 -->
-        <div v-if="showComments">
+        <div v-if="showComments" class="comment-section">
 
-            <div v-for="comment in tweetComments" :key="comment.id">{{ comment.userName
-                }}的留言: {{ comment.tweetContent }}</div>
+            <div v-for="comment in tweetComments" :key="comment.id" class="comment-item">{{ comment.userName
+                }} : {{ comment.tweetContent }}</div>
+            <div>{{ currentReply }}</div>
         </div>
     </div>
 
@@ -105,6 +117,9 @@ export default {
             userId: useMemberStore().memberId,
             userLikeList: [],
             replyContent: '',
+            currentReply: '',//當下留言立即出現
+            preNodeUserName: '',//如果是回文的話，主文的推主是誰
+
         }
     },
     props: {
@@ -113,7 +128,7 @@ export default {
             required: true
         }
     },
-    mounted() {
+    created() {
         axios.get(`${this.API_URL}/tweet/getNumOfComment/${this.tweet.tweetId}`)
             .then(response => {
                 this.numOfComment = response.data;
@@ -134,18 +149,28 @@ export default {
                 this.liked = true
             }
         })
+    },
+    mounted() {
 
-
+        if (this.tweet.preNode != 0) {
+            axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.preNode}`).then(re => {
+                this.preNodeUserName = re.data.lastName
+            })
+        }
+    },
+    filters: {
+        formatDate(date) {
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+            return new Date(date).toLocaleDateString('zh-TW', options);
+        }
     },
     methods: {
         getImageUrl(imgPath) {
             return `${this.API_URL}/tweet/getImage/${imgPath}`;
         },
-        getCommentsLink(tweetId) {
+        getCommentsLink() {
             if (this.showComments == false) {
                 this.tweetComments = [];
-
-                console.log(tweetId)
                 axios.get(`${this.API_URL}/tweet/getComments/${this.tweet.tweetId}`)
                     .then(response => {
                         this.tweetComments = response.data
@@ -153,11 +178,9 @@ export default {
                     .catch(error => {
                         console.error('Error fetching number of comments:', error);
                     });
-
-
-
                 this.showComments = !this.showComments
             } else {
+                this.currentReply = "";
                 this.showComments = !this.showComments
             }
         },
@@ -226,6 +249,10 @@ export default {
             myReplyModal.show()
         },
         postReply() {
+            if (!this.replyContent.trim()) {
+                return;
+            }
+            this.RepolyErrorMsg = '';
             const memberStore = useMemberStore();
 
             const formData = new FormData();
@@ -240,21 +267,50 @@ export default {
                 .then(response => {
                     console.log("回文成功:", response.data);
                     // 清空推文内容
+                    this.currentReply = memberStore.memberName + " : " + this.replyContent;
                     this.replyContent = "";
                     this.numOfComment += 1;
-                    // this.$router.go(0)
+                    if (this.showComments == false) {
+                        this.currentReply = "";
+                    }
                 })
                 .catch(error => {
                     console.error("發文失败:", error);
                 })
+        },
+        goPreNodeTweetPage() {
+            const tweetStore = useTweetStore();
+            tweetStore.clearMsg();
 
+            console.log(this.tweet.preNode)
+            axios.get(`${this.API_URL}/tweet/getTweetById/${this.tweet.preNode}`).then(re => {
+                console.log("getTweetById" + re.data.tweetId)
+
+                tweetStore.setUserName(this.preNodeUserName)
+
+
+                tweetStore.writeIn(re.data)
+
+                this.$router.push("/tweetPage/tweetsSingleTweetPage")
+
+            })
+
+        }, formatPostDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1; // 月份从0开始，需要加1
+            const day = date.getDate();
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+
+            // 使用模板字符串拼接日期和时间
+            return `${year}年${month}月${day}號 ${hours}點${minutes}分`;
         }
     }
-
 };
 </script>
 
-<style scoped>
+<!-- <style scoped>
 .tweet-item {
     margin-bottom: 10px;
     padding: 10px;
@@ -269,5 +325,86 @@ export default {
 .gallery-image {
     max-width: 100%;
     max-height: 100%;
+}
+</style> -->
+<style scoped>
+.tweet-item {
+    max-width: 500px;
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+.reply-message {
+    cursor: pointer;
+    font-weight: bold;
+    color: blue;
+    margin-bottom: 10px;
+}
+
+.tweet-id,
+.post-date,
+.tweet-name,
+.tweet-content {
+    margin-bottom: 10px;
+}
+
+.tweet-galleries {
+    margin-bottom: 10px;
+}
+
+.gallery-item {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.gallery-image {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+.like-count {
+    cursor: pointer;
+    padding: 5px;
+}
+
+.hovered {
+    background-color: #aa2929;
+    /* 浅灰色背景 */
+}
+
+.comment-section {
+    margin-top: 10px;
+}
+
+.comment-item {
+    margin-bottom: 5px;
+}
+
+.comment-username {
+    font-weight: bold;
+}
+
+.comment-content {
+    margin-left: 5px;
+}
+
+.current-reply {
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.content-wrapper {
+    border: 1px solid #ccc;
+    /* 边框样式 */
+    border-radius: 5px;
+    /* 边框圆角 */
+    background-color: #f9f9f9;
+    /* 背景颜色 */
+    padding: 10px;
+    /* 内边距 */
 }
 </style>

@@ -1,10 +1,12 @@
 <template>
-    <h3>我的推文</h3>
+
     <div class="tweet-container">
+        <h3>我的主頁</h3>
         <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" />
     </div>
 </template>
 <script>
+
 import axios from 'axios';
 import TweetItem from '@/components/tweet/TweetCard.vue';
 import { useMemberStore } from '@/stores/memberStore';

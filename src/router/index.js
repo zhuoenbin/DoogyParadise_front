@@ -9,7 +9,6 @@ const router = createRouter({
     },
     {
       path: "/login",
-      name: "login",
       component: () => import("@/views/account/LoginPage.vue"),
     },
     {
@@ -17,14 +16,19 @@ const router = createRouter({
       component: () => import("@/views/account/Register.vue"),
     },
     {
-      path: "/forgetPassword",
-      component: () => import("@/views/account/ForgetPassword.vue"),
-    },
-    {
       path: "/profile",
       component: () => import("@/views/member/MemberProfile.vue"),
+      children: [
+        {
+          path: "detail",
+          component: () => import("@/views/member/MemberDetail.vue"),
+        },
+        {
+          path: "mydog",
+          component: () => import("@/views/member/MemberDog.vue"),
+        },
+      ],
     },
-
     {
       path: "/tweetPage",
       component: () => import("@/views/tweet/TweetMainPage.vue"),
@@ -41,6 +45,14 @@ const router = createRouter({
           path: "tweetsOthersWallPage",
           component: () => import("@/views/tweet/TweetOthersWall.vue"),
         },
+        {
+          path: "tweetsSingleTweetPage",
+          component: () => import("@/views/tweet/TweetSingleTweetPage.vue"),
+        },
+        {
+          path: "tweetsMyFollowPage",
+          component: () => import("@/views/tweet/TweetFollowPage.vue"),
+        },
       ],
     },
     {
@@ -49,14 +61,17 @@ const router = createRouter({
       children: [
         {
           path: "b_page",
+          name: "b_page",
           component: () => import("@/views/room/Booking.vue"),
         },
         {
           path: "o_page",
+          name: "o_page",
           component: () => import("@/views/room/Order.vue"),
         },
         {
           path: "h_page",
+          name: "h_page",
           component: () => import("@/views/room/History.vue"),
         },
       ],

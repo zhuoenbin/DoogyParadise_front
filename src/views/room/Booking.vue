@@ -65,7 +65,7 @@ onMounted(() => {
   axios.get("http://localhost:8080/room").then((response) => {
     rooms.value = response.data;
   });
-  axios.get("http://localhost:8080/dog").then((response) => {
+  axios.get("http://localhost:8080/room/dog").then((response) => {
     dogs.value = response.data;
   });
   axios.get("http://localhost:8080/room/reservation").then((response) => {
@@ -205,7 +205,7 @@ const bookRoom = (room) => {
     // 新增訂房明細
     const GOregister = () => {
       axios.post(
-        `http://localhost:8080/roomReservation?roomId=${room.roomId}&dogId=${selectedDog.value.dogId}`,
+        `http://localhost:8080/room/roomReservation?roomId=${room.roomId}&dogId=${selectedDog.value.dogId}`,
         {
           dogId: selectedDog.value.dogId,
           startTime: formattedDates[0],

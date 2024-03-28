@@ -1,11 +1,7 @@
 <template>
-  <h2>預約訂房管理</h2>
-  <div
-    class="room-container"
-    v-for="(reservation, reservationId) in reservations"
-    :key="reservationId"
-  >
-    <div v-if="isEndDateAfterToday(reservation.endTime)">
+  <h2>歷史訂房紀錄</h2>
+  <div class="room-container" v-for="(reservation, reservationId) in reservations" :key="reservationId">
+    <div v-if="!isEndDateAfterToday(reservation.endTime)">
       <div class="card card-body">
         <span>
           訂房時段: {{ formatDate(reservation.startTime) }} -
@@ -13,9 +9,10 @@
         </span>
         <span> 訂房Id: {{ reservation.reservationId }} </span>
         <span> 房間Id: {{ reservation.room.roomId }} </span>
-        <span> DogId: {{ reservation.dog.dogId }} </span>
-        <span> DogName: {{ reservation.dog.dogName }} </span>
-        <button>取消預約</button>
+        {{ reservation.dog }}
+        <!-- <span> DogId: {{ reservation.dog.dogId }} </span>
+        <span> DogName: {{ reservation.dog.dogName }} </span> -->
+        <!-- <button>投訴</button> -->
       </div>
     </div>
   </div>
@@ -28,8 +25,8 @@ const reservations = ref([]);
 
 onMounted(() => {
   axios.get("http://localhost:8080/employee/room").then((response) => {
+    console.log(response.data)
     reservations.value = response.data;
-    console.log(reservations.value);
   });
 });
 
@@ -49,8 +46,11 @@ const isEndDateAfterToday = (endDate) => {
 };
 </script>
 <style scoped>
-.room-container {
+.card.card-body {
   width: 40%;
+  margin: 2rem;
+  margin-left: 0;
+  padding: 1.5rem;
 }
 
 p button {
@@ -59,10 +59,5 @@ p button {
 
 .card.card-body {
   margin-top: 2rem;
-}
-
-button {
-  width: 20%;
-  margin: 1rem 0;
 }
 </style>
