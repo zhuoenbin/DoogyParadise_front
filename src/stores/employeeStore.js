@@ -13,8 +13,8 @@ export const useemployeeStore = defineStore("employeeStore", {
 
   actions: {
     loginSuccess(employee) {
-      this.employeeId = employee.userId;
-      this.employeeName = employee.username;
+      this.employeeId = employee.employeeId;
+      this.employeeName = employee.employeeName;
       this.employeeRole = employee.role;
       this.employeePhoto = employee.photoUrl;
       this.isLoggedIn = true;
