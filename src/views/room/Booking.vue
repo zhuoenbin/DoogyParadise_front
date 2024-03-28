@@ -73,8 +73,6 @@
                   <div class="modal-body">
                     <img src="/not_found.jpg" />
                     <br />
-                    <span>房間適用於: {{ roomSizeText(room.roomSize) }}</span>
-                    <hr />
                     <span>房間說明:</span>
                     <br />
                     <div style="white-space: pre-wrap">
@@ -88,7 +86,6 @@
                       ) in roomReservations"
                       :key="roomReservationId"
                     >
-                      <!-- {{ roomReservation.dog }} -->
                       <div
                         v-if="
                           roomReservation.room.roomId == room.roomId &&
@@ -100,20 +97,16 @@
                         <br />
                         評分星數: {{ roomReservation.star }}
                         <br />
-                        評分說明: {{ roomReservation.conments }}
+                        <div class="jcsb">
+                          <span> 評分說明: {{ roomReservation.conments }} </span
+                          ><span class="gray"
+                            >評分時間:
+                            {{ formatDate(roomReservation.conmentsTime) }}</span
+                          >
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <!-- <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      data-bs-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                  </div> -->
                 </div>
               </div>
             </div>
@@ -256,6 +249,14 @@ const calculateDateRange = (startDate, endDate) => {
   return dates;
 };
 
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  return `${year}/${month}/${day}`;
+};
+
 // 點擊訂房
 const bookRoom = (room) => {
   // console.log(selectedDog.value);
@@ -271,23 +272,23 @@ const bookRoom = (room) => {
     const dateRange = calculateDateRange(formattedDates[0], formattedDates[1]);
     // console.log(`訂房日期範圍: ${dateRange}`); // 訂房日期範圍
 
-    let conflict = false;
-    let arr = [];
-    let addedDates = {}; // 使用物件來追蹤已經添加的日期
+    // let conflict = false;
+    // let arr = [];
+    // let addedDates = {}; // 使用物件來追蹤已經添加的日期
 
-    for (let i = 0; i < reservations.value.length; i++) {
-      if (room.roomId == reservations.value[i][0]) {
-        for (let date of dateRange) {
-          for (let j = 1; j < reservations.value[i].length; j++) {
-            if (date == reservations.value[i][j] && !addedDates[date]) {
-              conflict = true;
-              arr.push(date);
-              addedDates[date] = true; // 將已經添加的日期標記為 true
-            }
-          }
-        }
-      }
-    }
+    // for (let i = 0; i < reservations.value.length; i++) {
+    //   if (room.roomId == reservations.value[i][0]) {
+    //     for (let date of dateRange) {
+    //       for (let j = 1; j < reservations.value[i].length; j++) {
+    //         if (date == reservations.value[i][j] && !addedDates[date]) {
+    //           conflict = true;
+    //           arr.push(date);
+    //           addedDates[date] = true; // 將已經添加的日期標記為 true
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
     // 新增訂房明細
     const roomReservation = () => {
@@ -306,7 +307,7 @@ const bookRoom = (room) => {
         }
       );
     };
-    if (!conflict && formattedDates[1] != "1970-01-01") {
+    if (formattedDates[1] != "1970-01-01") {
       alert(
         `訂房成功！ 寵物Name: ${selectedDog.value.dogName}, 房間Id: ${
           room.roomId
@@ -319,9 +320,10 @@ const bookRoom = (room) => {
       });
     } else if (formattedDates[1] == "1970-01-01") {
       alert("請選擇結束時間");
-    } else {
-      alert(`房號: ${room.roomId} 在 ${arr} 已被預訂`);
     }
+    // else {
+    //   alert(`房號: ${room.roomId} 在 ${arr} 已被預訂`);
+    // }
   } else {
     alert(selectedDates.value.length === 0 ? "請選擇日期" : "請選擇寵物");
   }
@@ -444,11 +446,19 @@ select {
   max-width: 200px;
   height: auto;
   border-radius: 4px;
-  border: 1px solid black;
 }
 
 .modal-header,
 .modal-body {
   color: #000;
+}
+
+.jcsb {
+  display: flex;
+  justify-content: space-between;
+}
+
+.gray {
+  color: #515e63;
 }
 </style>

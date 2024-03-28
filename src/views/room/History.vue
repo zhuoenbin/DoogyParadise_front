@@ -19,8 +19,16 @@
         <button
           class="btn btn-primary"
           @click="handleModifyReservation(reservation.reservationId, 'score')"
+          v-if="reservation.star == null"
         >
           評分
+        </button>
+        <button
+          class="btn"
+          style="background-color: #85d38e"
+          v-if="reservation.star != null"
+        >
+          已評分
         </button>
       </div>
     </div>
