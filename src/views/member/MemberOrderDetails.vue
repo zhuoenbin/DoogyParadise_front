@@ -25,7 +25,7 @@
                   <div class="row">
                     <div class="col-md-2">
                       <img
-                        src="/00de4935-60f7-427b-8eee-6dcdceafcee3.jpg"
+                        :src="p.mainImgPath"
                         class="img-fluid"
                         alt="Phone"
                       />
@@ -88,7 +88,7 @@ export default {
       productIds: [],
       products: [],
       productName: "",
-      productsImgUrl: [],
+      mainImgPath: "",
       stock: "",
       unitPrice: "",
     };
@@ -108,6 +108,7 @@ export default {
         return axios.post(`${this.API_URL}/order/getProducts`, this.productIds);
       })
       .then((postRes) => {
+        console.log(postRes.data[1]);
         this.products = postRes.data;
         console.log(this.productIds);
         console.log("============");
