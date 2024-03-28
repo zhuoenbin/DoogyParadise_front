@@ -8,12 +8,19 @@
             <div class="sidebar-buttons">
                 <router-link to="/tweetPage/tweetsWallPage"><button class="sidebar-button custom-router-link">
                         首頁
-                    </button></router-link>
+                    </button>
+                </router-link>
+
                 <button class="sidebar-button" @click="showModal">發文</button>
-                <router-link to="/tweetPage/tweetsMyWallPage"><button class="sidebar-button custom-router-link">
-                        我的發文
-                    </button></router-link>
-                <button class="sidebar-button">訊息</button>
+
+                <router-link to="/tweetPage/tweetsMyWallPage">
+                    <button class="sidebar-button custom-router-link">我的發文</button>
+                </router-link>
+
+                <router-link to="/tweetPage/tweetsMyFollowPage">
+                    <button class="sidebar-button custom-router-link">我的追蹤</button>
+                </router-link>
+
                 <button class="sidebar-button">通知</button>
             </div>
         </div>

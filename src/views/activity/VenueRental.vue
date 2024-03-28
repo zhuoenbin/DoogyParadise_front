@@ -113,6 +113,9 @@
   </div>
 </template>
 <script>
+import axios from "axios";
+import { useMemberStore } from "@/stores/memberStore";
+
 export default {
   data() {
     return {
@@ -168,11 +171,74 @@ export default {
       const differenceInMilliseconds = end - start;
       const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
       this.timeTotal = Math.abs(differenceInHours).toFixed(1);
+
       if (this.venueId != null) {
         console.log(this.venues[this.venueId - 1].venueRent);
         this.venueRent = this.venues[this.venueId - 1].venueRent;
-        this.rentalTotal = this.timeTotal * this.venueRent;
+        //邏輯超過半小時以1小時算 未超過半小時以半小時算
+        //取得時間小數點部分
+        const decimalPart = this.timeTotal - Math.floor(this.timeTotal);
+        const intPart = Math.floor(this.timeTotal);
+        if (decimalPart == 0) {
+          this.rentalTotal = this.timeTotal * this.venueRent;
+        } else if (decimalPart <= 0.5 && decimalPart > 0) {
+          this.rentalTotal = intPart * this.venueRent + this.venueRent * 0.5;
+        } else {
+          this.rentalTotal = (intPart + 1) * this.venueRent;
+        }
+
         return;
+      }
+    },
+    create() {
+      const memberStore = useMemberStore();
+      if (
+        memberStore.memberRole != null &&
+        memberStore.memberRole.startsWith("ACT")
+      ) {
+        axios
+          .post(`${this.API_URL}/activity/api/rental/add`, {
+            venueId: this.venueId,
+            userId: memberStore.memberId,
+            participantsNumber: this.participantsNumber,
+            dogNumber: this.dogNumber,
+            rentalDate: new Date(this.rentalDate),
+            rentalStart: new Date(`${this.rentalDate}T${this.rentalStart}`),
+            rentalEnd: new Date(`${this.rentalDate}T${this.rentalEnd}`),
+            rentalTotal: this.rentalTotal,
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              console.log("create order success");
+              this.$router.push("/");
+            } else {
+              console.error("failed..");
+              this.message = "失敗";
+            }
+          });
+      } else if (memberStore.memberRole.startsWith("ROLE")) {
+        axios
+          .post(`${this.API_URL}/activity/api/rental/officialAdd`, {
+            venueId: this.venueId,
+            userId: 0,
+            participantsNumber: this.participantsNumber,
+            dogNumber: this.dogNumber,
+            rentalDate: new Date(this.rentalDate),
+            rentalStart: new Date(`${this.rentalDate}T${this.rentalStart}`),
+            rentalEnd: new Date(`${this.rentalDate}T${this.rentalEnd}`),
+            rentalTotal: this.rentalTotal,
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              console.log("create order success");
+              this.$router.push("/");
+            } else {
+              console.error("failed..");
+              this.message = "失敗";
+            }
+          });
+      } else {
+        this.message = "你不夠格";
       }
     },
   },

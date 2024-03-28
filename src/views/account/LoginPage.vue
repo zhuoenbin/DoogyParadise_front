@@ -65,7 +65,6 @@ export default {
                 .then((rs) => {
                     const memberStore = useMemberStore(); //pinia
                     memberStore.loginSuccess(rs.data); //pinia
-                    console.log(memberStore.memberName);
                     this.message = "";
                     console.log(rs.data)
 

@@ -18,6 +18,15 @@ const router = createRouter({
     {
       path: "/profile",
       component: () => import("@/views/member/MemberProfile.vue"),
+      children:[
+        {
+          path:"detail",
+          component:()=>import("@/views/member/MemberDetail.vue")
+        },{
+          path:"mydog",
+          component:()=>import("@/views/member/MemberDog.vue")
+        },
+      ]
     },
     {
       path: "/tweetPage",
@@ -32,6 +41,12 @@ const router = createRouter({
         },{
           path:"tweetsOthersWallPage",
           component:()=>import("@/views/tweet/TweetOthersWall.vue")
+        },{
+          path:"tweetsSingleTweetPage",
+          component:()=>import("@/views/tweet/TweetSingleTweetPage.vue")
+        },{
+          path:"tweetsMyFollowPage",
+          component:()=>import("@/views/tweet/TweetFollowPage.vue")
         }
       ]
     },
