@@ -1,5 +1,6 @@
 <template>
     <div class="tweet-item">
+
         <div v-if="tweet.preNode != 0" @click="goPreNodeTweetPage" class="reply-message">此則為回覆{{ preNodeUserName }}的留言
         </div>
         <!-- <div class="tweet-id">Tweet ID: {{ tweet.tweetId }}</div> -->
@@ -7,6 +8,13 @@
 
         <h4 @click="goOthersPage(tweet.userName, tweet.tweetId)" class="tweet-name like-count">{{ tweet.userName }} :
         </h4>
+        <span v-if="userDogs.length > 0">我的狗勾們 :&nbsp;</span>
+        <span v-for="(dog, index) in userDogs" :key="dog.dogId">
+            {{ dog.dogName }}
+            <template v-if="index < userDogs.length - 1">、</template>
+        </span>
+        <hr>
+
 
         <div class="content-wrapper">
             <div class="tweet-content">{{ tweet.tweetContent }}</div>
@@ -120,6 +128,8 @@ export default {
             currentReply: '',//當下留言立即出現
             preNodeUserName: '',//如果是回文的話，主文的推主是誰
 
+            userDogs: [],
+
         }
     },
     props: {
@@ -149,9 +159,16 @@ export default {
                 this.liked = true
             }
         })
+
+        //載入使用者的狗狗們
+        axios.get(`${this.API_URL}/tweet/getTweetDogTags/${this.tweet.tweetId}`).then(re => {
+            if (re.data !== null && re.data !== undefined && re.data !== '') {
+                this.userDogs = re.data;
+
+            }
+        })
     },
     mounted() {
-
         if (this.tweet.preNode != 0) {
             axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.preNode}`).then(re => {
                 this.preNodeUserName = re.data.lastName
