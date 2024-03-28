@@ -21,7 +21,10 @@
                     <button class="sidebar-button custom-router-link">我的追蹤</button>
                 </router-link>
 
-                <button class="sidebar-button">通知</button>
+                <router-link to="/tweetPage/tweetsMyNotificationPath">
+                    <button class="sidebar-button custom-router-link">我的通知</button>
+                </router-link>
+
             </div>
         </div>
 
@@ -91,11 +94,12 @@ export default {
     mounted() {
         const memberStore = useMemberStore();
         this.memberId = memberStore.memberId
-
         axios.get(`${this.API_URL}/dog/getDogs/${this.memberId}`)
             .then(re => {
                 this.myDogs = re.data;
-            })
+            }).catch(
+
+        )
     },
     methods: {
         showModal() {

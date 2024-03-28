@@ -127,6 +127,7 @@ export default {
             replyContent: '',
             currentReply: '',//當下留言立即出現
             preNodeUserName: '',//如果是回文的話，主文的推主是誰
+            preNodeUserId: '',//如果是回文的話，主文的推主id
 
             userDogs: [],
 
@@ -171,7 +172,12 @@ export default {
     mounted() {
         if (this.tweet.preNode != 0) {
             axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.preNode}`).then(re => {
-                this.preNodeUserName = re.data.lastName
+                this.preNodeUserName = re.data.lastName;
+            })
+        }
+        if (this.tweet.preNode == 0) {
+            axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.tweetId}`).then(re => {
+                this.preNodeUserId = re.data.userId;
             })
         }
     },
@@ -215,6 +221,7 @@ export default {
             }
         },
         likeTweet() {
+            const memberStore = useMemberStore();
             this.liked = !this.liked;
             this.tweetLikeNum += 1;
 
@@ -229,6 +236,22 @@ export default {
                 .catch(error => {
                     console.error(error);
                 });
+
+            if (this.userId != this.preNodeUserId) {
+                const params = {
+                    hisUserId: this.preNodeUserId,
+                    hisTweetId: this.tweet.tweetId,
+                    myName: memberStore.memberName
+                };
+                axios.get(`${this.API_URL}/tweet/sendLikeNotify`, { params })
+                    .then(response => {
+                        console.log(response.data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
         },
         unlikeTweet() {
             this.liked = !this.liked;
@@ -294,6 +317,25 @@ export default {
                 .catch(error => {
                     console.error("發文失败:", error);
                 })
+
+            if (this.userId != this.preNodeUserId) {
+
+                const params = {
+                    hisUserId: this.preNodeUserId,
+                    hisTweetId: this.tweet.tweetId,
+                    myName: memberStore.memberName
+                };
+                console.log("hisUserId" + this.preNodeUserId)
+                console.log("hisTweetId" + this.tweet.tweetId)
+                console.log("myName" + memberStore.memberName)
+                axios.get(`${this.API_URL}/tweet/sendReplyNotify`, { params })
+                    .then(response => {
+                        console.log(response.data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
         },
         goPreNodeTweetPage() {
             const tweetStore = useTweetStore();
