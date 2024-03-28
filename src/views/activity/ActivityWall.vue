@@ -1,8 +1,45 @@
 <template>
   <div class="col-lg-10 mx-auto col-lg-3">
     <!-- 活動卡 -->
+    <!-- 綁定事件checkFull???????? -->
     <div class="py-1 bg-light">
       <div class="container">
+        <div class="row">
+          <div class="col">
+            <ul class="pagination justify-content-center">
+              <li class="page-item">
+                <button
+                  v-if="currentPage != 1"
+                  class="page-link"
+                  @click="goForwardPage"
+                >
+                  <span>&laquo;</span>
+                </button>
+              </li>
+              <!--分頁處理-->
+              <!--@click="gotoPage(P)"綁定頁碼事件-->
+              <li
+                class="page-item"
+                v-for="p of showPageBar"
+                @click="goToPage(p)"
+                :class="{ active: p == currentPage }"
+              >
+                <button class="page-link">{{ p }}</button>
+              </li>
+              <!--分頁處理-->
+              <!--@click="gotoPage(P)"綁定頁碼事件-->
+              <li class="page-item">
+                <button
+                  v-if="currentPage != totalPage"
+                  class="page-link"
+                  @click="goNextPage"
+                >
+                  <span>&raquo;</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
         <div class="row row-cols-1 row-cols-md-2 g-4">
           <!-- v-for -->
           <div class="col" v-for="a in activities" :key="a.activityId">
@@ -19,6 +56,10 @@
                   {{ this.timeFormat(a.activityEnd) }}
                   <br />
                   <b>活動場地:&nbsp;</b>{{ a.venueName }}
+                  <br />
+                  <b>現在報名狀況:&nbsp;</b>毛孩:{{ a.currentDogNumber }}/{{
+                    a.activityDogNumber
+                  }}&nbsp;&nbsp;(共{{ a.currentUserNumber }}位飼主 )
                 </p>
               </div>
               <div class="card-footer">
@@ -30,15 +71,27 @@
                     >
                   </div>
                   <div class="col-md-4 ms-auto">
-                    <button
-                      class="btn btn-outline-warning me-md-2"
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                      @click="joinPrepare(a.activityId, a.activityTitle)"
-                    >
-                      立即報名🔜
-                    </button>
+                    <span v-if="a.activityStatus === '報名中'">
+                      <button
+                        v-if="isJoinButtonVisible"
+                        v-bind:disabled="isJoinButtonDisabled"
+                        class="btn btn-outline-warning me-md-2"
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        :id="a.activityId"
+                        @click="joinPrepare(a.activityId, a.activityTitle)"
+                      >
+                        立即報名🔜
+                      </button></span
+                    ><span v-if="a.activityStatus === '已額滿'">
+                      <button
+                        class="btn btn-secondary me-md-2 disabled"
+                        type="button"
+                      >
+                        報名額滿🌚
+                      </button>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -174,6 +227,8 @@ export default {
       currentPage: 1,
       totalPage: 0,
       message: "",
+      isJoinButtonVisible: true,
+      isJoinButtonDisabled: false,
     };
   },
   mounted() {
@@ -181,11 +236,70 @@ export default {
       console.log(rs.data);
       this.activities = rs.data.content;
       this.totalPage = rs.data.totalPages;
-      this.currentPage = rs.data.number;
+      this.currentPage = rs.data.number + 1;
+      console.log("現在是", this.currentPage);
     });
+
+    const memberStore = useMemberStore();
+    console.log(memberStore.memberRole);
+    if (!memberStore.memberRole.startsWith("Act")) {
+      this.isJoinButtonVisible = false;
+      this.isJoinButtonDisabled = true;
+    }
   },
-  computed: {},
+  computed: {
+    showPageBar() {
+      const cp = this.currentPage;
+      const tp = this.totalPage;
+
+      let arr = [1];
+
+      if (tp <= 5) {
+        for (let i = 2; i <= tp; i++) {
+          arr.push(i);
+        }
+      } else {
+        if (cp > 3) {
+          arr.push("...");
+        }
+        for (let i = cp - 1; i <= cp + 1; i++) {
+          if (i > 1 && i < tp) {
+            arr.push(i);
+          }
+        }
+
+        if (cp < tp - 2) {
+          arr.push("..."); // 当前页数小于总页数减2时显示省略号
+        }
+
+        arr.push(tp);
+      }
+
+      return arr;
+    },
+  },
+  watch: {
+    //綁定頁碼與商品頁面
+    currentPage(newVal, oldVal) {
+      axios.get(`${this.API_URL}/activity/api/all/${newVal}`).then((rs) => {
+        this.totalPage = rs.data.totalPages;
+        this.activities = rs.data.content;
+      });
+    },
+  },
   methods: {
+    goForwardPage() {
+      this.currentPage = this.currentPage - 1;
+    },
+    goToPage(p) {
+      if (p == "...") {
+        return;
+      }
+      this.currentPage = p;
+    },
+    goNextPage() {
+      this.currentPage = this.currentPage + 1;
+    },
     checkComplete() {
       if (this.chooseDogs.length == 0) {
         let submitButton = document.getElementById("liveToastBtn");
@@ -268,9 +382,8 @@ export default {
               this.chooseDogs = [];
               this.chooseAct = "";
               this.chooseActTitle = "";
-              // this.showSuccess();
-              // this.joinSuccess = true;
-              // this.$router.push("/activity/all");
+              // 在換成別的路徑 重新導向會無法即時更新
+              this.$router.push("/activity/all");
             })
             .catch((error) => {
               console.error("報名失敗", error);
