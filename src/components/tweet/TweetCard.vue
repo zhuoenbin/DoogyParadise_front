@@ -1,101 +1,125 @@
 <template>
+    <div class="colored-header">
+        <div class="tweet-item">
 
-    <div class="tweet-item">
+            <button v-if="tweet.preNode != 0" class="reply-message" @click="goPreNodeTweetPage">此則為回覆{{ preNodeUserName
+                }}的留言
+            </button>
 
-        <!-- <div v-if="tweet.preNode != 0" @click="goPreNodeTweetPage" class="reply-message" >此則為回覆{{ preNodeUserName }}的留言
-        </div> -->
-        <button v-if="tweet.preNode != 0" class="reply-message" @click="goPreNodeTweetPage">此則為回覆{{ preNodeUserName
-            }}的留言
-        </button>
-
-
-
-
-
-
-
-
-
-
-        <h4 @click="goOthersPage(tweet.userName, tweet.tweetId)" class="tweet-name like-count">{{ tweet.userName }} :
-        </h4>
-        <span v-if="userDogs.length > 0">我的狗勾們 :&nbsp;</span>
-        <span v-for="(dog, index) in userDogs" :key="dog.dogId">
-            {{ dog.dogName }}
-            <template v-if="index < userDogs.length - 1">、</template>
-        </span>
-        <hr v-if="tweet.preNode == 0">
-
-
-        <div class="content-wrapper">
-            <div class="tweet-content">{{ tweet.tweetContent }}</div>
-        </div>
-
-        <br>
-        <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0" class="tweet-galleries">
-            <!-- <div>Tweet Galleries:</div> -->
-            <div v-for="(gallery, index) in tweet.tweetGalleries" :key="index" class="gallery-item">
-                <img :src="getImageUrl(gallery.imgPath)" alt="Gallery Image" class="gallery-image">
+            <!-- 使用者的名字 -->
+            <div class="row align-items-center ">
+                <div class="col">
+                    <h4 @click="goOthersPage(tweet.userName, tweet.tweetId)" class="tweet-name like-count">{{
+                tweet.userName
+            }} :</h4>
+                </div>
+                <!-- 編輯貼文按紐 -->
+                <div class="col-auto">
+                    <button v-if="this.userName == tweet.userName && !this.editTweetContent"
+                        @click="editTweetContent = true" class="btn btn-warning">編輯貼文</button>
+                </div>
             </div>
-        </div>
 
-        <br>
-        <!-- 讚功能 -->
-        <span v-if="tweetLikeNum !== 0" @click="showLikeList" class="like-count">
-            {{ tweetLikeNum }} 個讚
-        </span>
-        <span v-if="tweet.preNode == 0"> <!-- 按讚按钮 -->
-            <button v-if="!this.liked" @click="likeTweet" class="btn btn-primary">按讚</button>
-            <button v-else @click="unlikeTweet" class="btn btn-secondary">取消讚</button>
-            發文時間: {{ formatPostDate(tweet.postDate) }}</span>
+            <!-- 使用的的狗狗們 -->
+            <span v-if="userDogs.length > 0">我的狗勾們 :&nbsp;</span>
+            <span v-for="(dog, index) in userDogs" :key="dog.dogId">
+                {{ dog.dogName }}
+                <template v-if="index < userDogs.length - 1">、</template>
+            </span>
 
-        <hr v-if="tweet.preNode == 0">
 
-        <!--按讚名單的彈出式視窗 -->
-        <div ref="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">按讚的人~</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
 
-                    <div class="modal-body" v-for="n in userLikeList">
-                        {{ n.lastName }}
-                    </div>
-                    <!-- <div class="modal-footer">
+
+
+            <hr v-if="tweet.preNode == 0">
+
+
+
+
+            <!-- 推文內容 -->
+            <div v-if="!this.editTweetContent" class="content-wrapper">
+                <div class="tweet-content">{{ tweet.tweetContent }}</div>
+            </div>
+            <div v-else>
+                <textarea v-model="this.editTweetContentTmp" class="form-control"></textarea>
+                <div class="mt-2">
+                    <button @click="saveEditedTweet" class="btn btn-primary">保存</button>
+                    <button @click="editTweetContent = false" class="btn btn-secondary ms-2">取消</button>
+                    <button @click="removeTweet" class="btn btn-warning ms-2">刪除貼文</button>
+                </div>
+            </div>
+
+            <br>
+
+            <!-- 推文圖片 -->
+            <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0" class="tweet-galleries">
+                <!-- <div>Tweet Galleries:</div> -->
+                <div v-for="(gallery, index) in tweet.tweetGalleries" :key="index" class="gallery-item">
+                    <img :src="getImageUrl(gallery.imgPath)" alt="Gallery Image" class="gallery-image">
+                </div>
+            </div>
+
+            <br>
+
+            <!-- 讚功能 -->
+            <span v-if="tweetLikeNum !== 0" @click="showLikeList" class="like-count">獲得了
+                {{ tweetLikeNum }} 個骨頭
+            </span>
+            <!-- 按讚按钮 -->
+            <span v-if="tweet.preNode == 0">
+                <button v-if="!this.liked" @click="likeTweet" class="btn btn-primary">🦴</button>
+                <button v-else @click="unlikeTweet" class="btn btn-primary">💩</button>
+                發文時間: {{ formatPostDate(tweet.postDate) }}</span>
+
+            <hr v-if="tweet.preNode == 0">
+
+            <!--按讚名單的彈出式視窗 -->
+            <div ref="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">按讚的人~</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body" v-for="n in userLikeList">
+                            {{ n.lastName }}
+                        </div>
+                        <!-- <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="hideLikeList">
                             Close
                         </button>
                     </div> -->
+                    </div>
                 </div>
             </div>
-        </div>
 
 
+            <!-- 顯示留言數 -->
+            <span v-if="this.numOfComment > 0" class="comment-count" style="margin-right: 10px;">
+                <button @click="getCommentsLink(tweet.tweetId)" class="btn btn-info">有{{ this.numOfComment
+                    }}則留言</button>
 
-        <!-- 顯示留言數 -->
-        <span v-if="this.numOfComment > 0" class="comment-count" style="margin-right: 10px;">
-            <button @click="getCommentsLink(tweet.tweetId)" class="btn btn-info">有{{ this.numOfComment }}則留言</button>
-
-        </span>
-
-        <!-- 子留言，內容 -->
-        <div v-if="showComments" class="comment-section">
-
-            <div v-for="comment in tweetComments" :key="comment.id" class="comment-item">{{ comment.userName
-                }} : {{ comment.tweetContent }}</div>
-            <div>{{ currentReply }}</div>
-        </div>
-        <span v-if="tweet.preNode == 0">
-            <input type="text" v-model="replyContent" placeholder="在此輸入回覆內容"
-                style="height: 0px; padding-top: 16px; padding-bottom: 18px;">
-            <span>
-                <button @click="postReply" class="btn btn-success">回覆</button>
             </span>
-        </span>
-    </div>
 
+            <!-- 子留言，內容 -->
+            <div v-if="showComments" class="comment-section">
+
+                <div v-for="comment in tweetComments" :key="comment.id" class="comment-item">{{ comment.userName
+                    }} : {{ comment.tweetContent }}</div>
+                <div>{{ currentReply }}</div>
+            </div>
+
+            <!-- 回覆推文的地方 -->
+            <span v-if="tweet.preNode == 0">
+                <input type="text" v-model="replyContent" placeholder="在此輸入回覆內容"
+                    style="height: 0px; padding-top: 16px; padding-bottom: 18px;">
+                <span>
+                    <button @click="postReply" class="btn btn-success">回覆</button>
+                </span>
+            </span>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -115,13 +139,15 @@ export default {
             tweetLikeNum: 0,
             liked: false,
             userId: useMemberStore().memberId,
+            userName: useMemberStore().memberName,
             userLikeList: [],
             replyContent: '',
             currentReply: '',//當下留言立即出現
             preNodeUserName: '',//如果是回文的話，主文的推主是誰
             preNodeUserId: '',//如果是回文的話，主文的推主id
             preNodeTweet: '',////如果是回文的話，主文的推主tweet
-
+            editTweetContent: false,
+            editTweetContentTmp: "",//編輯內文，暫存區
             userDogs: [],
 
         }
@@ -172,6 +198,15 @@ export default {
             axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.tweetId}`).then(re => {
                 this.preNodeUserId = re.data.userId;
             })
+        }
+    },
+    watch: {
+        editTweetContent(newValue, oldValue) {
+            if (newValue) {
+                this.editTweetContentTmp = this.tweet.tweetContent;
+            } else {
+                this.editTweetContentTmp = "";
+            }
         }
     },
     methods: {
@@ -349,7 +384,43 @@ export default {
             const hours = date.getHours();
             const minutes = date.getMinutes();
             return `${year}年${month}月${day}號 ${hours}點${minutes}分`;
+        },
+        saveEditedTweet() {
+            const postData = {
+                editTweetContentTmp: this.editTweetContentTmp,
+                tweetId: this.tweet.tweetId
+            };
+            axios.post(`${this.API_URL}/tweet/updateTweetContent`, postData)
+                .then(response => {
+                    this.tweet.tweetContent = response.data;
+                    this.editTweetContent = false;
+                })
+                .catch(error => {
+                    console.error('更新推文錯誤：', error);
+                });
+
+        },
+        removeTweet() {
+            if (window.confirm('確定要刪除此推文嗎？')) {
+                const postData = {
+                    tweetId: this.tweet.tweetId
+                };
+                axios.post(`${this.API_URL}/tweet/removeTweetContent`, postData)
+                    .then(response => {
+                        alert('成功刪除推文: ' + response.data.tweetContent);
+                        this.$router.go(0)
+                    })
+                    .catch(error => {
+                        console.error('刪除推文錯誤：', error);
+                    });
+
+            } else {
+                // 用户点击了取消按钮，您可以在这里添加相应的逻辑
+                console.log('用户取消了删除操作');
+            }
+
         }
+
     }
 };
 </script>
@@ -378,7 +449,7 @@ export default {
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
-    background-color: #f9f9f9;
+    background-color: #C4E1E1;
 }
 
 .reply-message {
@@ -417,7 +488,6 @@ export default {
 
 .hovered {
     background-color: #aa2929;
-    /* 浅灰色背景 */
 }
 
 .comment-section {
@@ -443,12 +513,13 @@ export default {
 
 .content-wrapper {
     border: 1px solid #ccc;
-    /* 边框样式 */
     border-radius: 5px;
-    /* 边框圆角 */
     background-color: #f9f9f9;
-    /* 背景颜色 */
     padding: 10px;
-    /* 内边距 */
+}
+
+.colored-header {
+    background-color: #ffffff;
+    padding: 20px;
 }
 </style>

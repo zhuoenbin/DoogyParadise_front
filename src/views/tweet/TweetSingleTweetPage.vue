@@ -6,6 +6,9 @@
         <hr>
         <TweetItem :key="tweets.tweetId" :tweet="tweets" />
     </div>
+    <div v-else>
+        <h3>此貼文已下架</h3>
+    </div>
 
 
 
