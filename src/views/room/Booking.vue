@@ -28,7 +28,7 @@
         >
           <div class="card" style="width: 30rem">
             <img
-              src="/not_found.jpg"
+              :src="room.roomImgPath"
               class="card-img-top"
               alt="..."
               data-bs-toggle="modal"
@@ -71,7 +71,7 @@
                     ></button> -->
                   </div>
                   <div class="modal-body">
-                    <img src="/not_found.jpg" />
+                    <img :src="room.roomImgPath" />
                     <br />
                     <span>房間說明:</span>
                     <br />

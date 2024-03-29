@@ -61,7 +61,8 @@ onMounted(() => {
   axios
     .get("http://localhost:8080/room/allRoomReservationByUser")
     .then((response) => {
-      reservations.value = response.data;
+      const reversedData = response.data.reverse();
+      reservations.value = reversedData;
     });
 });
 

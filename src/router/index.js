@@ -24,8 +24,13 @@ const router = createRouter({
           component:()=>import("@/views/member/MemberDetail.vue")
         },{
           path:"mydog",
+          name:"mydog",
           component:()=>import("@/views/member/MemberDog.vue")
-        },
+        },{
+          path:"addDog",
+          name:"addDog",
+          component:()=>import("@/views/member/MemberAddDog.vue")
+        }
       ]
     },
     {
