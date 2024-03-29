@@ -22,24 +22,28 @@ const router = createRouter({
     {
       path: "/tweetPage",
       component: () => import("@/views/tweet/TweetMainPage.vue"),
-      children:[
+      children: [
         {
-          path:"tweetsWallPage",
-          component:()=>import("@/views/tweet/TweetsWall.vue")
-        },{
-          path:"tweetsMyWallPage",
-          component:()=>import("@/views/tweet/TweetMyWall.vue")
-        },{
-          path:"tweetsOthersWallPage",
-          component:()=>import("@/views/tweet/TweetOthersWall.vue")
-        },{
-          path:"tweetsSingleTweetPage",
-          component:()=>import("@/views/tweet/TweetSingleTweetPage.vue")
-        },{
-          path:"tweetsMyFollowPage",
-          component:()=>import("@/views/tweet/TweetFollowPage.vue")
-        }
-      ]
+          path: "tweetsWallPage",
+          component: () => import("@/views/tweet/TweetsWall.vue"),
+        },
+        {
+          path: "tweetsMyWallPage",
+          component: () => import("@/views/tweet/TweetMyWall.vue"),
+        },
+        {
+          path: "tweetsOthersWallPage",
+          component: () => import("@/views/tweet/TweetOthersWall.vue"),
+        },
+        {
+          path: "tweetsSingleTweetPage",
+          component: () => import("@/views/tweet/TweetSingleTweetPage.vue"),
+        },
+        {
+          path: "tweetsMyFollowPage",
+          component: () => import("@/views/tweet/TweetFollowPage.vue"),
+        },
+      ],
     },
     {
       path: "/room",
@@ -48,19 +52,19 @@ const router = createRouter({
         {
           path: "b_page",
           name: "b_page",
-          component: () => import("@/views/room/Booking.vue")
+          component: () => import("@/views/room/Booking.vue"),
         },
         {
           path: "o_page",
           name: "o_page",
-          component: () => import("@/views/room/Order.vue")
+          component: () => import("@/views/room/Order.vue"),
         },
         {
           path: "h_page",
           name: "h_page",
-          component: () => import("@/views/room/History.vue")
-        }
-      ]
+          component: () => import("@/views/room/History.vue"),
+        },
+      ],
     },
     {
       path: "/activity",
@@ -86,6 +90,10 @@ const router = createRouter({
           path: "venueRental",
           component: () => import("@/views/activity/VenueRental.vue"),
         },
+        {
+          path: "myJoinedManager",
+          component: () => import("@/views/activity/MyActivitiesManager.vue"),
+        },
       ],
     },
     {
@@ -94,22 +102,22 @@ const router = createRouter({
       children: [
         {
           path: "r_page",
-          component: () => import("@/views/employee/RoomReservation.vue")
-        }
-      ]
+          component: () => import("@/views/employee/RoomReservation.vue"),
+        },
+      ],
     },
     {
       path: "/:pathMatch(.*)*",
       component: () => import("@/views/NotFound.vue"),
     },
-  {
-    path: "/shop",
-    component: () => import("@/views/ShopPage.vue"),
-  },
-  {
-    path: "/cart",
-    component: () => import("@/views/ShoppingCart.vue"),
-  },
+    {
+      path: "/shop",
+      component: () => import("@/views/ShopPage.vue"),
+    },
+    {
+      path: "/cart",
+      component: () => import("@/views/ShoppingCart.vue"),
+    },
   ],
 });
 

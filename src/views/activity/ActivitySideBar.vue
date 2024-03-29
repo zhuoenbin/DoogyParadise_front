@@ -51,7 +51,7 @@ export default {
           ],
         },
         {
-          href: "/",
+          href: "/activity/myJoinedManager",
           title: "我的活動",
           icon: "fa fa-user",
           child: [
