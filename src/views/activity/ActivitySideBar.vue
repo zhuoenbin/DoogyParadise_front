@@ -32,7 +32,7 @@ export default {
           ],
         },
         {
-          href: "/venues",
+          href: "/activity/venuesIntro",
           title: "場地租借",
           icon: "fa fa-chart-area",
           child: [

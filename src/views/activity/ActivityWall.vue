@@ -112,8 +112,19 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">
+          <h5
+            class="modal-title"
+            id="exampleModalLabel"
+            v-if="this.myDogsNotAttend.length > 0"
+          >
             請選擇要參加的狗狗!🐶
+          </h5>
+          <h5
+            class="modal-title"
+            id="exampleModalLabel"
+            v-if="this.myDogsNotAttend.length == 0"
+          >
+            喔嗚!您的狗狗都已經報名過了喔!🐶
           </h5>
 
           <button
@@ -125,7 +136,7 @@
         </div>
         <!-- 表單內容 -->
         <div class="modal-body">
-          <form>
+          <form v-if="this.myDogsNotAttend.length > 0">
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label"
                 >您所選擇的活動</label
@@ -142,7 +153,7 @@
             <!-- <div>Checked names: {{ chooseDogs }}</div> -->
             <div>
               <label for="" class="col-form-label"> 要參與的狗狗~ </label>
-              <div v-for="d in myDogs" :key="d.dogId" class="mb-2">
+              <div v-for="d in myDogsNotAttend" :key="d.dogId" class="mb-2">
                 <div class="checkbox-wrapper-33">
                   <label class="checkbox">
                     <input
@@ -184,7 +195,12 @@
           </form>
         </div>
         <div class="modal-footer">
-          <div class="text-danger text-center mt-3">{{ message }}</div>
+          <div
+            class="text-danger text-center mt-3"
+            v-if="this.myDogsNotAttend.length > 0"
+          >
+            {{ message }}
+          </div>
           <button
             type="button"
             class="btn btn-secondary"
@@ -193,6 +209,7 @@
             Close
           </button>
           <button
+            v-if="this.myDogsNotAttend.length > 0"
             type="button"
             class="btn btn-primary"
             data-bs-dismiss="modal"
@@ -216,7 +233,7 @@ export default {
   data() {
     return {
       activities: [],
-      myDogs: [],
+      myDogsNotAttend: [],
       userId: "",
       chooseAct: "",
       chooseActTitle: "",
@@ -269,7 +286,7 @@ export default {
         }
 
         if (cp < tp - 2) {
-          arr.push("..."); // 当前页数小于总页数减2时显示省略号
+          arr.push("...");
         }
 
         arr.push(tp);
@@ -345,15 +362,18 @@ export default {
         this.isUser = true;
         this.userId = memberStore.memberId;
         console.log(this.userId);
+        //直接給沒參加過的狗
         axios
-          .get(`${this.API_URL}/activity/api/searchUsersDog/${this.userId}`)
+          .get(
+            `${this.API_URL}/activity/api/apply/${this.userId}/dogNotJoinedList/${this.chooseAct}`
+          )
           .then((response) => {
             const dogObj = Object.values(response.data);
-            this.myDogs = JSON.parse(JSON.stringify(dogObj));
-            console.log(this.myDogs);
-            console.log(this.myDogs.length);
-            console.log(this.myDogs[0]);
-            console.log(this.myDogs[0].dogName);
+            this.myDogsNotAttend = JSON.parse(JSON.stringify(dogObj));
+            console.log(this.myDogsNotAttend);
+            console.log(this.myDogsNotAttend.length);
+            console.log(this.myDogsNotAttend[0]);
+            console.log(this.myDogsNotAttend[0].dogName);
             this.checkComplete();
           })
           .catch((error) => {
@@ -412,7 +432,6 @@ export default {
 };
 //bug 報名完後應該要不能再報
 //活動過期要換掉
-//現在的狗數?
 </script>
 
 <style>
