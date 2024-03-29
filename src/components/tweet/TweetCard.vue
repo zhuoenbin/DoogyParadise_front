@@ -1,34 +1,16 @@
 <template>
+
     <div class="tweet-item">
 
         <!-- <div v-if="tweet.preNode != 0" @click="goPreNodeTweetPage" class="reply-message" >此則為回覆{{ preNodeUserName }}的留言
         </div> -->
-        <button v-if="tweet.preNode != 0" class="reply-message" data-bs-toggle="modal" data-bs-target="#exampleModal"
-            @click="goPreNodeTweetPage">此則為回覆{{ preNodeUserName }}的留言
+        <button v-if="tweet.preNode != 0" class="reply-message" @click="goPreNodeTweetPage">此則為回覆{{ preNodeUserName
+            }}的留言
         </button>
 
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <div class="modal-body" v-if="this.preNodeTweet">
-
-                        <TweetItem2 :key="this.preNodeTweet.tweetId" :tweet="this.preNodeTweet" />
-                    </div>
 
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
 
 
@@ -42,7 +24,7 @@
             {{ dog.dogName }}
             <template v-if="index < userDogs.length - 1">、</template>
         </span>
-        <hr>
+        <hr v-if="tweet.preNode == 0">
 
 
         <div class="content-wrapper">
@@ -62,12 +44,12 @@
         <span v-if="tweetLikeNum !== 0" @click="showLikeList" class="like-count">
             {{ tweetLikeNum }} 個讚
         </span>
-        <span> <!-- 按讚按钮 -->
+        <span v-if="tweet.preNode == 0"> <!-- 按讚按钮 -->
             <button v-if="!this.liked" @click="likeTweet" class="btn btn-primary">按讚</button>
             <button v-else @click="unlikeTweet" class="btn btn-secondary">取消讚</button>
             發文時間: {{ formatPostDate(tweet.postDate) }}</span>
 
-        <hr>
+        <hr v-if="tweet.preNode == 0">
 
         <!--按讚名單的彈出式視窗 -->
         <div ref="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -105,17 +87,18 @@
                 }} : {{ comment.tweetContent }}</div>
             <div>{{ currentReply }}</div>
         </div>
-        <input type="text" v-model="replyContent" placeholder="在此輸入回覆內容"
-            style="height: 0px; padding-top: 16px; padding-bottom: 18px;">
-        <span>
-            <button @click="postReply" class="btn btn-success">回覆</button>
+        <span v-if="tweet.preNode == 0">
+            <input type="text" v-model="replyContent" placeholder="在此輸入回覆內容"
+                style="height: 0px; padding-top: 16px; padding-bottom: 18px;">
+            <span>
+                <button @click="postReply" class="btn btn-success">回覆</button>
+            </span>
         </span>
     </div>
 
 </template>
 
 <script>
-import TweetItem2 from '@/components/tweet/TweetCard2.vue';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import axios from 'axios';
 import { useMemberStore } from '@/stores/memberStore';
@@ -123,9 +106,6 @@ import { useTweetStore } from '@/stores/tweetStore';
 
 
 export default {
-    components: {
-        TweetItem2,
-    },
     data() {
         return {
             numOfComment: 0,
@@ -345,14 +325,23 @@ export default {
             }
         },
         goPreNodeTweetPage() {
+            this.preNodeTweet = '';
             const tweetStore = useTweetStore();
             tweetStore.clearMsg();
             axios.get(`${this.API_URL}/tweet/getTweetById/${this.tweet.preNode}`).then(re => {
+
                 this.preNodeTweet = re.data;
 
+                tweetStore.setUserName(this.preNodeUserName)
+
+
+                tweetStore.writeIn(re.data)
+
+                this.$router.push("/tweetPage/tweetsSingleTweetPage")
             })
 
-        }, formatPostDate(dateString) {
+        },
+        formatPostDate(dateString) {
             const date = new Date(dateString);
             const year = date.getFullYear();
             const month = date.getMonth() + 1;

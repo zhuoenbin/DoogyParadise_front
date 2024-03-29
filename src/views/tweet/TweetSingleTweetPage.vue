@@ -1,12 +1,13 @@
 <template>
-    <h3>{{ name }}</h3>
     <div v-if="tweets.tweetId != null" class="tweet-container">
+        <router-link to="/tweetPage/tweetsMyWallPage"><button class="btn btn-warning">
+                回到我的發文
+            </button></router-link>
+        <hr>
         <TweetItem :key="tweets.tweetId" :tweet="tweets" />
     </div>
 
-    <router-link to="/tweetPage/tweetsMyWallPage"><button class="sidebar-button custom-router-link">
-            回到我的發文
-        </button></router-link>
+
 
 </template>
 <script>
