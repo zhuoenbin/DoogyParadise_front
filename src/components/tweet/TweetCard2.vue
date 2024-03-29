@@ -3,34 +3,9 @@
 
         <!-- <div v-if="tweet.preNode != 0" @click="goPreNodeTweetPage" class="reply-message" >此則為回覆{{ preNodeUserName }}的留言
         </div> -->
-        <button v-if="tweet.preNode != 0" class="reply-message" data-bs-toggle="modal" data-bs-target="#exampleModal"
-            @click="goPreNodeTweetPage">此則為回覆{{ preNodeUserName }}的留言
+        <button v-if="tweet.preNode != 0" class="reply-message" data-bs-toggle="modal"
+            data-bs-target="#exampleModal">此則為回覆{{ preNodeUserName }}的留言
         </button>
-
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <div class="modal-body" v-if="this.preNodeTweet">
-
-                        <TweetItem2 :key="this.preNodeTweet.tweetId" :tweet="this.preNodeTweet" />
-                    </div>
-
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
 
 
 
@@ -115,7 +90,6 @@
 </template>
 
 <script>
-import TweetItem2 from '@/components/tweet/TweetCard2.vue';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import axios from 'axios';
 import { useMemberStore } from '@/stores/memberStore';
@@ -123,9 +97,6 @@ import { useTweetStore } from '@/stores/tweetStore';
 
 
 export default {
-    components: {
-        TweetItem2,
-    },
     data() {
         return {
             numOfComment: 0,
@@ -140,7 +111,6 @@ export default {
             currentReply: '',//當下留言立即出現
             preNodeUserName: '',//如果是回文的話，主文的推主是誰
             preNodeUserId: '',//如果是回文的話，主文的推主id
-            preNodeTweet: '',////如果是回文的話，主文的推主tweet
 
             userDogs: [],
 
@@ -238,7 +208,7 @@ export default {
 
             axios.post(`${this.API_URL}/tweet/getLikeLink`, fd)
                 .then(response => {
-                    console.log("/tweet/getLikeLink" + response);
+                    console.log(response);
                 })
                 .catch(error => {
                     console.error(error);
@@ -348,7 +318,14 @@ export default {
             const tweetStore = useTweetStore();
             tweetStore.clearMsg();
             axios.get(`${this.API_URL}/tweet/getTweetById/${this.tweet.preNode}`).then(re => {
-                this.preNodeTweet = re.data;
+                console.log("getTweetById" + re.data.tweetId)
+
+                tweetStore.setUserName(this.preNodeUserName)
+
+
+                tweetStore.writeIn(re.data)
+
+                this.$router.push("/tweetPage/tweetsSingleTweetPage")
 
             })
 
