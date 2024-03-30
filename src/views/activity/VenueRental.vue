@@ -194,7 +194,7 @@ export default {
       const memberStore = useMemberStore();
       if (
         memberStore.memberRole != null &&
-        memberStore.memberRole.startsWith("ACT")
+        memberStore.memberRole.startsWith("Act")
       ) {
         axios
           .post(`${this.API_URL}/activity/api/rental/add`, {

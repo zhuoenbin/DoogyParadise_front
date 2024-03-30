@@ -94,6 +94,11 @@ const router = createRouter({
           path: "myJoinedManager",
           component: () => import("@/views/activity/MyActivitiesManager.vue"),
         },
+        {
+          path: "myPastJoinedManager",
+          component: () =>
+            import("@/views/activity/MyPastActivitiesManager.vue"),
+        },
       ],
     },
     {

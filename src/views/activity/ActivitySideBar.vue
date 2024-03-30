@@ -56,11 +56,11 @@ export default {
           icon: "fa fa-user",
           child: [
             {
-              href: "/charts/sublink",
+              href: "/activity/myJoinedManager",
               title: "報名中",
             },
             {
-              href: "/charts/sublink",
+              href: "/activity/myPastJoinedManager",
               title: "過去參加",
             },
             {

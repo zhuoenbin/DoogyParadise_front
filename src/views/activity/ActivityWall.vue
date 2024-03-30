@@ -80,7 +80,14 @@
                         data-bs-toggle="modal"
                         data-bs-target="#exampleModal"
                         :id="a.activityId"
-                        @click="joinPrepare(a.activityId, a.activityTitle)"
+                        @click="
+                          joinPrepare(
+                            a.activityId,
+                            a.activityTitle,
+                            a.activityDogNumber,
+                            a.currentDogNumber
+                          )
+                        "
                       >
                         立即報名🔜
                       </button></span
@@ -237,6 +244,8 @@ export default {
       userId: "",
       chooseAct: "",
       chooseActTitle: "",
+      activityDogNumber: null,
+      currentDogNumber: null,
       chooseDogs: [],
       note: "",
       isUser: false,
@@ -322,6 +331,13 @@ export default {
         let submitButton = document.getElementById("liveToastBtn");
         submitButton.disabled = true;
         this.message = "請選擇要參與的狗狗!";
+      } else if (
+        this.chooseDogs.length + this.currentDogNumber >
+        this.activityDogNumber
+      ) {
+        let submitButton = document.getElementById("liveToastBtn");
+        submitButton.disabled = true;
+        this.message = "很抱歉😥已超過🐶數上限!";
       } else {
         let submitButton = document.getElementById("liveToastBtn");
         submitButton.disabled = false;
@@ -351,12 +367,15 @@ export default {
 
       return formattedDate;
     },
-    joinPrepare(activityId, activityName) {
+    joinPrepare(activityId, activityName, activityDogNumber, currentDogNumber) {
       const memberStore = useMemberStore();
       console.log(memberStore.memberRole);
 
       this.chooseAct = activityId;
       this.chooseActTitle = activityName;
+      this.activityDogNumber = activityDogNumber;
+      this.currentDogNumber = currentDogNumber;
+      this.note = "";
       console.log("所選擇的活動id: ", this.chooseAct);
       if (memberStore.memberRole.startsWith("Act")) {
         this.isUser = true;
@@ -403,8 +422,8 @@ export default {
               this.chooseAct = "";
               this.chooseActTitle = "";
               // 在換成別的路徑 重新導向會無法即時更新
-              this.$router.push("/activity/all");
             })
+            .then(this.$router.push("/activity/all"))
             .catch((error) => {
               console.error("報名失敗", error);
               this.message = "報名失敗";
