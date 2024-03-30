@@ -13,7 +13,7 @@ export default {
           hiddenOnCollapse: true,
         },
         {
-          href: "/activity",
+          href: "/activity/all",
           title: "寵活動",
           icon: "fa-solid fa-seedling",
           child: [

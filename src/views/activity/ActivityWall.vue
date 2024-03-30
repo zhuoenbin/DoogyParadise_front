@@ -143,6 +143,15 @@
         </div>
         <!-- 表單內容 -->
         <div class="modal-body">
+          <form v-if="this.myDogsNotAttend.length == 0">
+            可以至我的活動中查看喔 ૮⍝• ᴥ •⍝ა &nbsp;<a
+              class="btn btn-outline-success"
+              href="/activity/myJoinedManager"
+              role="button"
+              >前往 ᕕ( ᐛ )ᕗ</a
+            >
+          </form>
+
           <form v-if="this.myDogsNotAttend.length > 0">
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label"
@@ -358,7 +367,7 @@ export default {
 
       // 分別年月日和星期
       const year = date.getFullYear();
-      const month = date.getMonth();
+      const month = date.getMonth() + 1;
       const day = date.getDate();
       const weekday = weekdays[date.getDay()];
 
