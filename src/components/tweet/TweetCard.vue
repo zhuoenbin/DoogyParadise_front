@@ -1,4 +1,5 @@
 <template>
+
     <div class="colored-header">
         <div class="tweet-item">
 
@@ -7,19 +8,86 @@
             </button>
 
             <!-- 使用者的名字 -->
-            <div class="row align-items-center ">
+            <div class="row align-items-center with-background">
                 <div class="col">
                     <h4 @click="goOthersPage(tweet.userName, tweet.tweetId)" class="tweet-name like-count">{{
                 tweet.userName
             }} :</h4>
                 </div>
-                <!-- 編輯貼文按紐 -->
+
+
+                <!-- ...按紐們 -->
                 <div class="col-auto">
-                    <button v-if="this.userName == tweet.userName && !this.editTweetContent"
-                        @click="editTweetContent = true" class="btn btn-warning">編輯貼文</button>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary" type="button" id="dropdownMenuButton1" aria-expanded="false">
+                            ...
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li v-if="this.userName == tweet.userName"><a class="dropdown-item"
+                                    @click="editTweetContent = true">編輯貼文</a></li>
+                            <li v-if="this.userName != tweet.userName"><a @click="showReportPostPage"
+                                    class="dropdown-item">檢舉貼文</a></li>
+                            <li v-if="this.userName != tweet.userName"><a class="dropdown-item"
+                                    @click="goOthersPage(tweet.userName, tweet.tweetId)">到{{ tweet.userName }}的主頁</a>
+                            </li>
+
+                        </ul>
+                    </div>
+
+                    <!--檢舉的彈出式視窗 -->
+                    <div ref="ReportPostPage" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3>檢舉頁面</h3>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3 form-check">
+                                        <div>
+                                            <label>
+                                                <input type="checkbox" value="不可愛" v-model="reportPost" /> 不可愛
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label>
+                                                <input type="checkbox" value="太恐怖" v-model="reportPost" /> 太恐怖
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label>
+                                                <input type="checkbox" value="政治不正確" v-model="reportPost" /> 政治不正確
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label>
+                                                <input type="checkbox" value="我不爽" v-model="reportPost" /> 我不爽
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="reportReason" class="form-label">其他意見</label>
+                                        <textarea class="form-control" id="reportReason" rows="3"
+                                            v-model="reportPostText"></textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" @click="submitReport" data-bs-dismiss="modal"
+                                            aria-label="Close" class="btn btn-primary">送出</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                 </div>
             </div>
-
+            <br>
             <!-- 使用的的狗狗們 -->
             <span v-if="userDogs.length > 0">我的狗勾們 :&nbsp;</span>
             <span v-for="(dog, index) in userDogs" :key="dog.dogId">
@@ -53,9 +121,10 @@
 
             <!-- 推文圖片 -->
             <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0" class="tweet-galleries">
-                <!-- <div>Tweet Galleries:</div> -->
-                <div v-for="(gallery, index) in tweet.tweetGalleries" :key="index" class="gallery-item">
-                    <img :src="getImageUrl(gallery.imgPath)" alt="Gallery Image" class="gallery-image">
+                <div class="d-flex justify-content-center">
+                    <div v-for="(gallery, index) in tweet.tweetGalleries" :key="index" class="gallery-item">
+                        <img :src="getImageUrl(gallery.imgPath)" alt="Gallery Image" class="gallery-image">
+                    </div>
                 </div>
             </div>
 
@@ -68,7 +137,7 @@
             <!-- 按讚按钮 -->
             <span v-if="tweet.preNode == 0">
                 <button v-if="!this.liked" @click="likeTweet" class="btn btn-primary">🦴</button>
-                <button v-else @click="unlikeTweet" class="btn btn-primary">💩</button>
+                <button v-else @click="unlikeTweet" class="btn btn-warning">💩</button>
                 發文時間: {{ formatPostDate(tweet.postDate) }}</span>
 
             <hr v-if="tweet.preNode == 0">
@@ -97,9 +166,10 @@
 
             <!-- 顯示留言數 -->
             <span v-if="this.numOfComment > 0" class="comment-count" style="margin-right: 10px;">
-                <button @click="getCommentsLink(tweet.tweetId)" class="btn btn-info">有{{ this.numOfComment
-                    }}則留言</button>
-
+                <button @click="getCommentsLink(tweet.tweetId)" type="button" class="btn btn-outline-dark">有{{
+                this.numOfComment
+            }}則留言
+                </button>
             </span>
 
             <!-- 子留言，內容 -->
@@ -129,7 +199,9 @@ import { useMemberStore } from '@/stores/memberStore';
 import { useTweetStore } from '@/stores/tweetStore';
 
 
+
 export default {
+
     data() {
         return {
             numOfComment: 0,
@@ -142,14 +214,17 @@ export default {
             userName: useMemberStore().memberName,
             userLikeList: [],
             replyContent: '',
+            thisTweetUserId: '',
             currentReply: '',//當下留言立即出現
             preNodeUserName: '',//如果是回文的話，主文的推主是誰
             preNodeUserId: '',//如果是回文的話，主文的推主id
+            preNodeTweetId: '',
             preNodeTweet: '',////如果是回文的話，主文的推主tweet
             editTweetContent: false,
             editTweetContentTmp: "",//編輯內文，暫存區
             userDogs: [],
-
+            reportPost: [],//檢舉內容
+            reportPostText: '',
         }
     },
     props: {
@@ -192,11 +267,17 @@ export default {
         if (this.tweet.preNode != 0) {
             axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.preNode}`).then(re => {
                 this.preNodeUserName = re.data.lastName;
+                this.preNodeUserId = re.data.userId;
+            })
+            axios.get(`${this.API_URL}/tweet/getTweetById/${this.tweet.preNode}`).then(re => {
+                this.preNodeTweet = re.data;
             })
         }
+
+
         if (this.tweet.preNode == 0) {
             axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.tweetId}`).then(re => {
-                this.preNodeUserId = re.data.userId;
+                this.thisTweetUserId = re.data.userId;
             })
         }
     },
@@ -253,15 +334,15 @@ export default {
 
             axios.post(`${this.API_URL}/tweet/getLikeLink`, fd)
                 .then(response => {
-                    console.log("/tweet/getLikeLink" + response);
+                    console.log("likeTweet success");
                 })
                 .catch(error => {
                     console.error(error);
                 });
 
-            if (this.userId != this.preNodeUserId) {
+            if (this.userId != this.thisTweetUserId) {
                 const params = {
-                    hisUserId: this.preNodeUserId,
+                    hisUserId: this.thisTweetUserId,
                     hisTweetId: this.tweet.tweetId,
                     myName: memberStore.memberName
                 };
@@ -285,7 +366,7 @@ export default {
 
             axios.post(`${this.API_URL}/tweet/removeLikeLink`, fd)
                 .then(response => {
-                    console.log(response);
+                    console.log("unlikeTweet success");
                 })
                 .catch(error => {
                     console.error(error);
@@ -340,19 +421,16 @@ export default {
                     console.error("發文失败:", error);
                 })
 
-            if (this.userId != this.preNodeUserId) {
+            if (this.userId != this.thisTweetUserId) {
 
                 const params = {
-                    hisUserId: this.preNodeUserId,
+                    hisUserId: this.thisTweetUserId,
                     hisTweetId: this.tweet.tweetId,
                     myName: memberStore.memberName
                 };
-                console.log("hisUserId" + this.preNodeUserId)
-                console.log("hisTweetId" + this.tweet.tweetId)
-                console.log("myName" + memberStore.memberName)
                 axios.get(`${this.API_URL}/tweet/sendReplyNotify`, { params })
                     .then(response => {
-                        console.log(response.data);
+                        console.log("sendReplyNotify: " + response.data);
                     })
                     .catch(error => {
                         console.error('Error:', error);
@@ -415,34 +493,40 @@ export default {
                     });
 
             } else {
-                // 用户点击了取消按钮，您可以在这里添加相应的逻辑
-                console.log('用户取消了删除操作');
+                console.log('取消操作');
             }
-
+        },
+        showReportPostPage() {
+            const reportPostPage = new bootstrap.Modal(this.$refs.ReportPostPage);
+            reportPostPage.show()
+        },
+        submitReport() {
+            const requestData = {
+                reportText: this.reportPostText,
+                reportCheckBox: this.reportPost,
+                reporterId: this.userId,
+                tweetId: this.tweet.tweetId
+            };
+            axios.post(`${this.API_URL}/tweet/reportTweet`, requestData)
+                .then(response => {
+                    console.log("Report submitted successfully:", response.data);
+                })
+                .catch(error => {
+                    console.error("Error submitting report:", error.message);
+                });
         }
 
     }
 };
 </script>
 
-<!-- <style scoped>
-.tweet-item {
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 80%;
-    max-width: 600px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+<style scoped>
+.with-background {
+    background-color: #F3F3FA;
+    border-radius: 10px;
+
 }
 
-.gallery-image {
-    max-width: 100%;
-    max-height: 100%;
-}
-</style> -->
-<style scoped>
 .tweet-item {
     max-width: 500px;
     margin-bottom: 20px;
@@ -512,7 +596,7 @@ export default {
 }
 
 .content-wrapper {
-    border: 1px solid #ccc;
+    border: 1.5px solid #1c1c1c;
     border-radius: 5px;
     background-color: #f9f9f9;
     padding: 10px;
@@ -521,5 +605,22 @@ export default {
 .colored-header {
     background-color: #ffffff;
     padding: 20px;
+
+}
+
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    z-index: 1;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
 }
 </style>

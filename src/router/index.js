@@ -123,6 +123,10 @@ const router = createRouter({
           path: "r_page",
           component: () => import("@/views/employee/RoomReservation.vue"),
         },
+        {
+          path: "t_page",
+          component: () => import("@/views/employee/TweetManage.vue"),
+        },
       ],
     },
     {
