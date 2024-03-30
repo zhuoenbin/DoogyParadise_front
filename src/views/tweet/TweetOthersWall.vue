@@ -22,6 +22,7 @@ export default {
     data() {
         return {
             tweets: [],
+            tweet: "",
             name: "",
             isFollwer: false,
             myUserId: '',
@@ -33,23 +34,18 @@ export default {
         this.tweets = tweetStore.tweets;
         this.name = tweetStore.user;
 
+
         if (this.name.length === 0) {
             this.$router.push("/tweetPage/tweetsWallPage");
         } else {
             const memberStore = useMemberStore();
-            console.log("我的ID" + memberStore.memberId);
             this.myUserId = memberStore.memberId;
-            console.log("他的名字" + this.tweets[0].userName
-            )
 
             axios.post(`${this.API_URL}/tweet/checkFollerRelationship`, {
                 myId: memberStore.memberId,
-                tweetUserName: this.tweets[0].userName
+                tweetUserId: this.tweets[0].tweetId
             })
                 .then(response => {
-                    // this.isFollwer = response.data
-                    console.log("isFollowing: " + response.data.isFollowing);
-                    console.log("userId: " + response.data.userId);
                     this.isFollwer = response.data.isFollowing;
                     this.otherUserId = response.data.userId
                     window.scrollTo(0, 0);

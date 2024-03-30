@@ -21,7 +21,10 @@
                     <button class="sidebar-button custom-router-link">我的追蹤</button>
                 </router-link>
 
-                <button class="sidebar-button">通知</button>
+                <router-link to="/tweetPage/tweetsMyNotificationPath">
+                    <button class="sidebar-button custom-router-link">我的通知</button>
+                </router-link>
+
             </div>
         </div>
 
@@ -40,22 +43,29 @@
                     <div class="mb-3">
                         <textarea v-model="postTweetContent" class="form-control" id="tweetContent"
                             placeholder="What's happening?" rows="3"></textarea>
+                        <small v-if="noText" class="text-danger">必須要有內容喔</small>
                     </div>
                     <!-- 其他仿推特功能 -->
                     <div class="mb-3">
                         <label for="imageUpload" class="form-label">Upload Image:</label>
                         <input type="file" class="form-control" id="imageUpload" ref="imageUpload" />
                     </div>
-                    <div class="mb-3">
-                        <label for="tagFriends" class="form-label">Tag Friends:</label>
-                        <input type="text" class="form-control" id="tagFriends" placeholder="Tag friends..." />
+                    <!-- <div class="mb-3">
+                        <label for="tagFriends" class="form-label">Tag My Dogs:</label>
+                        <input type="text" class="form-control" id="tagFriends" placeholder="Tag dogs..." />
+                    </div> -->
+                    <div>選一下要tag的狗狗</div>
+                    <div v-for="dog in myDogs" :key="dog.dogId">
+                        <input type="checkbox" :id="'dogCheckbox' + dog.dogId" :value="dog.dogId"
+                            v-model="selectedDogs">
+                        <label :for="'dogCheckbox' + dog.dogId">{{ dog.dogName }}</label>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         Close
                     </button>
-                    <button type="button" class="btn btn-primary" @click="postTweet" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-primary" @click="postTweet">
                         Post
                     </button>
                 </div>
@@ -76,9 +86,21 @@ export default {
         return {
             postTweetContent: "",
             isModalOpen: false,
+            noText: false,
+            myDogs: [],
+            selectedDogs: [],
         };
     },
-    mounted() { },
+    mounted() {
+        const memberStore = useMemberStore();
+        this.memberId = memberStore.memberId
+        axios.get(`${this.API_URL}/dog/getDogs/${this.memberId}`)
+            .then(re => {
+                this.myDogs = re.data;
+            }).catch(
+
+        )
+    },
     methods: {
         showModal() {
             // https://bootstrap5.hexschool.com/docs/5.1/components/modal/#via-javascript
@@ -90,11 +112,19 @@ export default {
             window.location.reload();
         },
         postTweet() {
+            if (this.postTweetContent.trim() === "") {
+                console.log("failed")
+                this.noText = true;
+                return;
+            }
+            this.noText = false;
             const memberStore = useMemberStore();
 
             const formData = new FormData();
             formData.append('memberId', memberStore.memberId);
             formData.append('tweetContent', this.postTweetContent);
+            formData.append('dogList', this.selectedDogs);
+
             if (this.$refs.imageUpload.files.length > 0) {
                 formData.append('image', this.$refs.imageUpload.files[0]);
                 axios.post(`${this.API_URL}/tweet/postTweetWithPhoto`, formData, {
