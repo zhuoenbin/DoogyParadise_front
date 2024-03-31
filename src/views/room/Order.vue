@@ -13,11 +13,13 @@
         </span>
         <span> 訂房Id: {{ reservation.reservationId }} </span>
         <span> 房間Id: {{ reservation.room.roomId }} </span>
-        <span> 寵物名稱: {{ reservation.dog.dogName }} </span>
+        <span> 寵物名: {{ reservation.dog.dogName }} </span>
         <span> 費用: {{ reservation.totalPrice }} </span>
         <div v-if="formatDate(reservation.cancelTime) != '1970/01/01'">
-          <div>取消時間: {{ formatDate(reservation.cancelTime) }}</div>
-          <div>取消原因: {{ reservation.cancelDirection }}</div>
+          <div class="cancel">
+            取消時間: {{ formatDate(reservation.cancelTime) }}
+          </div>
+          <div class="cancel">取消原因: {{ reservation.cancelDirection }}</div>
         </div>
         <div
           class="flex"
@@ -61,6 +63,7 @@ onMounted(() => {
   axios
     .get("http://localhost:8080/room/allRoomReservationByUser")
     .then((response) => {
+      // 日期排列順序反過來
       const reversedData = response.data.reverse();
       reservations.value = reversedData;
     });
@@ -112,5 +115,9 @@ button {
 
 .flex {
   display: flex;
+}
+
+.cancel {
+  color: rgb(231, 43, 43);
 }
 </style>

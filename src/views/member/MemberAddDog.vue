@@ -1,79 +1,81 @@
 <template>
-  <form>
-    <div class="mb-3">
-      <label for="dogName" class="form-label">狗狗名稱</label>
-      <input
-        type="text"
-        class="form-control"
-        id="dogName"
-        v-model="dogName"
-        placeholder="輸入狗狗名稱"
-        required
-      />
-    </div>
-    <div class="mb-3">
-      <label for="dogGender" class="form-label">狗狗性別</label>
-      <select id="dogGender" class="form-select" v-model="dogGender" required>
-        <option value="Male">公</option>
-        <option value="Female">母</option>
-      </select>
-    </div>
-    <div class="mb-3">
-      <label for="dogBirthDate" class="form-label" required>狗狗生日</label>
-      <input
-        type="date"
-        id="dogBirthDate"
-        class="form-control"
-        :max="getCurrentDate()"
-        v-model="dogBirthDate"
-      />
-    </div>
-    <div class="mb-3">
-      <label for="dogBreed" class="form-label" required>狗狗品種</label>
-      <input
-        type="text"
-        class="form-control"
-        id="dogBreed"
-        placeholder="輸入狗狗品種"
-        v-model="dogBreed"
-      />
-    </div>
-    <div class="mb-3">
-      <label for="dogWeight" class="form-label" required>狗狗體重</label>
-      <input
-        type="text"
-        class="form-control"
-        id="dogWeight"
-        placeholder="輸入狗狗體重"
-        v-model="dogWeight"
-      />
-    </div>
-    <!-- 還沒綁定 -->
-    <div class="mb-3">
-      <label for="dogImgPathCloud" class="form-label">狗狗照片</label>
-      <input
-        type="file"
-        class="form-control"
-        id="dogImgPathCloud"
-        ref="dogImgPathCloud"
-      />
-    </div>
-    <div class="mb-3">
-      <label for="dogIntroduce" class="form-label">狗狗介紹</label>
-      <textarea
-        class="form-control"
-        id="dogIntroduce"
-        placeholder="簡短介紹狗狗"
-        rows="3"
-        v-model="dogIntroduce"
-      ></textarea>
-    </div>
+  <div class="flex">
+    <form>
+      <div class="mb-3">
+        <label for="dogName" class="form-label">狗狗名稱</label>
+        <input
+          type="text"
+          class="form-control"
+          id="dogName"
+          v-model="dogName"
+          placeholder="輸入狗狗名稱"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label for="dogGender" class="form-label">狗狗性別</label>
+        <select id="dogGender" class="form-select" v-model="dogGender" required>
+          <option value="Male">公</option>
+          <option value="Female">母</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="dogBirthDate" class="form-label" required>狗狗生日</label>
+        <input
+          type="date"
+          id="dogBirthDate"
+          class="form-control"
+          :max="getCurrentDate()"
+          v-model="dogBirthDate"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="dogBreed" class="form-label" required>狗狗品種</label>
+        <input
+          type="text"
+          class="form-control"
+          id="dogBreed"
+          placeholder="輸入狗狗品種"
+          v-model="dogBreed"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="dogWeight" class="form-label" required>狗狗體重</label>
+        <input
+          type="text"
+          class="form-control"
+          id="dogWeight"
+          placeholder="輸入狗狗體重"
+          v-model="dogWeight"
+        />
+      </div>
+      <!-- 還沒綁定 -->
+      <div class="mb-3">
+        <label for="dogImgPathCloud" class="form-label">狗狗照片</label>
+        <input
+          type="file"
+          class="form-control"
+          id="dogImgPathCloud"
+          ref="dogImgPathCloud"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="dogIntroduce" class="form-label">狗狗介紹</label>
+        <textarea
+          class="form-control"
+          id="dogIntroduce"
+          placeholder="簡短介紹狗狗"
+          rows="3"
+          v-model="dogIntroduce"
+        ></textarea>
+      </div>
+    </form>
     <button class="btn btn-primary" @click="addDog()">新增狗狗</button>
-  </form>
+  </div>
 </template>
 
 <script>
-import { useMemberStore } from "@/stores/memberStore";
+// import { useMemberStore } from "@/stores/memberStore";
 import DogItem from "@/components/dog/DogCard.vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
@@ -84,7 +86,7 @@ export default {
   },
   data() {
     return {
-      memberId: "",
+      // memberId: "",
       dogName: "",
       dogGender: "",
       dogBirthDate: "",
@@ -95,8 +97,8 @@ export default {
     };
   },
   mounted() {
-    const memberStore = useMemberStore();
-    this.memberId = memberStore.memberId;
+    // const memberStore = useMemberStore();
+    // this.memberId = memberStore.memberId;
   },
   methods: {
     // 鎖定今天以後的日期不能選取
@@ -132,9 +134,6 @@ export default {
         )
         .then((response) => {
           this.dogImg(response.data);
-          this.$router.push("/profile/mydog").then(() => {
-            window.location.reload();
-          });
         });
     },
     dogImg(data) {
@@ -149,8 +148,13 @@ export default {
                 "Content-Type": "multipart/form-data",
               },
             })
+            .then((response) => {
+              this.$router.push({
+                name: "mydog", // 使用路由名稱
+              });
+            })
             .catch((error) => {
-              console.error("主題圖片新增失敗", error);
+              console.error("圖片新增失敗", error);
             });
         } else {
           console.log("沒有選擇任何圖片");
@@ -161,44 +165,53 @@ export default {
 };
 </script>
 <style scoped>
+.flex {
+  margin: 0 auto; /* 將彈性容器水平置中 */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 將內部元素水平置中 */
+}
+
 form {
   margin: 20px;
   padding: 20px;
+  width: 100%;
   border: 1px solid #ccc;
   border-radius: 10px;
+  background-color: #f9f9f9; /* 添加背景色 */
 }
 
-/* 标签样式 */
+/* 標籤樣式 */
 .form-label {
   font-weight: bold;
 }
 
-/* 输入框样式 */
+/* 輸入框樣式 */
 .form-control {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  box-sizing: border-box; /* 确保元素的宽度和高度包括边框和填充 */
+  box-sizing: border-box;
 }
 
-/* 文本域样式 */
+/* 文本區樣式 */
 textarea.form-control {
-  resize: vertical; /* 允许垂直调整大小 */
+  resize: vertical;
 }
 
-/* 选择框样式 */
+/* 選擇框樣式 */
 select.form-control {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  appearance: none; /* 隐藏默认的下拉箭头 */
+  appearance: none;
 }
 
-/* 文件上传样式 */
+/* 文件上傳樣式 */
 input[type="file"].form-control {
   width: 100%;
   padding: 10px;
@@ -207,24 +220,25 @@ input[type="file"].form-control {
   border-radius: 5px;
 }
 
-/* 按钮样式 */
+/* 按鈕樣式 */
 .btn-primary {
-  max-height: 50px;
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  width: 100%;
+  margin: 20px 300px; /* 增加上邊距以與其他元素保持間距 */
 }
 
 .btn-primary:hover {
   background-color: #0056b3;
 }
 
-/* 按钮聚焦时样式 */
+/* 按鈕聚焦時樣式 */
 .btn-primary:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); /* 添加焦点时的边框 */
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 </style>

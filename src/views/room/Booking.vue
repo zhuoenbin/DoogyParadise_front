@@ -4,7 +4,7 @@
       <h2>訂房</h2>
       <div class="top flex" v-if="dogs.length != 0">
         <span>請選擇要住宿的寵物:</span>
-        <select v-model="selectedDog" @change="RoomsDate()" class="select-dog">
+        <select v-model="selectedDog" @change="RoomsDate()" class="">
           <option v-for="(dog, dogId) in dogs" :key="dogId" :value="dog">
             {{ dog.dogName }}
           </option>
@@ -18,7 +18,7 @@
           :options="datepickerOptions"
           :enable-time-picker="false"
           :min-date="new Date()"
-          @blur="RoomsDate($event)"
+          @blur="RoomsDate()"
         />
       </div>
       <span v-for="(room, roomId) in filteredRooms" :key="roomId">
@@ -37,6 +37,7 @@
             <!-- {{ room.roomImgPath }} -->
             <div class="card-body">
               <h5 class="card-title">房間名稱: {{ room.roomName }}</h5>
+              <hr />
               <p class="card-text">
                 房間適用於:
                 {{ roomSizeText(room.roomSize) }}<br />房間價格(一天):
@@ -44,10 +45,11 @@
               </p>
               <a
                 @click="bookRoom(room)"
+                href="javascript: void(0)"
                 class="btn btn-primary"
                 v-if="dogs.length != 0"
-                >訂房</a
-              >
+                >訂房<span></span><span></span><span></span><span></span
+              ></a>
             </div>
             <!-- Modal -->
             <div
@@ -93,12 +95,30 @@
                         "
                       >
                         <hr />
-                        訂房明細Id: {{ roomReservation.reservationId }}
+                        用戶: {{ roomReservation.user.lastName }}
                         <br />
-                        評分星數: {{ roomReservation.star }}
+                        <!-- 用戶: {{ roomReservation.dog }}
+                        <br /> -->
+                        訂房時段: {{ formatDate(roomReservation.startTime) }} -
+                        {{ formatDate(roomReservation.endTime) }}
                         <br />
+                        <span
+                          v-for="index in roomReservation.star"
+                          :key="index"
+                          class="star"
+                          >★</span
+                        >
+                        <span
+                          v-for="index in maxRating - roomReservation.star"
+                          :key="index"
+                          class="star"
+                          >☆</span
+                        >
                         <div class="jcsb">
-                          <span> 評分說明: {{ roomReservation.conments }} </span
+                          <span v-if="roomReservation.conments != null">
+                            評分說明: {{ roomReservation.conments }}
+                          </span>
+                          <span class="gray" v-else>無評分說明</span
                           ><span class="gray"
                             >評分時間:
                             {{ formatDate(roomReservation.conmentsTime) }}</span
@@ -130,6 +150,7 @@ const roomReservations = ref([]);
 const reservations = ref([]);
 const selectedDog = ref(null);
 const selectedDates = ref([]); // 用於存儲所選日期的範圍
+const maxRating = 5; // 最大星數
 
 onMounted(() => {
   axios.get("http://localhost:8080/room").then((response) => {
@@ -141,9 +162,9 @@ onMounted(() => {
   axios.get("http://localhost:8080/room/reservation").then((response) => {
     reservations.value = response.data;
   });
-  // 所有訂單
+  // 所有訂單 (評價)
   axios
-    .get("http://localhost:8080/room/allRoomReservation")
+    .get("http://localhost:8080/employee/roomReservation")
     .then((response) => {
       roomReservations.value = response.data;
     });
@@ -292,26 +313,31 @@ const bookRoom = (room) => {
 
     // 新增訂房明細
     const roomReservation = () => {
-      axios.post(
-        `http://localhost:8080/room/roomReservation?roomId=${room.roomId}&dogId=${selectedDog.value.dogId}`,
-        {
-          dogId: selectedDog.value.dogId,
-          startTime: formattedDates[0],
-          endTime: formattedDates[1],
-          totalPrice: (dateRange.length - 1) * room.roomPrice,
-          reservationTime: "",
-          cancelTime: "",
-          cancelDirection: "",
-          paymentMethod: "credit card",
-          paymentStatus: "paid",
-        }
-      );
+      axios
+        .post(
+          `http://localhost:8080/room/roomReservation?roomId=${room.roomId}&dogId=${selectedDog.value.dogId}`,
+          {
+            startTime: formattedDates[0],
+            endTime: formattedDates[1],
+            totalPrice: (dateRange.length - 1) * room.roomPrice,
+            reservationTime: new Date(),
+            paymentMethod: "credit card",
+            paymentStatus: "paid",
+          }
+        )
+        .then((response) => {
+          console.log(response.data);
+          axios.post(
+            `http://localhost:8080/room/email?roomReservationId=${response.data}`
+          );
+        });
     };
+
     if (formattedDates[1] != "1970-01-01") {
       alert(
-        `訂房成功！ 寵物Name: ${selectedDog.value.dogName}, 房間Id: ${
-          room.roomId
-        }, 訂房時間 ${formattedDates.join(" - ")}`
+        `訂房成功！ 寵物Name: ${selectedDog.value.dogName},
+        房間Id: ${room.roomId}, 訂房時間 ${formattedDates.join(" - ")},
+        已寄信至您的信箱`
       );
       roomReservation();
       // 成功的話頁面跳轉到 o_page 並重新加載
@@ -357,9 +383,9 @@ const RoomsDate = () => {
                 roomReservation.reservationId == reservation[1] &&
                 roomReservation.cancelTime == null
               ) {
-                console.log(reservation[1]);
-                console.log(`RoomId: ${reservation[0]}`);
-                console.log(`重複日期: ${reservation[i]}`);
+                // console.log(reservation[1]);
+                // console.log(`RoomId: ${reservation[0]}`);
+                // console.log(`重複日期: ${reservation[i]}`);
                 noVacancies.push(reservation[0]);
               }
             }
@@ -377,6 +403,11 @@ const RoomsDate = () => {
 </script>
 
 <style scoped>
+.sidebar {
+  min-width: 82vw;
+  min-height: 82vh;
+}
+
 .flex {
   display: flex;
 }
@@ -418,25 +449,59 @@ select {
   margin: 5px 0;
 }
 
-.room-container .room-details button {
-  padding: 8px 16px;
-  font-size: 14px;
+.btn {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  min-width: 150px;
+  background: #ffffff;
+  border: 2px solid goldenrod;
   border-radius: 4px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.5s;
+  color: goldenrod;
+  font-size: 1rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  overflow: hidden;
+  transition: 0.5s;
+  padding: 10px 20px;
 }
-
-.room-container .room-details button:hover {
-  background-color: #6bb2fe;
+.btn span {
+  position: absolute;
+  width: 25%;
+  height: 100%;
+  background-color: goldenrod;
+  transform: translateY(150%);
+  border-radius: 50%;
+  left: calc((var(--n) - 1) * 25%);
+  transition: 0.5s;
+  transition-delay: calc((var(--n) - 1) * 0.1s);
+  z-index: -1;
+}
+.btn:hover {
+  color: rgb(255, 255, 255);
+}
+.btn:hover span {
+  transform: translateY(0) scale(2);
+}
+.btn span:nth-child(1) {
+  --n: 1;
+}
+.btn span:nth-child(2) {
+  --n: 2;
+}
+.btn span:nth-child(3) {
+  --n: 3;
+}
+.btn span:nth-child(4) {
+  --n: 4;
 }
 
 .card {
   flex-direction: row;
   align-items: center;
+  padding: 1rem;
   background-color: #37474e;
   color: #f3f3f3;
 }
@@ -446,6 +511,7 @@ select {
   max-width: 200px;
   height: auto;
   border-radius: 4px;
+  box-shadow: -10px 10px 10px rgb(36, 36, 37);
 }
 
 .modal-header,
@@ -460,5 +526,14 @@ select {
 
 .gray {
   color: #515e63;
+}
+
+.star-rating {
+  margin-bottom: 20px;
+}
+
+.star {
+  font-size: 24px;
+  color: gold;
 }
 </style>

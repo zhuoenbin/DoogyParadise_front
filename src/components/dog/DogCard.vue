@@ -1,6 +1,11 @@
 <template>
   <div class="dog-card">
-    <img :src="dog.dogImgPathCloud" class="dog-image" />
+    <img
+      v-if="dog.dogImgPathCloud != null"
+      :src="dog.dogImgPathCloud"
+      class="dog-image"
+    />
+    <p v-else>找不到圖</p>
     <!-- <img
       src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1711549113/accountFolder/yxq2tfhvpw8jtj1o8ifi.jpg"
       class="dog-image"
@@ -10,12 +15,15 @@
       <div class="dog-detail">出生日期：{{ formatDate(dog.dogBirthDate) }}</div>
       <div class="dog-detail">品種：{{ dog.dogBreed }}</div>
       <div class="dog-detail">性別：{{ dog.dogGender }}</div>
-      <div class="dog-introduction">狗狗介紹：{{ dog.dogIntroduce }}</div>
+      <div class="dog-introduction">
+        狗狗介紹：
+        <div style="white-space: pre-line">{{ dog.dogIntroduce }}</div>
+      </div>
       <div class="dog-detail">體重：{{ dog.dogWeight }}</div>
       <button
         class="btn btn-primary"
         data-bs-toggle="modal"
-        data-bs-target="#exampleModal"
+        :data-bs-target="'#exampleModal_' + dog.dogId"
       >
         修改狗狗資訊
       </button>
@@ -25,7 +33,7 @@
   <!-- Modal -->
   <div
     class="modal fade"
-    id="exampleModal"
+    :id="'exampleModal_' + dog.dogId"
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
@@ -37,12 +45,12 @@
         </div>
         <div class="modal-body">
           <div class="mb-3">
-            <label for="dogName" class="form-label">{{ dog.dogName }}</label>
+            <label for="dogName" class="form-label">狗狗名稱</label>
             <input
               type="text"
               class="form-control"
               id="dogName"
-              v-model="dogName"
+              v-model="dog.dogName"
               placeholder="輸入狗狗名稱"
               required
             />
@@ -52,7 +60,7 @@
             <select
               id="dogGender"
               class="form-select"
-              v-model="dogGender"
+              v-model="dog.dogGender"
               required
             >
               <option value="Male">公</option>
@@ -67,7 +75,7 @@
               type="date"
               id="dogBirthDate"
               class="form-control"
-              v-model="dogBirthDate"
+              v-model="dog.dogBirthDate"
             />
           </div>
           <div class="mb-3">
@@ -77,7 +85,7 @@
               class="form-control"
               id="dogBreed"
               placeholder="輸入狗狗品種"
-              v-model="dogBreed"
+              v-model="dog.dogBreed"
             />
           </div>
           <div class="mb-3">
@@ -87,10 +95,9 @@
               class="form-control"
               id="dogWeight"
               placeholder="輸入狗狗體重"
-              v-model="dogWeight"
+              v-model="dog.dogWeight"
             />
           </div>
-          <!-- 還沒綁定 -->
           <div class="mb-3">
             <label for="dogImgPathCloud" class="form-label">狗狗照片</label>
             <input
@@ -107,12 +114,19 @@
               id="dogIntroduce"
               placeholder="簡短介紹狗狗"
               rows="3"
-              v-model="dogIntroduce"
+              v-model="dog.dogIntroduce"
             ></textarea>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" @click="">修改</button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click="update()"
+            data-bs-dismiss="modal"
+          >
+            修改
+          </button>
         </div>
       </div>
     </div>
@@ -120,6 +134,9 @@
 </template>
 
 <script>
+import axios from "axios";
+import { useMemberStore } from "@/stores/memberStore";
+
 export default {
   props: {
     dog: {
@@ -127,8 +144,12 @@ export default {
       required: true,
     },
   },
+  mounted() {
+    const memberStore = useMemberStore();
+    this.memberId = memberStore.memberId;
+  },
   data() {
-    return {};
+    return { memberId: "" };
   },
   methods: {
     formatDate(dateString) {
@@ -138,6 +159,51 @@ export default {
       const day = date.getDate().toString().padStart(2, "0");
       return `${year}/${month}/${day}`;
     },
+    update() {
+      axios
+        .post(
+          `http://localhost:8080/dog/update?dogId=${this.dog.dogId}`,
+          {
+            dogName: this.dog.dogName,
+            dogGender: this.dog.dogGender,
+            dogBirthDate: this.dog.dogBirthDate,
+            dogIntroduce: this.dog.dogIntroduce,
+            dogWeight: parseFloat(this.dog.dogWeight),
+            dogBreed: this.dog.dogBreed,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          this.dogImg(response.data);
+        });
+    },
+    dogImg(data) {
+      if (this.memberId != null) {
+        if (this.$refs.dogImgPathCloud.files.length > 0) {
+          const fd = new FormData();
+          fd.append("dogId", data);
+          fd.append("dogImgPathCloud", this.$refs.dogImgPathCloud.files[0]);
+          axios
+            .post(`${this.API_URL}/dog/addDogImg`, fd, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then(() => {
+              this.$router.go(0);
+            })
+            .catch((error) => {
+              console.error("圖片新增失敗", error);
+            });
+        } else {
+          console.log("沒有選擇任何圖片");
+        }
+      }
+    },
   },
 };
 </script>
@@ -145,11 +211,13 @@ export default {
 <style scoped>
 .dog-card {
   display: flex;
+  flex-wrap: wrap; /* 讓內容可以換行 */
   /* border: 1px solid #ccc; */
-  width: 800px;
+  min-width: 500px;
   border-radius: 10px;
   padding: 20px;
   margin: 20px;
+  margin-left: 50px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #fff;
 }
@@ -164,6 +232,7 @@ export default {
 .dog-info {
   font-family: Arial, sans-serif;
   margin: 2rem;
+  flex: 1; /* 讓內容元素自動填滿可用空間 */
 }
 
 .dog-name {

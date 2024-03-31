@@ -107,9 +107,17 @@ const router = createRouter({
       path: "/employee",
       component: () => import("@/views/employee/Employee.vue"),
       children: [
+      ]
+    }, {
+      path: "/employee/room",
+      component: () => import("@/views/employee/room/Room.vue"),
+      children: [
         {
           path: "r_page",
-          component: () => import("@/views/employee/RoomReservation.vue")
+          component: () => import("@/views/employee/room/RoomReservation.vue"),
+        },{
+          path: "u_page",
+          component: () => import("@/views/employee/room/RoomUpdate.vue"),
         }
       ]
     },

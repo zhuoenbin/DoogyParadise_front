@@ -1,24 +1,24 @@
 <template>
   <div class="main-container">
     <!-- sideBar -->
-    <div class="sidebar" v-if="memberId != ''">
+    <div class="sidebar">
       <div class="sidebar-header">
-        <h2>寵物旅館</h2>
+        <h2>訂房管理</h2>
       </div>
       <div class="sidebar-buttons">
-        <router-link to="/room/b_page"
+        <router-link to="/employee/room/u_page"
           ><button class="sidebar-button custom-router-link">
-            訂房
+            房間管理
           </button></router-link
         >
-        <router-link to="/room/o_page"
+        <router-link to="/employee/room/r_page"
           ><button class="sidebar-button custom-router-link">
-            預約訂房管理
+            訂單管理
           </button></router-link
         >
-        <router-link to="/room/h_page"
+        <router-link to="/employee"
           ><button class="sidebar-button custom-router-link">
-            歷史訂房紀錄
+            後臺管理
           </button></router-link
         >
         <!-- 其他按鈕 -->
@@ -31,22 +31,11 @@
     </div>
   </div>
 </template>
-<script setup>
-import { ref, onMounted } from "vue";
-import { useMemberStore } from "@/stores/memberStore";
-
-const memberId = ref();
-
-onMounted(() => {
-  const memberStore = useMemberStore();
-  memberId.value = memberStore.memberId;
-});
-</script>
+<script setup></script>
 <style scoped>
 .main {
-  width: 80vw;
-  padding: 40px 0 0 80px;
-  margin: 0 auto; /* 水平置中 */
+  width: 80%;
+  padding: 40px;
 }
 
 .main-container {
