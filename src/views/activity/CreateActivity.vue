@@ -265,6 +265,25 @@ export default {
         this.venues = Object.values(venueObj);
         let venues = JSON.parse(JSON.stringify(venueObj));
       });
+
+    const memberStore = useMemberStore();
+    if (memberStore.memberRole.startsWith("ROLE")) {
+      this.contactPhone = "06 253 3131";
+      axios
+        .get(
+          `${this.API_URL}/activity/api/official/employeePass/${memberStore.memberId}`
+        )
+        .then((rs) => {
+          const myPassObj = Object.values(rs.data);
+          this.myEmpPass = JSON.parse(JSON.stringify(myPassObj));
+          console.log(this.myEmpPass);
+          this.contactInfo = `${this.myEmpPass[1]}`;
+          this.contactMail = `${this.myEmpPass[3]}`;
+        })
+        .catch((error) => {
+          console.error("Emp eroor:", error);
+        });
+    }
   },
   data() {
     return {
@@ -289,26 +308,6 @@ export default {
       message: "",
       activityDogNumber: "",
     };
-  },
-  mounted() {
-    const memberStore = useMemberStore();
-    if (memberStore.memberRole.startsWith("ROLE")) {
-      this.contactPhone = "06 253 3131";
-      axios
-        .get(
-          `${this.API_URL}/activity/api/official/employeePass/${memberStore.memberId}`
-        )
-        .then((rs) => {
-          const myPassObj = Object.values(rs.data);
-          this.myEmpPass = JSON.parse(JSON.stringify(myPassObj));
-          console.log(this.myEmpPass);
-          this.contactInfo = `${this.myEmpPass[1]}`;
-          this.contactMail = `${this.myEmpPass[3]}`;
-        })
-        .catch((error) => {
-          console.error("Emp eroor:", error);
-        });
-    }
   },
   computed: {
     dogOptions() {
