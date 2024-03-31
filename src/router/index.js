@@ -93,6 +93,14 @@ const router = createRouter({
           component: () => import("@/views/activity/ActivityWall.vue"),
         },
         {
+          path: "pastActs",
+          component: () => import("@/views/activity/PastActivityWall.vue"),
+        },
+        {
+          path: "holdingActs",
+          component: () => import("@/views/activity/HoldingActivityWall.vue"),
+        },
+        {
           path: "venuesIntro",
           component: () => import("@/views/activity/VenuesIntro.vue"),
         },

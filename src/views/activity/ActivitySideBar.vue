@@ -18,16 +18,20 @@ export default {
           icon: "fa-solid fa-seedling",
           child: [
             {
+              href: "/activity/holdingActs",
+              title: "報名中活動",
+            },
+            {
+              href: "/activity/pastActs",
+              title: "過去所有活動",
+            },
+            {
               href: "/activity/all",
               title: "所有活動",
             },
             {
               href: "/activity/create",
               title: "舉辦活動",
-            },
-            {
-              href: "/",
-              title: "",
             },
           ],
         },
