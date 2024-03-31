@@ -9,7 +9,12 @@ const router = createRouter({
     },
     {
       path: "/login",
+      name:"login",
       component: () => import("@/views/account/LoginPage.vue"),
+    },
+    {
+      path: "/forgetPassword",
+      component: () => import("@/views/account/ForgetPassword.vue"),
     },
     {
       path: "/register",
