@@ -138,6 +138,7 @@
             <span v-if="tweet.preNode == 0">
                 <button v-if="!this.liked" @click="likeTweet" class="btn btn-primary">🦴</button>
                 <button v-else @click="unlikeTweet" class="btn btn-warning">💩</button>
+                <!-- 發文時間 -->
                 發文時間: {{ formatPostDate(tweet.postDate) }}</span>
 
             <hr v-if="tweet.preNode == 0">

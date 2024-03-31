@@ -6,6 +6,7 @@
 <script>
 import axios from 'axios';
 import ReportItem from '@/components/tweet/TweetReport.vue';
+import { useMemberStore } from "@/stores/memberStore";
 
 export default {
     components: {
@@ -14,6 +15,13 @@ export default {
     data() {
         return {
             reports: [],
+        }
+    },
+    created() {
+        const memberStore = useMemberStore();
+        if (!memberStore.memberRole.startsWith('ROLE')) {
+            // 如果 memberRole 不是以 'ROLE' 開頭，導向首頁
+            this.$router.push('/:pathMatch(.*)*');
         }
     },
     mounted() {
