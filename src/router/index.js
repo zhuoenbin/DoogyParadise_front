@@ -97,8 +97,35 @@ const router = createRouter({
           component: () => import("@/views/activity/PastActivityWall.vue"),
         },
         {
+          path: "pastActs/care",
+          component: () => import("@/views/activity/PastActivityCareWall.vue"),
+        },
+        {
+          path: "pastActs/eat",
+          component: () => import("@/views/activity/PastActivityEatWall.vue"),
+        },
+        {
+          path: "pastActs/play",
+          component: () => import("@/views/activity/PastActivityPlayWall.vue"),
+        },
+        {
           path: "holdingActs",
           component: () => import("@/views/activity/HoldingActivityWall.vue"),
+        },
+        {
+          path: "holdingActs/care",
+          component: () =>
+            import("@/views/activity/HoldingActivityCareWall.vue"),
+        },
+        {
+          path: "holdingActs/eat",
+          component: () =>
+            import("@/views/activity/HoldingActivityEatWall.vue"),
+        },
+        {
+          path: "holdingActs/play",
+          component: () =>
+            import("@/views/activity/HoldingActivityPlayWall.vue"),
         },
         {
           path: "venuesIntro",

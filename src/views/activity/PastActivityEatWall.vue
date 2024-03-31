@@ -173,7 +173,7 @@ import { useActivityStore } from "@/stores/activityStore";
 export default {
   data() {
     return {
-      chooseCat: 0,
+      chooseCat: 2,
       activities: [],
       userId: "",
       chooseAct: "",
@@ -184,21 +184,23 @@ export default {
     };
   },
   mounted() {
-    axios.get(`${this.API_URL}/activity/api/allPastAct/1`).then((rs) => {
-      console.log(rs.data);
-      this.activities = rs.data.content;
-      this.totalPage = rs.data.totalPages;
-      this.currentPage = rs.data.number + 1;
-      console.log("現在是", this.currentPage);
-    });
+    axios
+      .get(`${this.API_URL}/activity/api/pastAct/category/2/1`)
+      .then((rs) => {
+        console.log(rs.data);
+        this.activities = rs.data.content;
+        this.totalPage = rs.data.totalPages;
+        this.currentPage = rs.data.number + 1;
+        console.log("現在是", this.currentPage);
+      });
   },
   methods: {
     changeCategory() {
       console.log(this.chooseCat);
       if (this.chooseCat == 1) {
         this.$router.push("/activity/pastActs/care");
-      } else if (this.chooseCat == 2) {
-        this.$router.push("/activity/pastActs/eat");
+      } else if (this.chooseCat == 0) {
+        this.$router.push("/activity/pastActs");
       } else if (this.chooseCat == 3) {
         this.$router.push("/activity/pastActs/play");
       }
@@ -270,7 +272,7 @@ export default {
     //綁定頁碼與商品頁面
     currentPage(newVal, oldVal) {
       axios
-        .get(`${this.API_URL}/activity/api/allPastAct/${newVal}`)
+        .get(`${this.API_URL}/activity/api/pastAct/category/2/${newVal}`)
         .then((rs) => {
           this.totalPage = rs.data.totalPages;
           this.activities = rs.data.content;

@@ -19,7 +19,7 @@ export default {
           child: [
             {
               href: "/activity/holdingActs",
-              title: "報名中活動",
+              title: "現在活動",
             },
             {
               href: "/activity/pastActs",
