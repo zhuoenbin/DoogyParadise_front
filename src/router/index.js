@@ -9,7 +9,7 @@ const router = createRouter({
     },
     {
       path: "/login",
-      name:"login",
+      name: "login",
       component: () => import("@/views/account/LoginPage.vue"),
     },
     {
@@ -25,18 +25,20 @@ const router = createRouter({
       component: () => import("@/views/member/MemberProfile.vue"),
       children: [
         {
-          path:"detail",
-          component:()=>import("@/views/member/MemberDetail.vue")
-        },{
-          path:"mydog",
-          name:"mydog",
-          component:()=>import("@/views/member/MemberDog.vue")
-        },{
-          path:"addDog",
-          name:"addDog",
-          component:()=>import("@/views/member/MemberAddDog.vue")
-        }
-      ]
+          path: "detail",
+          component: () => import("@/views/member/MemberDetail.vue"),
+        },
+        {
+          path: "mydog",
+          name: "mydog",
+          component: () => import("@/views/member/MemberDog.vue"),
+        },
+        {
+          path: "addDog",
+          name: "addDog",
+          component: () => import("@/views/member/MemberAddDog.vue"),
+        },
+      ],
     },
     {
       path: "/tweetPage",
@@ -71,24 +73,27 @@ const router = createRouter({
     {
       path: "/room",
       component: () => import("@/views/room/Room.vue"),
-      children:[
+      children: [
         {
-          path:"b_page",
-          component:()=>import("@/views/room/Booking.vue")
-        },{
-          path:"o_page",
-          name:"o_page",
-          component:()=>import("@/views/room/Order.vue")
-        },{
-          path:"h_page",
-          name:"h_page",
-          component:()=>import("@/views/room/History.vue")
-        },{
-          path:"u_page/:reservationId/:str",
-          name:"u_page",
-          component:()=>import("@/views/room/UpdateFrom.vue")
-        }
-      ]
+          path: "b_page",
+          component: () => import("@/views/room/Booking.vue"),
+        },
+        {
+          path: "o_page",
+          name: "o_page",
+          component: () => import("@/views/room/Order.vue"),
+        },
+        {
+          path: "h_page",
+          name: "h_page",
+          component: () => import("@/views/room/History.vue"),
+        },
+        {
+          path: "u_page/:reservationId/:str",
+          name: "u_page",
+          component: () => import("@/views/room/UpdateFrom.vue"),
+        },
+      ],
     },
     {
       path: "/activity",
@@ -168,59 +173,58 @@ const router = createRouter({
           path: "t_page",
           component: () => import("@/views/employee/TweetManage.vue"),
         },
-<<<<<<< HEAD
         {
           path: "act_page",
           component: () => import("@/views/employee/ActivityManager.vue"),
         },
       ],
-=======
-      ]
-    }, {
+    },
+    {
       path: "/employee/room",
       component: () => import("@/views/employee/room/Room.vue"),
       children: [
         {
           path: "r_page",
           component: () => import("@/views/employee/room/RoomReservation.vue"),
-        },{
+        },
+        {
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
-        },{
+        },
+        {
           path: "s_page",
           component: () => import("@/views/employee/room/Schedule.vue"),
-        }
-      ]
->>>>>>> origin/Ruan
+        },
+      ],
     },
     {
       path: "/:pathMatch(.*)*",
       component: () => import("@/views/NotFound.vue"),
     },
-  {
-    path: "/shop",
-    component: () => import("@/views/shop/ShopPage.vue"),
-    children: [
-      {
-        path: "shopPage",
-        component: () => import("@/views/shop/ShopPage.vue")
-      },
-      {
-        path: "category",
-        component: () => import("@/views/shop/ShopCategory.vue")
-      },
-      // :productId動態綁定參數道路由上傳遞
-      {
-        path: "productPage/:productId",
-        name: "product",
-        component: () => import("@/views/shop/ProductPage.vue")
-      }
-    ]
-  },
-  {
-    path: "/cart",
-    component: () => import("@/views/shop/ShoppingCart.vue"),
-  },
+    {
+      path: "/shop",
+      component: () => import("@/views/shop/ShopPage.vue"),
+      children: [
+        {
+          path: "shopPage",
+          component: () => import("@/views/shop/ShopPage.vue"),
+        },
+        {
+          path: "category",
+          component: () => import("@/views/shop/ShopCategory.vue"),
+        },
+        // :productId動態綁定參數道路由上傳遞
+        {
+          path: "productPage/:productId",
+          name: "product",
+          component: () => import("@/views/shop/ProductPage.vue"),
+        },
+      ],
+    },
+    {
+      path: "/cart",
+      component: () => import("@/views/shop/ShoppingCart.vue"),
+    },
   ],
 });
 
