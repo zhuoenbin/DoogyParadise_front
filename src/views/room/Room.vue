@@ -1,7 +1,7 @@
 <template>
   <div class="main-container">
     <!-- sideBar -->
-    <div class="sidebar" v-if="memberId != '' && role == null">
+    <div class="sidebar" v-if="memberId != '' && role != 'ROLE_C1'">
       <div class="sidebar-header">
         <h2>寵物旅館</h2>
       </div>

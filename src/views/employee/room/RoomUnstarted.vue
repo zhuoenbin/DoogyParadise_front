@@ -2,23 +2,6 @@
   <div class="container">
     <h2 class="text-center">訂房管理</h2>
 
-    <p class="text-center">
-      <button
-        class="btn btn-primary"
-        @click="toggleCollapse('uncompleted')"
-        :aria-expanded="currentCollapse === 'uncompleted'"
-      >
-        未結束
-      </button>
-      <button
-        class="btn btn-primary"
-        @click="toggleCollapse('completed')"
-        :aria-expanded="currentCollapse === 'completed'"
-      >
-        已結束
-      </button>
-    </p>
-
     <table class="table mx-auto">
       <thead>
         <tr>
@@ -27,6 +10,7 @@
           <th>房號</th>
           <th>寵物名</th>
           <th>訂房時間</th>
+          <th>總金額</th>
         </tr>
       </thead>
       <tbody>
@@ -42,6 +26,7 @@
             {{ formatDate(reservation.startTime) }} -
             {{ formatDate(reservation.endTime) }}
           </td>
+          <td>{{ reservation.totalPrice }}</td>
         </tr>
       </tbody>
     </table>
@@ -73,23 +58,10 @@ const formatDate = (dateString) => {
   return `${year}/${month}/${day}`;
 };
 
-const toggleCollapse = (collapseName) => {
-  currentCollapse.value =
-    currentCollapse.value === collapseName ? null : collapseName;
-};
-
 const filteredReservations = computed(() => {
-  if (currentCollapse.value === "uncompleted") {
-    return reservations.value.filter((reservation) =>
-      isEndDateAfterToday(reservation.endTime)
-    );
-  } else if (currentCollapse.value === "completed") {
-    return reservations.value.filter(
-      (reservation) => !isEndDateAfterToday(reservation.endTime)
-    );
-  } else {
-    return reservations.value;
-  }
+  return reservations.value.filter((reservation) =>
+    isEndDateAfterToday(reservation.endTime)
+  );
 });
 
 // 定義檢查結束日期是否大於當前日期的方法
