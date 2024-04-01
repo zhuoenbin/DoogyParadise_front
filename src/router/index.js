@@ -175,7 +175,7 @@ const router = createRouter({
     },
   {
     path: "/shop",
-    component: () => import("@/views/ShopPage.vue"),
+    component: () => import("@/views/shop/ShopPage.vue"),
     children: [
       {
         path: "shopPage",
@@ -195,7 +195,7 @@ const router = createRouter({
   },
   {
     path: "/cart",
-    component: () => import("@/views/ShoppingCart.vue"),
+    component: () => import("@/views/shop/ShoppingCart.vue"),
   },
   ],
 });
