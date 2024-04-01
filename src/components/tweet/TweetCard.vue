@@ -7,11 +7,10 @@
             </button>
 
             <!-- 使用者的名字 -->
-            <div class="row align-items-center with-background">
+            <div v-if="this.tweetUserName" class="row align-items-center with-background">
                 <div class="col">
-                    <h4 @click="goOthersPage(this.tweetUserName, tweet.tweetId)" class="tweet-name like-count">{{
-                this.tweetUserName
-            }} :</h4>
+                    <h3 @click="goOthersPage(this.tweetUserName, tweet.tweetId)" class="tweet-name like-count">
+                        {{ this.tweetUserName }} :</h3>
                 </div>
 
                 <!-- ...按紐們 -->
@@ -23,7 +22,7 @@
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                             <li v-if="this.userName == this.tweetUserName"><a class="dropdown-item"
                                     @click="editTweetContent = true">編輯推文</a></li>
-                            <li v-if="this.userName != this.tweetUserName"><a @click="showReportPostPage"
+                            <li v-if="this.userName != this.tweetUserName && userId"><a @click="showReportPostPage"
                                     class="dropdown-item">檢舉推文</a></li>
                             <li v-if="this.userName != this.tweetUserName"><a class="dropdown-item"
                                     @click="goOthersPage(this.tweetUserName, tweet.tweetId)">到{{ this.tweetUserName
@@ -134,7 +133,7 @@
                 {{ tweetLikeNum }} 個骨頭
             </span>
             <!-- 按讚按钮 -->
-            <span v-if="tweet.preNode == 0">
+            <span v-if="tweet.preNode == 0 && userId">
                 <button v-if="!this.liked" @click="likeTweet" class="btn btn-primary">🦴</button>
                 <button v-else @click="unlikeTweet" class="btn btn-warning">💩</button>
                 <!-- 發文時間 -->
@@ -181,7 +180,7 @@
             </div>
 
             <!-- 回覆推文的地方 -->
-            <span v-if="tweet.preNode == 0">
+            <span v-if="tweet.preNode == 0 && userId">
                 <input type="text" v-model="replyContent" placeholder="在此輸入回覆內容"
                     style="height: 0px; padding-top: 16px; padding-bottom: 18px;">
                 <span>
@@ -190,6 +189,7 @@
             </span>
         </div>
     </div>
+
 </template>
 
 <script>
@@ -236,7 +236,6 @@ export default {
         }
     },
     created() {
-
         axios.get(`${this.API_URL}/tweet/getNumOfComment/${this.tweet.tweetId}`)
             .then(response => {
                 this.numOfComment = response.data;
@@ -267,15 +266,15 @@ export default {
         })
     },
     mounted() {
-        if (this.tweet.preNode != 0) {
-            axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.preNode}`).then(re => {
-                this.preNodeUserName = re.data.lastName;
-                this.preNodeUserId = re.data.userId;
-            })
-            axios.get(`${this.API_URL}/tweet/getTweetById/${this.tweet.preNode}`).then(re => {
-                this.preNodeTweet = re.data;
-            })
-        }
+        // if (this.tweet.preNode != 0) {
+        //     axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.preNode}`).then(re => {
+        //         this.preNodeUserName = re.data.lastName;
+        //         this.preNodeUserId = re.data.userId;
+        //     })
+        //     axios.get(`${this.API_URL}/tweet/getTweetById/${this.tweet.preNode}`).then(re => {
+        //         this.preNodeTweet = re.data;
+        //     })
+        // }
 
 
         if (this.tweet.preNode == 0) {
@@ -283,7 +282,6 @@ export default {
                 this.tweetUserName = re.data;
             })
         }
-
         if (this.tweet.preNode == 0) {
             axios.get(`${this.API_URL}/tweet/getUserIdByTweetId/${this.tweet.tweetId}`).then(re => {
                 this.thisTweetUserId = re.data;

@@ -1,7 +1,7 @@
 <template>
-
-    <ReportItem v-for="r in reports" :report="r" :key="r.reportsId"></ReportItem>
-
+    <div class="accordion" id="accordionExample">
+        <ReportItem v-for="r in reports" :report="r" :key="r.reportsId"></ReportItem>
+    </div>
 </template>
 <script>
 import axios from 'axios';

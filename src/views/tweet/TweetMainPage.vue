@@ -11,18 +11,18 @@
                     </button>
                 </router-link>
 
-                <button class="sidebar-button" @click="showModal">發文</button>
+                <button v-if="userId" class="sidebar-button" @click="showModal">發文</button>
 
                 <router-link to="/tweetPage/tweetsMyWallPage">
-                    <button class="sidebar-button custom-router-link">我的發文</button>
+                    <button v-if="userId" class="sidebar-button custom-router-link">我的發文</button>
                 </router-link>
 
                 <router-link to="/tweetPage/tweetsMyFollowPage">
-                    <button class="sidebar-button custom-router-link">我的追蹤</button>
+                    <button v-if="userId" class="sidebar-button custom-router-link">我的追蹤</button>
                 </router-link>
 
                 <router-link to="/tweetPage/tweetsMyNotificationPath">
-                    <button class="sidebar-button custom-router-link">我的通知</button>
+                    <button v-if="userId" class="sidebar-button custom-router-link">我的通知</button>
                 </router-link>
 
             </div>
@@ -89,6 +89,7 @@ export default {
             noText: false,
             myDogs: [],
             selectedDogs: [],
+            userId: useMemberStore().memberId,
         };
     },
     mounted() {

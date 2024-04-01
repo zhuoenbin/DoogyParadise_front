@@ -1,57 +1,60 @@
 <template>
-    <div class="accordion" id="accordionExample">
-        <div class="accordion-item">
-            <h2 class="accordion-header" :id="'headingOne' + report.reportsId">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                    :data-bs-target="'#collapseOne' + report.reportsId" aria-expanded="false"
-                    :aria-controls="'collapseOne' + report.reportsId">
-                    <strong>檢舉編號 : {{ report.reportsId }}<div>推文ID : {{ tweet.tweetId }}</div></strong>
 
-                    &nbsp;&nbsp;&nbsp;&nbsp;
+    <div class="accordion-item">
 
-                    <code>狀態 :<span v-if="buttonControll">未處理</span>
+        <h2 class="accordion-header" :id="'headingOne' + report.reportsId">
+
+            <button class="accordion-button btn-custom" type="button" data-bs-toggle="collapse"
+                :data-bs-target="'#collapseOne' + report.reportsId" aria-expanded="false"
+                :aria-controls="'collapseOne' + report.reportsId">
+                <strong>檢舉編號 : {{ report.reportsId }}<div>推文ID : {{ tweet.tweetId }}</div></strong>
+
+                &nbsp;&nbsp;&nbsp;&nbsp;
+
+                <code>狀態 :<span v-if="buttonControll">未處理</span>
                     <span v-else>已處理</span></code>
 
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-                    <span v-if="!buttonControll">處理員工ID : {{ empName }}</span>
-                </button>
-            </h2>
-            <div :id="'collapseOne' + report.reportsId" class="accordion-collapse collapse"
-                :aria-labelledby="'headingOne' + report.reportsId" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    <div>檢舉型態 : {{ report.reportReason }}</div>
-                    <div>其他意見 : {{ report.reportDescription }}</div>
-                    <hr>
-                    <div>推文內容 :{{ tweet.tweetContent }}</div>
-                    <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0" class="tweet-galleries">
-                        <div class="d-flex justify-content-center">
-                            <div v-for="(gallery, index) in tweet.tweetGalleries" :key="index" class="gallery-item">
-                                <img :src="getImageUrl(gallery.imgPath)" alt="Gallery Image" class="gallery-image">
-                            </div>
+                <span v-if="!buttonControll">處理員工ID : {{ empName }}</span>
+
+            </button>
+        </h2>
+        <div :id="'collapseOne' + report.reportsId" class="accordion-collapse collapse "
+            :aria-labelledby="'headingOne' + report.reportsId" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <div>檢舉型態 : {{ report.reportReason }}</div>
+                <div>其他意見 : {{ report.reportDescription }}</div>
+                <hr>
+                <div>推文內容 :{{ tweet.tweetContent }}</div>
+                <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0" class="tweet-galleries">
+                    <div class="d-flex justify-content-center">
+                        <div v-for="(gallery, index) in tweet.tweetGalleries" :key="index" class="gallery-item">
+                            <img :src="getImageUrl(gallery.imgPath)" alt="Gallery Image" class="gallery-image">
                         </div>
                     </div>
-                    <hr>
-                    <div>檢舉人 : {{ user.lastName }}</div>
+                </div>
+                <hr>
+                <div>檢舉人 : {{ user.lastName }}</div>
 
-                    <div>被檢舉人 : {{ tweet.userName }}</div>
+                <div>被檢舉人 : {{ tweet.userName }}</div>
 
-                    <div>推文已被檢舉次數 : {{ tweet.numReport }}</div>
+                <div>推文已被檢舉次數 : {{ tweet.numReport }}</div>
 
-                    <code>檢舉時間 : {{ formatPostDate(report.reportDate) }}</code>
-                    <hr>
-                    <h3>推文狀態 : {{ tweetMode }}</h3>
-                    <div v-if="buttonControll" class="d-flex justify-content-end">
-                        <div class="btn-group">
-                            <button @click="banTweet" class="btn btn-outline-danger">封鎖貼文</button>
+                <code>檢舉時間 : {{ formatPostDate(report.reportDate) }}</code>
+                <hr>
+                <h3>推文狀態 : {{ tweetMode }}</h3>
+                <div v-if="buttonControll" class="d-flex justify-content-end">
+                    <div class="btn-group">
+                        <button @click="banTweet" class="btn btn-outline-danger">封鎖貼文</button>
 
-                            <button @click="noBanTweet" class="btn btn-outline-success">檢舉不通過</button>
-                        </div>
+                        <button @click="noBanTweet" class="btn btn-outline-success">檢舉不通過</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 </template>
 
 <script>
@@ -74,6 +77,7 @@ export default {
             buttonControll: true,
             empName: "已在其他檢舉中處理",
             tweetMode: "保留",
+
         }
     },
     mounted() {
@@ -142,6 +146,7 @@ export default {
                     console.error('Error during banTweet request:', error);
                 });
         }
+
     }
 
 }
@@ -151,5 +156,12 @@ export default {
 <style scoped>
 .accordion-item {
     width: 800px;
+}
+
+.btn-custom {
+    background-color: #d4e6ff;
+    /* 设置背景色为红色 */
+    color: #000000;
+    /* 设置文字颜色为白色 */
 }
 </style>

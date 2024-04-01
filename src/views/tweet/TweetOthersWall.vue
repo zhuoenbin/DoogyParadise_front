@@ -2,8 +2,10 @@
     <div class="tweet-container">
         <div style="display: flex; align-items: center;">
             <h3 style="margin-right: 10px;">{{ name }}的主頁</h3>
-            <button v-if="!isFollwer" @click="followUser" class="btn btn-primary">追蹤</button>
-            <button v-else @click="unfollowUser" class="btn btn-primary">取消追蹤</button>
+            <span v-if="userId">
+                <button v-if="!isFollwer" @click="followUser" class="btn btn-primary">追蹤</button>
+                <button v-else @click="unfollowUser" class="btn btn-primary">取消追蹤</button>
+            </span>
         </div>
         <hr>
         <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" />
@@ -27,6 +29,7 @@ export default {
             isFollwer: false,
             myUserId: '',
             otherUserId: '',
+            userId: useMemberStore().memberId,
         }
     },
     mounted() {
