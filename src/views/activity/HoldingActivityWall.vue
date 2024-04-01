@@ -9,14 +9,8 @@
     <div class="container bobo">
       <div class="grid-wrapper grid-col-auto">
         <label for="radio-card-0" class="radio-card">
-          <input
-            type="radio"
-            name="radio-card"
-            id="radio-card-0"
-            value="0"
-            v-model="chooseCat"
-            @change="changeCategory"
-          />
+          <input type="radio" name="radio-card" id="radio-card-0" value="0" v-model="chooseCat"
+            @change="changeCategory" />
           <div class="card-content-wrapper">
             <span class="check-icon"></span>
             <div class="card-content">
@@ -26,14 +20,8 @@
           </div>
         </label>
         <label for="radio-card-1" class="radio-card">
-          <input
-            type="radio"
-            name="radio-card"
-            id="radio-card-1"
-            value="1"
-            v-model="chooseCat"
-            @change="changeCategory"
-          />
+          <input type="radio" name="radio-card" id="radio-card-1" value="1" v-model="chooseCat"
+            @change="changeCategory" />
           <div class="card-content-wrapper">
             <span class="check-icon"></span>
             <div class="card-content">
@@ -45,14 +33,8 @@
         <!-- /.radio-card -->
 
         <label for="radio-card-2" class="radio-card">
-          <input
-            type="radio"
-            name="radio-card"
-            id="radio-card-2"
-            value="2"
-            v-model="chooseCat"
-            @change="changeCategory"
-          />
+          <input type="radio" name="radio-card" id="radio-card-2" value="2" v-model="chooseCat"
+            @change="changeCategory" />
           <div class="card-content-wrapper">
             <span class="check-icon"></span>
             <div class="card-content">
@@ -63,14 +45,8 @@
         </label>
         <!-- /.radio-card -->
         <label for="radio-card-3" class="radio-card">
-          <input
-            type="radio"
-            name="radio-card"
-            id="radio-card-3"
-            value="3"
-            v-model="chooseCat"
-            @change="changeCategory"
-          />
+          <input type="radio" name="radio-card" id="radio-card-3" value="3" v-model="chooseCat"
+            @change="changeCategory" />
           <div class="card-content-wrapper">
             <span class="check-icon"></span>
             <div class="card-content">
@@ -89,32 +65,19 @@
           <div class="col">
             <ul class="pagination justify-content-center">
               <li class="page-item">
-                <button
-                  v-if="currentPage != 1"
-                  class="page-link"
-                  @click="goForwardPage"
-                >
+                <button v-if="currentPage != 1" class="page-link" @click="goForwardPage">
                   <span>🐾</span>
                 </button>
               </li>
               <!--分頁處理-->
               <!--@click="gotoPage(P)"綁定頁碼事件-->
-              <li
-                class="page-item"
-                v-for="p of showPageBar"
-                @click="goToPage(p)"
-                :class="{ active: p == currentPage }"
-              >
+              <li class="page-item" v-for="p of showPageBar" @click="goToPage(p)" :class="{ active: p == currentPage }">
                 <button class="page-link">{{ p }}</button>
               </li>
               <!--分頁處理-->
               <!--@click="gotoPage(P)"綁定頁碼事件-->
               <li class="page-item">
-                <button
-                  v-if="currentPage != totalPage"
-                  class="page-link"
-                  @click="goNextPage"
-                >
+                <button v-if="currentPage != totalPage" class="page-link" @click="goNextPage">
                   <span>🐾</span>
                 </button>
               </li>
@@ -139,44 +102,31 @@
                   <b>活動場地:&nbsp;</b>{{ a.venueName }}
                   <br />
                   <b>現在報名狀況:&nbsp;</b>毛孩:{{ a.currentDogNumber }}/{{
-                    a.activityDogNumber
-                  }}&nbsp;&nbsp;(共{{ a.currentUserNumber }}位飼主 )
+            a.activityDogNumber
+          }}&nbsp;&nbsp;(共{{ a.currentUserNumber }}位飼主 )
                 </p>
               </div>
               <div class="card-footer">
                 <div class="row">
                   <div class="col-md-7">
-                    <small class="text-body-secondary a"
-                      ><b>截止:&nbsp;</b>
-                      {{ this.dateFormat(a.activityClosingDate) }}</small
-                    >
+                    <small class="text-body-secondary a"><b>截止:&nbsp;</b>
+                      {{ this.dateFormat(a.activityClosingDate) }}</small>
                   </div>
                   <div class="col-md-5 ms-auto">
                     <span v-if="a.activityStatus === '報名中'">
-                      <button
-                        v-if="isJoinButtonVisible"
-                        v-bind:disabled="isJoinButtonDisabled"
-                        class="btn btn-outline-warning me-md-2"
-                        type="button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#exampleModal"
-                        :id="a.activityId"
-                        @click="
-                          joinPrepare(
-                            a.activityId,
-                            a.activityTitle,
-                            a.activityDogNumber,
-                            a.currentDogNumber
-                          )
-                        "
-                      >
+                      <button v-if="isJoinButtonVisible" v-bind:disabled="isJoinButtonDisabled"
+                        class="btn btn-outline-warning me-md-2" type="button" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal" :id="a.activityId" @click="
+            joinPrepare(
+              a.activityId,
+              a.activityTitle,
+              a.activityDogNumber,
+              a.currentDogNumber
+            )
+            ">
                         報名去🔜
-                      </button></span
-                    ><span v-if="a.activityStatus === '已額滿'">
-                      <button
-                        class="btn btn-secondary me-md-2 disabled"
-                        type="button"
-                      >
+                      </button></span><span v-if="a.activityStatus === '已額滿'">
+                      <button class="btn btn-secondary me-md-2 disabled" type="button">
                         已額滿🌚
                       </button>
                     </span>
@@ -190,61 +140,30 @@
     </div>
   </div>
   <!-- Modal -->
-  <div
-    class="modal fade"
-    id="exampleModal"
-    tabindex="-1"
-    aria-labelledby="exampleModalLabel"
-    aria-hidden="true"
-  >
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5
-            class="modal-title"
-            id="exampleModalLabel"
-            v-if="this.myDogsNotAttend.length > 0"
-          >
+          <h5 class="modal-title" id="exampleModalLabel" v-if="this.myDogsNotAttend.length > 0">
             請選擇要參加的狗狗!🐶
           </h5>
-          <h5
-            class="modal-title"
-            id="exampleModalLabel"
-            v-if="this.myDogsNotAttend.length == 0"
-          >
+          <h5 class="modal-title" id="exampleModalLabel" v-if="this.myDogsNotAttend.length == 0">
             喔嗚!您的狗狗都已經報名過了喔!🐶
           </h5>
 
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <!-- 表單內容 -->
         <div class="modal-body">
           <form v-if="this.myDogsNotAttend.length == 0">
-            可以至我的活動中查看喔 ૮⍝• ᴥ •⍝ა &nbsp;<a
-              class="btn btn-outline-success"
-              href="/activity/myJoinedManager"
-              role="button"
-              >前往 ᕕ( ᐛ )ᕗ</a
-            >
+            可以至我的活動中查看喔 ૮⍝• ᴥ •⍝ა &nbsp;<a class="btn btn-outline-success" href="/activity/myJoinedManager"
+              role="button">前往 ᕕ( ᐛ )ᕗ</a>
           </form>
 
           <form v-if="this.myDogsNotAttend.length > 0">
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label"
-                >您所選擇的活動</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="recipient-name"
-                :value="chooseActTitle"
-                readonly
-              />
+              <label for="recipient-name" class="col-form-label">您所選擇的活動</label>
+              <input type="text" class="form-control" id="recipient-name" :value="chooseActTitle" readonly />
             </div>
             <!-- 檢查用 -->
             <!-- <div>Checked names: {{ chooseDogs }}</div> -->
@@ -253,23 +172,11 @@
               <div v-for="d in myDogsNotAttend" :key="d.dogId" class="mb-2">
                 <div class="checkbox-wrapper-33">
                   <label class="checkbox">
-                    <input
-                      class="checkbox__trigger visuallyhidden"
-                      type="checkbox"
-                      :value="d.dogId"
-                      @change="checkComplete"
-                      v-model="chooseDogs"
-                    />
+                    <input class="checkbox__trigger visuallyhidden" type="checkbox" :value="d.dogId"
+                      @change="checkComplete" v-model="chooseDogs" />
                     <span class="checkbox__symbol">
-                      <svg
-                        aria-hidden="true"
-                        class="icon-checkbox"
-                        width="28px"
-                        height="28px"
-                        viewBox="0 0 28 28"
-                        version="1"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
+                      <svg aria-hidden="true" class="icon-checkbox" width="28px" height="28px" viewBox="0 0 28 28"
+                        version="1" xmlns="http://www.w3.org/2000/svg">
                         <path d="M4 14l8 7L24 7"></path>
                       </svg>
                     </span>
@@ -280,39 +187,20 @@
               <br />
             </div>
             <div class="mb-2">
-              <label for="message-text" class="col-form-label"
-                >有甚麼想備註的嗎~</label
-              >
-              <textarea
-                class="form-control"
-                id="message-text"
-                v-model="note"
-              ></textarea>
+              <label for="message-text" class="col-form-label">有甚麼想備註的嗎~</label>
+              <textarea class="form-control" id="message-text" v-model="note"></textarea>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <div
-            class="text-danger text-center mt-3"
-            v-if="this.myDogsNotAttend.length > 0"
-          >
+          <div class="text-danger text-center mt-3" v-if="this.myDogsNotAttend.length > 0">
             {{ message }}
           </div>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             Close
           </button>
-          <button
-            v-if="this.myDogsNotAttend.length > 0"
-            type="button"
-            class="btn btn-primary"
-            data-bs-dismiss="modal"
-            id="liveToastBtn"
-            @click="joinActivity"
-          >
+          <button v-if="this.myDogsNotAttend.length > 0" type="button" class="btn btn-primary" data-bs-dismiss="modal"
+            id="liveToastBtn" @click="joinActivity">
             快速報名
           </button>
         </div>
@@ -526,7 +414,7 @@ export default {
               this.chooseActTitle = "";
               // 在換成別的路徑 重新導向會無法即時更新
             })
-            .then(this.$router.push("/activity/allNowAct"))
+            .then(this.$router.push("/activity/holdingActs"))
             .catch((error) => {
               console.error("報名失敗", error);
               this.message = "報名失敗";
@@ -558,11 +446,13 @@ export default {
 
 <style>
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&display=swap");
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
 .actCard {
   border-radius: 0.2rem;
 }
@@ -638,6 +528,7 @@ img {
 label.radio-card {
   cursor: pointer;
 }
+
 label.radio-card .card-content-wrapper {
   background: #fff;
   border-radius: 5px;
@@ -648,6 +539,7 @@ label.radio-card .card-content-wrapper {
   box-shadow: 0 2px 4px 0 rgba(219, 215, 215, 0.04);
   transition: 200ms linear;
 }
+
 label.radio-card .check-icon {
   width: 20px;
   height: 20px;
@@ -657,6 +549,7 @@ label.radio-card .check-icon {
   transition: 200ms linear;
   position: relative;
 }
+
 label.radio-card .check-icon:before {
   content: "";
   position: absolute;
@@ -669,36 +562,37 @@ label.radio-card .check-icon:before {
   transition: 200ms linear;
   opacity: 0;
 }
+
 label.radio-card input[type="radio"] {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
 }
-label.radio-card input[type="radio"]:checked + .card-content-wrapper {
+
+label.radio-card input[type="radio"]:checked+.card-content-wrapper {
   box-shadow: 0 2px 4px 0 rgba(219, 215, 215, 0.5), 0 0 0 2px #3057d5;
 }
-label.radio-card
-  input[type="radio"]:checked
-  + .card-content-wrapper
-  .check-icon {
+
+label.radio-card input[type="radio"]:checked+.card-content-wrapper .check-icon {
   background: #3057d5;
   border-color: #3057d5;
   transform: scale(1.2);
 }
-label.radio-card
-  input[type="radio"]:checked
-  + .card-content-wrapper
-  .check-icon:before {
+
+label.radio-card input[type="radio"]:checked+.card-content-wrapper .check-icon:before {
   transform: scale(1);
   opacity: 1;
 }
-label.radio-card input[type="radio"]:focus + .card-content-wrapper .check-icon {
+
+label.radio-card input[type="radio"]:focus+.card-content-wrapper .check-icon {
   box-shadow: 0 0 0 4px rgba(48, 86, 213, 0.2);
   border-color: #3056d5;
 }
+
 label.radio-card .card-content img {
   margin-bottom: 5px;
 }
+
 label.radio-card .card-content h4 {
   font-size: 16px;
   letter-spacing: -0.24px;
@@ -706,12 +600,14 @@ label.radio-card .card-content h4 {
   color: #1f2949;
   margin-bottom: 3px;
 }
+
 #title {
   color: #874a33;
   margin: auto 20px;
   padding: 20px 20px;
   text-align: center;
 }
+
 .checkbox-wrapper-33 {
   --s-xsmall: 0.625em;
   --s-small: 1.2em;
@@ -741,9 +637,11 @@ label.radio-card .card-content h4 {
   align-items: center;
   justify-content: flex-start;
 }
-.checkbox-wrapper-33 .checkbox + .checkbox {
+
+.checkbox-wrapper-33 .checkbox+.checkbox {
   margin-top: var(--s-small);
 }
+
 .checkbox-wrapper-33 .checkbox__symbol {
   display: inline-block;
   display: flex;
@@ -757,6 +655,7 @@ label.radio-card .card-content h4 {
     background-color var(--t-base);
   box-shadow: 0 0 0 0 var(--c-primary-10-percent-opacity);
 }
+
 .checkbox-wrapper-33 .checkbox__symbol:after {
   content: "";
   position: absolute;
@@ -770,6 +669,7 @@ label.radio-card .card-content h4 {
   transform: scale(1);
   transform-origin: 50% 50%;
 }
+
 .checkbox-wrapper-33 .checkbox .icon-checkbox {
   width: 1em;
   height: 1em;
@@ -783,27 +683,28 @@ label.radio-card .card-content h4 {
   color: var(--c-primary);
   display: inline-block;
 }
+
 .checkbox-wrapper-33 .checkbox .icon-checkbox path {
   transition: stroke-dashoffset var(--t-fast) var(--e-in);
   stroke-dasharray: 30px, 31px;
   stroke-dashoffset: 31px;
 }
+
 .checkbox-wrapper-33 .checkbox__textwrapper {
   margin: 0;
 }
-.checkbox-wrapper-33 .checkbox__trigger:checked + .checkbox__symbol:after {
+
+.checkbox-wrapper-33 .checkbox__trigger:checked+.checkbox__symbol:after {
   -webkit-animation: ripple-33 1.5s var(--e-out);
   animation: ripple-33 1.5s var(--e-out);
 }
-.checkbox-wrapper-33
-  .checkbox__trigger:checked
-  + .checkbox__symbol
-  .icon-checkbox
-  path {
+
+.checkbox-wrapper-33 .checkbox__trigger:checked+.checkbox__symbol .icon-checkbox path {
   transition: stroke-dashoffset var(--t-base) var(--e-out);
   stroke-dashoffset: 0px;
 }
-.checkbox-wrapper-33 .checkbox__trigger:focus + .checkbox__symbol {
+
+.checkbox-wrapper-33 .checkbox__trigger:focus+.checkbox__symbol {
   box-shadow: 0 0 0 0.25em var(--c-primary-20-percent-opacity);
 }
 
@@ -812,6 +713,7 @@ label.radio-card .card-content h4 {
     transform: scale(0);
     opacity: 1;
   }
+
   to {
     opacity: 0;
     transform: scale(20);
@@ -823,15 +725,18 @@ label.radio-card .card-content h4 {
     transform: scale(0);
     opacity: 1;
   }
+
   to {
     opacity: 0;
     transform: scale(20);
   }
 }
+
 .col-form-label {
   font-weight: bold;
   color: #36472aff;
 }
+
 h5 {
   font-weight: bolder;
   color: #874a33ff;
