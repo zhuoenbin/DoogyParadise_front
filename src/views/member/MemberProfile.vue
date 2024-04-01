@@ -1,78 +1,77 @@
 <template>
-    <div class="main-container">
-        <!-- sideBar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h2>會員頁</h2>
-            </div>
-            <div class="sidebar-buttons">
+  <div class="main-container">
+    <!-- sideBar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2>會員頁</h2>
+      </div>
+      <div class="sidebar-buttons">
+        <router-link to="/profile/detail">
+          <button class="sidebar-button custom-router-link">個人資訊</button>
+        </router-link>
 
-                <router-link to="/profile/detail">
-                    <button class="sidebar-button custom-router-link">個人資訊</button>
-                </router-link>
+        <router-link to="">
+          <button class="sidebar-button custom-router-link">我的訂單</button>
+        </router-link>
 
-                <router-link to="">
-                    <button class="sidebar-button custom-router-link">我的訂單</button>
-                </router-link>
+        <router-link to="/profile/mydog">
+          <button class="sidebar-button custom-router-link">我的狗勾</button>
+        </router-link>
 
-                <router-link to="/profile/mydog">
-                    <button class="sidebar-button custom-router-link">我的狗勾</button>
-                </router-link>
-
-            </div>
-        </div>
-
-        <router-view></router-view>
-
+        <router-link to="/profile/addDog">
+          <button class="sidebar-button custom-router-link">新增狗勾</button>
+        </router-link>
+      </div>
     </div>
+
+    <router-view></router-view>
+  </div>
 </template>
 <style>
 /* Sidebar 的外觀和佈局 */
 .main-container {
-    display: flex;
+  display: flex;
 }
 
 .sidebar {
-    background-color: #f0f0f0;
-    padding: 20px;
+  background-color: #f0f0f0;
+  padding: 20px;
+  min-width: 200px;
 }
 
 .sidebar-header h2 {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .sidebar-header {
-    width: 130%;
-    /* 讓 .sidebar-header 佔據整個父元素的寬度 */
+  width: 130%;
+  /* 讓 .sidebar-header 佔據整個父元素的寬度 */
 }
 
-
 .sidebar-buttons {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-button {
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    cursor: pointer;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .sidebar-button:hover {
-    background-color: #e0e0e0;
+  background-color: #e0e0e0;
 }
 
 /* sideBar 按鈕的寬度 */
 .custom-router-link {
-    width: 100%;
-    /* 設置寬度為父元素的 100% */
+  width: 100%;
+  /* 設置寬度為父元素的 100% */
 }
 </style>
-
-
 
 <!-- <script>
 import axios from 'axios';

@@ -1,66 +1,117 @@
 <template>
-  <div>
-    <h2>預約訂房管理</h2>
-    <div class="mb-3 row">
-      <span>訂房Id: {{ reservation.reservationId }}</span>
-      <span>
-        訂房時段: {{ formatDate(reservation.startTime) }} -
-        {{ formatDate(reservation.endTime) }}
-      </span>
-      <span
-        >房間Id: {{ reservation.room ? reservation.room.roomId : "N/A" }}</span
-      >
-      <span
-        >寵物名稱: {{ reservation.dog ? reservation.dog.dogName : "N/A" }}</span
-      >
-      <span>費用: {{ reservation.totalPrice }}</span>
+  <div class="reservation-form">
+    <h2 v-if="str === 'update'">修改預約時段</h2>
+    <h2 v-if="str === 'cancel'">取消訂房</h2>
+    <h2 v-if="str === 'score'">評分</h2>
+
+    <div class="reservation-details">
+      <div class="detail-item">
+        <span class="detail-label">訂房時段: </span>
+        <span
+          >{{ formatDate(reservation.startTime) }} -
+          {{ formatDate(reservation.endTime) }}</span
+        >
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">房間Id: </span>
+        <span>{{ reservation.room ? reservation.room.roomId : "N/A" }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">寵物名: </span>
+        <span>{{ reservation.dog ? reservation.dog.dogName : "N/A" }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">費用: </span>
+        <span>{{ reservation.totalPrice }}</span>
+      </div>
     </div>
-  </div>
-  <div class="flex" v-if="str === 'update'">
-    <span>請選擇住宿的日期:</span>
-    <VueDatePicker
-      class="date-picker"
-      v-model="selectedDates"
-      range
-      :options="datepickerOptions"
-      :enable-time-picker="false"
-      :min-date="new Date()"
-    />
-  </div>
-  <button
-    class="btn btn-primary"
-    @click="bookRoom(reservation.room)"
-    v-if="str === 'update'"
-  >
-    修改時段
-  </button>
-  <div v-if="str === 'cancel'">
-    <select v-model="direction">
-      <option>選錯房間</option>
-      <option>行程取消</option>
-      <option>找到其他家更便宜的旅館</option>
-    </select>
-    <button class="btn btn-primary" @click="cancel()">取消訂單</button>
+
+    <!-- 修改預約時段表單 -->
+    <form v-if="str === 'update'" @submit.prevent="bookRoom(reservation.room)">
+      <div class="form-group">
+        <label>選擇住宿的日期:</label>
+        <VueDatePicker
+          class="date-picker"
+          v-model="selectedDates"
+          range
+          :options="datepickerOptions"
+          :enable-time-picker="false"
+          :min-date="new Date()"
+          :disabled-dates="disabledDates"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">修改時段</button>
+    </form>
+
+    <!-- 取消訂房表單 -->
+    <form v-if="str === 'cancel'" @submit.prevent="cancel(direction)">
+      <div class="form-group">
+        <label>取消原因:</label>
+        <select v-model="direction" class="form-control">
+          <option>選錯房間</option>
+          <option>行程取消</option>
+          <option>找到其他家更便宜的旅館</option>
+          <option>其他原因</option>
+        </select>
+        <br />
+        <input
+          v-if="direction == '其他原因'"
+          class="form-control"
+          type="text"
+          v-model.trim="cancelReason"
+          placeholder="請說明原因"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">取消訂單</button>
+    </form>
+
+    <!-- 評分表單 -->
+    <form v-if="str === 'score'" @submit.prevent="score(comments)">
+      <div class="star-rating">
+        <span
+          v-for="rating in maxRating"
+          :key="rating"
+          class="star"
+          @click="rate(rating)"
+          @mouseover="hover(rating)"
+        >
+          {{ rating <= currentRating ? "★" : "☆" }}
+        </span>
+      </div>
+      <textarea
+        class="form-control"
+        v-model.trim="comments"
+        placeholder="請留下您的評論"
+      ></textarea>
+      <button type="submit" class="btn btn-primary">送出評分</button>
+    </form>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, defineProps, defineEmits, computed } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 
 const selectedDates = ref([]); // 用於存儲所選日期的範圍
+// 接收
 const route = useRoute();
+// 傳送
 const router = useRouter();
 const reservationId = route.params.reservationId;
 const str = route.params.str;
 // findByReservationId 傳過來的物件
 const reservation = ref([]);
-// findAllReservation 傳過來的物件 List
+// reservationTime 傳過來的物件 List
 const reservations = ref([]);
 // 取消原因
 const direction = ref(null);
+const cancelReason = ref("");
+// 評分說明
+const comments = ref("");
+// 禁用日期
+const date = ref(new Date());
 
 onMounted(() => {
   axios
@@ -74,7 +125,6 @@ onMounted(() => {
     reservations.value = response.data;
   });
 });
-console.log(reservation);
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -170,7 +220,7 @@ const bookRoom = (room) => {
     }
   }
 
-  // 修改訂房明細1111
+  // 修改訂房明細
   const GOregister = () => {
     axios.post(
       `http://localhost:8080/room/updateRoom?roomReservationId=${reservationId}`,
@@ -192,9 +242,9 @@ const bookRoom = (room) => {
       )}`
     );
     GOregister();
-    // 成功的話頁面跳轉到 o_page
-    router.push({
-      name: "o_page",
+    // 成功的話頁面跳轉到 o_page 並重新加載
+    router.push({ name: "o_page" }).then(() => {
+      window.location.reload();
     });
   } else if (formattedDates.length == 0) {
     alert("請選擇時間");
@@ -204,6 +254,19 @@ const bookRoom = (room) => {
     alert(`房號: ${room.roomId} 在 ${arr} 已被預訂`);
   }
 };
+
+// 禁用日期
+const disabledDates = computed(() => {
+  const dis = [];
+  reservations.value.forEach((reservationTime) => {
+    if (reservationTime[0] == reservation.value.room.roomId) {
+      for (let i = 2; i < reservationTime.length; i++) {
+        dis.push(new Date(reservationTime[i]));
+      }
+    }
+  });
+  return dis;
+});
 
 // 拿到目前訂單的日期 Array
 const calculateDateRange = (startDate, endDate) => {
@@ -222,37 +285,121 @@ const calculateDateRange = (startDate, endDate) => {
 
 // 取消訂單
 const cancel = () => {
-  axios.post(
-    `http://localhost:8080/room/cancel?roomReservationId=${reservationId}&cancelDirection=${direction.value}`
-  );
-  router.push({
-    name: "o_page",
-  });
+  if (direction.value !== null) {
+    if (direction.value === "其他原因") {
+      direction.value = cancelReason.value; // 將 cancelReason 的值設置為 direction 的值
+    } else {
+      cancelReason.value = ""; // 其他情況下，將 cancelReason 的值設置為空字符串
+    }
+    axios.post(
+      `http://localhost:8080/room/cancel?roomReservationId=${reservationId}`,
+      { cancelTime: new Date(), cancelDirection: direction.value }
+    );
+    // 成功的話頁面跳轉到 o_page 並重新加載
+    router.push({ name: "o_page" }).then(() => {
+      window.location.reload();
+    });
+  } else {
+    alert("請選擇取消原因");
+  }
+};
+
+// 評分
+// Props
+const props = defineProps({
+  value: {
+    type: Number,
+    default: 0,
+  },
+  maxRating: {
+    type: Number,
+    default: 5,
+  },
+});
+
+// 使用 defineEmits 创建 emit 函数
+const emit = defineEmits();
+
+// State
+const currentRating = ref(props.value);
+
+// Methods
+const rate = (rating) => {
+  currentRating.value = rating;
+  emit("update:value", rating); // 使用 emit 函数
+  console.log(`星星數: ${currentRating.value}`);
+};
+
+const hover = (rating) => {
+  currentRating.value = rating;
+  console.log(`星星數: ${currentRating.value}`);
+};
+
+const score = (comments) => {
+  if (currentRating.value != 0) {
+    axios.post(
+      `http://localhost:8080/room/score?roomReservationId=${reservationId}`,
+      {
+        star: currentRating.value,
+        conments: comments,
+        conmentsTime: new Date(),
+      }
+    );
+    // 成功的話頁面跳轉到 h_page 並重新加載
+    router.push({ name: "h_page" }).then(() => {
+      window.location.reload();
+    });
+  } else {
+    alert("請給星");
+  }
 };
 </script>
 
 <style scoped>
+.reservation-form {
+  width: 60%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
 h2 {
-  margin-bottom: 2rem;
-}
-
-.flex {
-  display: flex;
-  margin: 1.5rem 0;
-}
-
-.date-picker {
-  width: 25%;
-  margin-left: 1rem;
+  margin-bottom: 20px;
 }
 
 button {
-  width: 10%;
-  margin: 1rem 0;
+  margin-top: 2rem;
 }
 
-select {
-  width: 24%;
-  margin-right: 1rem;
+.reservation-details {
+  margin-bottom: 20px;
+}
+
+.detail-item {
+  margin-bottom: 10px;
+}
+
+.detail-label {
+  font-weight: bold;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.date-picker {
+  width: 100%;
+}
+
+.star-rating {
+  margin-bottom: 20px;
+}
+
+.star {
+  font-size: 24px;
+  cursor: pointer;
+  color: gold;
+  transition: all 0.5s;
 }
 </style>

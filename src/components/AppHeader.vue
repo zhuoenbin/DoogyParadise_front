@@ -13,11 +13,9 @@
             <router-link to="/cart" class="nav-link px-2 text-white">購物車</router-link>
           </li>
           <li>
-            <router-link to="" class="nav-link px-2 text-white">論壇</router-link>
-          </li>
-          <li>
             <router-link to="/activity" class="nav-link px-2 text-white">寵活動</router-link>
           </li>
+
           <li>
             <router-link to="/tweetPage/tweetsWallPage" class="nav-link px-2 text-white">動態牆</router-link>
           </li>

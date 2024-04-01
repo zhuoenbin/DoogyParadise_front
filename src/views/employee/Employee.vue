@@ -16,7 +16,7 @@
             檢舉管理
           </button></router-link
         >
-        <router-link to="/employee/r_page"
+        <router-link to="/employee/room/u_page"
           ><button class="sidebar-button custom-router-link">
             訂房管理
           </button></router-link

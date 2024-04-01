@@ -234,7 +234,7 @@ export default {
 
 
             axios.get(`${this.API_URL}/account/checkPasswordIsEmpty`).then(re => {
-                console.log(re.data)
+                console.log("checkPasswordIsEmpty: " + re.data)
                 this.googleFirstTime = re.data;
 
             })
