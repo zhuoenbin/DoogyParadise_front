@@ -166,7 +166,11 @@ export default {
             this.memberViolationCount = tmp.userViolationCount;
             this.memberGender = tmp.userGender
             this.memberBirthday = tmp.birthDate
+        })
 
+        axios.get(`${this.API_URL}/account/checkPasswordIsEmpty`).then(re => {
+            console.log("checkPasswordIsEmpty: " + re.data)
+            this.googleFirstTime = re.data;
         })
     },
     watch: {
@@ -236,14 +240,6 @@ export default {
             })
         },
         showResetPasswordPage() {
-
-
-            axios.get(`${this.API_URL}/account/checkPasswordIsEmpty`).then(re => {
-                console.log("checkPasswordIsEmpty: " + re.data)
-                this.googleFirstTime = re.data;
-
-            })
-
             const resetPasswordPage = new bootstrap.Modal(this.$refs.ResetPasswordPage);
             resetPasswordPage.show()
         },

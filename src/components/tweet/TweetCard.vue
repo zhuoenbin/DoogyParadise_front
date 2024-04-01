@@ -2,7 +2,6 @@
 
     <div class="colored-header">
         <div class="tweet-item">
-            {{ this.userName }};{{ this.tweetUserName }}
             <button v-if="tweet.preNode != 0" class="reply-message" @click="goPreNodeTweetPage">此則為回覆{{ preNodeUserName
                 }}的留言
             </button>
@@ -14,7 +13,6 @@
                 this.tweetUserName
             }} :</h4>
                 </div>
-
 
                 <!-- ...按紐們 -->
                 <div class="col-auto">
@@ -150,7 +148,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">按讚的人~</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
                         </div>
 
                         <div class="modal-body" v-for="n in userLikeList">
