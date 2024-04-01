@@ -30,6 +30,11 @@
             退貨處理
           </button></router-link
         >
+        <router-link to="/employee/act_page"
+          ><button class="sidebar-button custom-router-link">
+            活動管理
+          </button></router-link
+        >
         <!-- 其他按鈕 -->
       </div>
     </div>

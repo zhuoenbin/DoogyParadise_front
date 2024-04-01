@@ -162,6 +162,10 @@ const router = createRouter({
           path: "t_page",
           component: () => import("@/views/employee/TweetManage.vue"),
         },
+        {
+          path: "act_page",
+          component: () => import("@/views/employee/ActivityManager.vue"),
+        },
       ],
     },
     {
