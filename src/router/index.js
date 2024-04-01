@@ -173,14 +173,30 @@ const router = createRouter({
       path: "/:pathMatch(.*)*",
       component: () => import("@/views/NotFound.vue"),
     },
-    {
-      path: "/shop",
-      component: () => import("@/views/ShopPage.vue"),
-    },
-    {
-      path: "/cart",
-      component: () => import("@/views/ShoppingCart.vue"),
-    },
+  {
+    path: "/shop",
+    component: () => import("@/views/ShopPage.vue"),
+    children: [
+      {
+        path: "shopPage",
+        component: () => import("@/views/shop/ShopPage.vue")
+      },
+      {
+        path: "category",
+        component: () => import("@/views/shop/ShopCategory.vue")
+      },
+      // :productId動態綁定參數道路由上傳遞
+      {
+        path: "productPage/:productId",
+        name: "product",
+        component: () => import("@/views/shop/ProductPage.vue")
+      }
+    ]
+  },
+  {
+    path: "/cart",
+    component: () => import("@/views/ShoppingCart.vue"),
+  },
   ],
 });
 

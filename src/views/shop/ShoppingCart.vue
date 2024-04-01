@@ -101,6 +101,59 @@
                 </div>
                 <!-- 刪除按鈕 -->
               </div>
+              <!-- 彈出視窗 -->
+              <div
+                class="modal fade"
+                id="exampleModal"
+                tabindex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">
+                        LinePay支付
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="image-container">
+                        <img
+                          src="https://timgm.eprice.com.tw/tw/mobile/img/2018-09/08/5127108/fsu2913_1_babc65f86a710b4f1097172a4542193f.jpg"
+                          class="modal-image"
+                        />
+                      </div>
+                      <div class="totalcartprice">
+                        總金額: ${{ totalCartPrice }}
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        取消
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        data-bs-dismiss="modal"
+                        @click.native="linePay(totalCartPrice)"
+                      >
+                        結帳
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- 彈出視窗 -->
             </div>
           </div>
           <!-- 結帳按鈕 -->
@@ -111,9 +164,11 @@
                 <button
                   type="button"
                   class="btn btn-warning btn-block btn-lg"
-                  @click="linePay()"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                  @click="sendCartToBackend()"
                 >
-                  結帳
+                  下訂單
                 </button>
               </div>
               <!-- 結帳按鈕 -->
@@ -150,11 +205,13 @@ export default {
         this.carts.sort((a, b) => b.unitPrice - a.unitPrice);
       }
     },
+    //減少商品數量
     decrementQuantity(product) {
       if (product.quantity > 0) {
         product.quantity--;
       }
     },
+    //增加商品數量
     incrementQuantity(product) {
       product.quantity++;
     },
@@ -164,7 +221,6 @@ export default {
         .post(`http://localhost:8080/product/delete/${productId}`)
         .then((response) => {
           console.log("已成功刪除購物車商品！"); // 處理後端回應
-          // 從 carts 數組中移除該商品
           this.carts = this.carts.filter(
             (product) => product.productId !== productId
           );
@@ -173,29 +229,42 @@ export default {
           console.error("刪除購物車時發生錯誤：", error); // 處理錯誤
         });
     },
-    //LinePay
-    // linePay() {
-    //   axios
-    //     .post(`http://localhost:8080/linepay`)
-    //     .then((response) => {
-    //       console.log("已成功呼叫linepay！"); // 處理後端回應
-    //     })
-    //     .catch((error) => {
-    //       console.error("呼叫linepay時發生錯誤：", error); // 處理錯誤
-    //     });
-    // },
-    linePay() {
-      // 向後端發送 POST 請求
+    // 傳入一個totalCartPrice的參數到後端
+    linePay(totalCartPrice) {
+      console.log(totalCartPrice);
+      // 打包要傳遞的參數
+      const data = {
+        totalCartPrice: totalCartPrice,
+      };
       axios
-        .post(`http://localhost:8080/linepay`)
+        .post(`http://localhost:8080/linepay/${totalCartPrice}`)
         .then((response) => {
-          // 處理後端回應，如果後端回傳一個網址，則進行頁面跳轉
           const redirectUrl = response.data;
-          console.log(redirectUrl);
-          window.location.href = redirectUrl; // 在前端進行頁面跳轉
+          // console.log(redirectUrl);
+          window.location.href = redirectUrl;
         })
         .catch((error) => {
-          console.error("結帳時發生錯誤：", error); // 處理錯誤
+          console.error("結帳時發生錯誤：", error);
+        });
+    },
+    //傳送購物車的訂單到後端
+    sendCartToBackend() {
+      const backendEndpoint = "http://localhost:8080/order";
+      // 將 this.carts 資料轉換為 JSON 字串，this.carts本來是proxy格式
+      const jsonData = JSON.stringify(this.carts);
+
+      axios
+        .post(backendEndpoint, jsonData, {
+          headers: {
+            "Content-Type": "application/json", // 設定請求標頭為 JSON
+          },
+        })
+        .then((response) => {
+          console.log("購物車資料已成功發送到後端");
+          // console.log(jsonData);
+        })
+        .catch((error) => {
+          console.error("發送購物車資料到後端時發生錯誤：", error);
         });
     },
   },
@@ -209,7 +278,7 @@ export default {
         .reduce((total, product) => {
           return total + product.unitPrice * product.quantity;
         }, 0)
-        .toFixed(0); // 四捨五入到兩位小數
+        .toFixed(0); // 四捨五入到沒有小數
     },
   },
 };
@@ -227,5 +296,23 @@ export default {
   color: #ff6b6b; /* 調整顏色 */
   font-weight: bold; /* 加粗字體 */
   margin-right: 20px; /* 距離結帳按鈕的間距 */
+}
+/* 結帳照片 */
+.image-container {
+  text-align: center; /* 圖片居中 */
+}
+
+.modal-image {
+  max-width: 100%; /* 圖片最大寬度為父元素寬度 */
+  height: auto; /* 高度自適應 */
+  border-radius: 8px; /* 圖片邊角圓角 */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 圖片陰影 */
+}
+
+.totalcartprice {
+  text-align: center; /* 文字居中 */
+  font-size: 1.5rem; /* 字體大小 */
+  color: #333; /* 字體顏色 */
+  margin-top: 10px; /* 上邊距 */
 }
 </style>
