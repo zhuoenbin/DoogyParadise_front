@@ -25,14 +25,18 @@ const router = createRouter({
       component: () => import("@/views/member/MemberProfile.vue"),
       children: [
         {
-          path: "detail",
-          component: () => import("@/views/member/MemberDetail.vue"),
-        },
-        {
-          path: "mydog",
-          component: () => import("@/views/member/MemberDog.vue"),
-        },
-      ],
+          path:"detail",
+          component:()=>import("@/views/member/MemberDetail.vue")
+        },{
+          path:"mydog",
+          name:"mydog",
+          component:()=>import("@/views/member/MemberDog.vue")
+        },{
+          path:"addDog",
+          name:"addDog",
+          component:()=>import("@/views/member/MemberAddDog.vue")
+        }
+      ]
     },
     {
       path: "/tweetPage",
@@ -67,23 +71,24 @@ const router = createRouter({
     {
       path: "/room",
       component: () => import("@/views/room/Room.vue"),
-      children: [
+      children:[
         {
-          path: "b_page",
-          name: "b_page",
-          component: () => import("@/views/room/Booking.vue"),
-        },
-        {
-          path: "o_page",
-          name: "o_page",
-          component: () => import("@/views/room/Order.vue"),
-        },
-        {
-          path: "h_page",
-          name: "h_page",
-          component: () => import("@/views/room/History.vue"),
-        },
-      ],
+          path:"b_page",
+          component:()=>import("@/views/room/Booking.vue")
+        },{
+          path:"o_page",
+          name:"o_page",
+          component:()=>import("@/views/room/Order.vue")
+        },{
+          path:"h_page",
+          name:"h_page",
+          component:()=>import("@/views/room/History.vue")
+        },{
+          path:"u_page/:reservationId/:str",
+          name:"u_page",
+          component:()=>import("@/views/room/UpdateFrom.vue")
+        }
+      ]
     },
     {
       path: "/activity",
@@ -160,14 +165,25 @@ const router = createRouter({
       component: () => import("@/views/employee/Employee.vue"),
       children: [
         {
-          path: "r_page",
-          component: () => import("@/views/employee/RoomReservation.vue"),
-        },
-        {
           path: "t_page",
           component: () => import("@/views/employee/TweetManage.vue"),
         },
-      ],
+      ]
+    }, {
+      path: "/employee/room",
+      component: () => import("@/views/employee/room/Room.vue"),
+      children: [
+        {
+          path: "r_page",
+          component: () => import("@/views/employee/room/RoomReservation.vue"),
+        },{
+          path: "u_page",
+          component: () => import("@/views/employee/room/RoomUpdate.vue"),
+        },{
+          path: "s_page",
+          component: () => import("@/views/employee/room/Schedule.vue"),
+        }
+      ]
     },
     {
       path: "/:pathMatch(.*)*",

@@ -1,7 +1,7 @@
 <template>
   <div class="main-container">
     <!-- sideBar -->
-    <div class="sidebar">
+    <div class="sidebar" v-if="memberId != '' && role == null">
       <div class="sidebar-header">
         <h2>寵物旅館</h2>
       </div>
@@ -31,11 +31,24 @@
     </div>
   </div>
 </template>
-<script setup></script>
+<script setup>
+import { ref, onMounted } from "vue";
+import { useMemberStore } from "@/stores/memberStore";
+
+const memberId = ref();
+const role = ref();
+
+onMounted(() => {
+  const memberStore = useMemberStore();
+  memberId.value = memberStore.memberId;
+  role.value = memberStore.memberRole;
+});
+</script>
 <style scoped>
 .main {
-  width: 80%;
-  padding: 40px 0 0 80px;
+  width: 80vw;
+  padding: 40px 0 0 40px;
+  margin: 0 auto; /* 水平置中 */
 }
 
 .main-container {
