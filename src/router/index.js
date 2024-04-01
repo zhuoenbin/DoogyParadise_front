@@ -118,6 +118,9 @@ const router = createRouter({
         },{
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
+        },{
+          path: "s_page",
+          component: () => import("@/views/employee/room/Schedule.vue"),
         }
       ]
     },

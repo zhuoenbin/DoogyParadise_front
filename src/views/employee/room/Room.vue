@@ -6,21 +6,35 @@
         <h2>訂房管理</h2>
       </div>
       <div class="sidebar-buttons">
-        <router-link to="/employee/room/u_page"
-          ><button class="sidebar-button custom-router-link">
-            房間管理
-          </button></router-link
+        <router-link to="/employee/room/u_page">
+          <button class="sidebar-button custom-router-link">房間管理</button>
+        </router-link>
+        <button
+          class="sidebar-button custom-router-link"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseExample"
+          aria-expanded="false"
+          aria-controls="collapseExample"
         >
-        <router-link to="/employee/room/r_page"
-          ><button class="sidebar-button custom-router-link">
-            訂單管理
-          </button></router-link
-        >
-        <router-link to="/employee"
-          ><button class="sidebar-button custom-router-link">
-            後臺管理
-          </button></router-link
-        >
+          訂單管理
+        </button>
+        <div class="collapse" id="collapseExample">
+          <!-- <router-link to="/employee/room/r_page">
+            <button class="sidebar-button custom-router-link">進行中</button>
+          </router-link> -->
+          <router-link to="/employee/room/r_page">
+            <button class="sidebar-button custom-router-link">未結束</button>
+          </router-link>
+          <router-link to="/employee/room/r_page">
+            <button class="sidebar-button custom-router-link">已結束</button>
+          </router-link>
+        </div>
+        <!-- <router-link to="/employee/room/s_page">
+          <button class="sidebar-button custom-router-link">排班系統</button>
+        </router-link> -->
+        <router-link to="/employee">
+          <button class="sidebar-button custom-router-link">後臺管理</button>
+        </router-link>
         <!-- 其他按鈕 -->
       </div>
     </div>
@@ -31,10 +45,12 @@
     </div>
   </div>
 </template>
+
 <script setup></script>
+
 <style scoped>
 .main {
-  width: 80%;
+  flex: 1;
   padding: 40px;
 }
 
@@ -42,14 +58,10 @@
   display: flex;
 }
 
-.tweet-container {
-  flex: 1;
-  padding: 20px;
-}
-
 .sidebar {
   background-color: #f0f0f0;
   padding: 20px;
+  max-width: 15%;
   min-height: 82vh;
 }
 

@@ -2,7 +2,7 @@
   <div id="app">
     <div class="main">
       <h2>訂房</h2>
-      <div class="top flex" v-if="dogs.length != 0">
+      <div class="top flex" v-if="dogs.length != 0 && role == null">
         <span>請選擇要住宿的寵物:</span>
         <select v-model="selectedDog" @change="RoomsDate()" class="">
           <option v-for="(dog, dogId) in dogs" :key="dogId" :value="dog">
@@ -34,7 +34,6 @@
               data-bs-toggle="modal"
               :data-bs-target="'#exampleModal_' + room.roomId"
             />
-            <!-- {{ room.roomImgPath }} -->
             <div class="card-body">
               <h5 class="card-title">房間名稱: {{ room.roomName }}</h5>
               <hr />
@@ -47,7 +46,7 @@
                 @click="bookRoom(room)"
                 href="javascript: void(0)"
                 class="btn btn-primary"
-                v-if="dogs.length != 0"
+                v-if="dogs.length != 0 && role == null"
                 >訂房<span></span><span></span><span></span><span></span
               ></a>
             </div>
@@ -65,12 +64,6 @@
                     <h5 class="modal-title" id="exampleModalLabel">
                       房間名稱: {{ room.roomName }}
                     </h5>
-                    <!-- <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button> -->
                   </div>
                   <div class="modal-body">
                     <img :src="room.roomImgPath" />
@@ -81,7 +74,7 @@
                       {{ room.roomIntroduction }}
                     </div>
                     <hr />
-                    房間評價:
+                    <span>房間評價: </span>
                     <div
                       v-for="(
                         roomReservation, roomReservationId
@@ -115,7 +108,7 @@
                           >☆</span
                         >
                         <div class="jcsb">
-                          <span v-if="roomReservation.conments != null">
+                          <span v-if="roomReservation.conments != ''">
                             評分說明: {{ roomReservation.conments }}
                           </span>
                           <span class="gray" v-else>無評分說明</span
@@ -142,6 +135,7 @@ import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import { useRouter } from "vue-router";
+import { useMemberStore } from "@/stores/memberStore";
 
 const router = useRouter();
 const rooms = ref([]);
@@ -151,6 +145,7 @@ const reservations = ref([]);
 const selectedDog = ref(null);
 const selectedDates = ref([]); // 用於存儲所選日期的範圍
 const maxRating = 5; // 最大星數
+const role = ref();
 
 onMounted(() => {
   axios.get("http://localhost:8080/room").then((response) => {
@@ -168,6 +163,9 @@ onMounted(() => {
     .then((response) => {
       roomReservations.value = response.data;
     });
+
+  const memberStore = useMemberStore();
+  role.value = memberStore.memberRole;
 });
 
 // roomReservations.forEach((roomReservation) => {

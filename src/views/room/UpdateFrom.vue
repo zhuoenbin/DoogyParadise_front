@@ -37,7 +37,7 @@
           :options="datepickerOptions"
           :enable-time-picker="false"
           :min-date="new Date()"
-          :disabled-days="disabledDates2"
+          :disabled-dates="disabledDates"
         />
       </div>
       <button type="submit" class="btn btn-primary">修改時段</button>
@@ -89,7 +89,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, defineProps, defineEmits } from "vue";
+import { ref, onMounted, defineProps, defineEmits, computed } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
@@ -110,8 +110,8 @@ const direction = ref(null);
 const cancelReason = ref("");
 // 評分說明
 const comments = ref("");
-
-const disabledDates2 = [new Date(2024, 05, 2), new Date(2024, 05, 6)];
+// 禁用日期
+const date = ref(new Date());
 
 onMounted(() => {
   axios
@@ -255,6 +255,19 @@ const bookRoom = (room) => {
   }
 };
 
+// 禁用日期
+const disabledDates = computed(() => {
+  const dis = [];
+  reservations.value.forEach((reservationTime) => {
+    if (reservationTime[0] == reservation.value.room.roomId) {
+      for (let i = 2; i < reservationTime.length; i++) {
+        dis.push(new Date(reservationTime[i]));
+      }
+    }
+  });
+  return dis;
+});
+
 // 拿到目前訂單的日期 Array
 const calculateDateRange = (startDate, endDate) => {
   const dates = [];
@@ -387,5 +400,6 @@ button {
   font-size: 24px;
   cursor: pointer;
   color: gold;
+  transition: all 0.5s;
 }
 </style>
