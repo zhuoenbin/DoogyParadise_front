@@ -22,9 +22,9 @@
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                             <li v-if="this.userName == this.tweetUserName"><a class="dropdown-item"
-                                    @click="editTweetContent = true">編輯貼文</a></li>
+                                    @click="editTweetContent = true">編輯推文</a></li>
                             <li v-if="this.userName != this.tweetUserName"><a @click="showReportPostPage"
-                                    class="dropdown-item">檢舉貼文</a></li>
+                                    class="dropdown-item">檢舉推文</a></li>
                             <li v-if="this.userName != this.tweetUserName"><a class="dropdown-item"
                                     @click="goOthersPage(this.tweetUserName, tweet.tweetId)">到{{ this.tweetUserName
                                     }}的主頁</a>
