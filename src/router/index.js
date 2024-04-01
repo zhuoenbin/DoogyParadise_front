@@ -23,40 +23,46 @@ const router = createRouter({
     {
       path: "/profile",
       component: () => import("@/views/member/MemberProfile.vue"),
-      children:[
+      children: [
         {
-          path:"detail",
-          component:()=>import("@/views/member/MemberDetail.vue")
-        },{
-          path:"mydog",
-          component:()=>import("@/views/member/MemberDog.vue")
+          path: "detail",
+          component: () => import("@/views/member/MemberDetail.vue"),
         },
-      ]
+        {
+          path: "mydog",
+          component: () => import("@/views/member/MemberDog.vue"),
+        },
+      ],
     },
     {
       path: "/tweetPage",
       component: () => import("@/views/tweet/TweetMainPage.vue"),
-      children:[
+      children: [
         {
-          path:"tweetsWallPage",
-          component:()=>import("@/views/tweet/TweetsWall.vue")
-        },{
-          path:"tweetsMyWallPage",
-          component:()=>import("@/views/tweet/TweetMyWall.vue")
-        },{
-          path:"tweetsOthersWallPage",
-          component:()=>import("@/views/tweet/TweetOthersWall.vue")
-        },{
-          path:"tweetsSingleTweetPage",
-          component:()=>import("@/views/tweet/TweetSingleTweetPage.vue")
-        },{
-          path:"tweetsMyFollowPage",
-          component:()=>import("@/views/tweet/TweetFollowPage.vue")
-        },{
-          path:"tweetsMyNotificationPath",
-          component:()=>import("@/views/tweet/TweetNotification.vue")
-        }
-      ]
+          path: "tweetsWallPage",
+          component: () => import("@/views/tweet/TweetsWall.vue"),
+        },
+        {
+          path: "tweetsMyWallPage",
+          component: () => import("@/views/tweet/TweetMyWall.vue"),
+        },
+        {
+          path: "tweetsOthersWallPage",
+          component: () => import("@/views/tweet/TweetOthersWall.vue"),
+        },
+        {
+          path: "tweetsSingleTweetPage",
+          component: () => import("@/views/tweet/TweetSingleTweetPage.vue"),
+        },
+        {
+          path: "tweetsMyFollowPage",
+          component: () => import("@/views/tweet/TweetFollowPage.vue"),
+        },
+        {
+          path: "tweetsMyNotificationPath",
+          component: () => import("@/views/tweet/TweetNotification.vue"),
+        },
+      ],
     },
     {
       path: "/room",
@@ -65,19 +71,19 @@ const router = createRouter({
         {
           path: "b_page",
           name: "b_page",
-          component: () => import("@/views/room/Booking.vue")
+          component: () => import("@/views/room/Booking.vue"),
         },
         {
           path: "o_page",
           name: "o_page",
-          component: () => import("@/views/room/Order.vue")
+          component: () => import("@/views/room/Order.vue"),
         },
         {
           path: "h_page",
           name: "h_page",
-          component: () => import("@/views/room/History.vue")
-        }
-      ]
+          component: () => import("@/views/room/History.vue"),
+        },
+      ],
     },
     {
       path: "/activity",
@@ -92,6 +98,41 @@ const router = createRouter({
           component: () => import("@/views/activity/ActivityWall.vue"),
         },
         {
+          path: "pastActs",
+          component: () => import("@/views/activity/PastActivityWall.vue"),
+        },
+        {
+          path: "pastActs/care",
+          component: () => import("@/views/activity/PastActivityCareWall.vue"),
+        },
+        {
+          path: "pastActs/eat",
+          component: () => import("@/views/activity/PastActivityEatWall.vue"),
+        },
+        {
+          path: "pastActs/play",
+          component: () => import("@/views/activity/PastActivityPlayWall.vue"),
+        },
+        {
+          path: "holdingActs",
+          component: () => import("@/views/activity/HoldingActivityWall.vue"),
+        },
+        {
+          path: "holdingActs/care",
+          component: () =>
+            import("@/views/activity/HoldingActivityCareWall.vue"),
+        },
+        {
+          path: "holdingActs/eat",
+          component: () =>
+            import("@/views/activity/HoldingActivityEatWall.vue"),
+        },
+        {
+          path: "holdingActs/play",
+          component: () =>
+            import("@/views/activity/HoldingActivityPlayWall.vue"),
+        },
+        {
           path: "venuesIntro",
           component: () => import("@/views/activity/VenuesIntro.vue"),
         },
@@ -103,6 +144,15 @@ const router = createRouter({
           path: "venueRental",
           component: () => import("@/views/activity/VenueRental.vue"),
         },
+        {
+          path: "myJoinedManager",
+          component: () => import("@/views/activity/MyActivitiesManager.vue"),
+        },
+        {
+          path: "myPastJoinedManager",
+          component: () =>
+            import("@/views/activity/MyPastActivitiesManager.vue"),
+        },
       ],
     },
     {
@@ -111,26 +161,26 @@ const router = createRouter({
       children: [
         {
           path: "r_page",
-          component: () => import("@/views/employee/RoomReservation.vue")
+          component: () => import("@/views/employee/RoomReservation.vue"),
         },
         {
           path: "t_page",
-          component: () => import("@/views/employee/TweetManage.vue")
-        }
-      ]
+          component: () => import("@/views/employee/TweetManage.vue"),
+        },
+      ],
     },
     {
       path: "/:pathMatch(.*)*",
       component: () => import("@/views/NotFound.vue"),
     },
-  {
-    path: "/shop",
-    component: () => import("@/views/ShopPage.vue"),
-  },
-  {
-    path: "/cart",
-    component: () => import("@/views/ShoppingCart.vue"),
-  },
+    {
+      path: "/shop",
+      component: () => import("@/views/ShopPage.vue"),
+    },
+    {
+      path: "/cart",
+      component: () => import("@/views/ShoppingCart.vue"),
+    },
   ],
 });
 

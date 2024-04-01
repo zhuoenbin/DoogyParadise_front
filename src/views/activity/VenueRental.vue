@@ -1,8 +1,13 @@
 <template>
   <div class="col-lg-8 mx-auto col-lg-3">
-    <h2>我要租借!</h2>
+    <div id="title">
+      <h4>
+        <b>我要租借!</b
+        ><img src="../../assets/managerPic.png" alt="🐶" id="managerPic" />
+      </h4>
+    </div>
     <form class="p-4 p-md-7 border rounded-3 bg-light">
-      <h6>租借資訊</h6>
+      <h6><b>🦴🦴 租借資訊 🦴🦴</b></h6>
       <div class="row g-2">
         <div class="col-md">
           <div class="form-floating mb-3">
@@ -99,9 +104,14 @@
       </div>
 
       <div class="row g-2">
-        <h6>費用小計</h6>
-        <p v-if="timeTotal !== null">總計時間: {{ timeTotal }} 小時</p>
-        <p v-if="timeTotal !== null">總計費用: {{ rentalTotal }} 元</p>
+        <h6><b>🦴🦴 費用小計 🦴🦴</b></h6>
+        <p class="note">
+          🚩非整數小時計費：超過半小時計費一小時、未超過半小時計費半小時算🙌
+        </p>
+        <div>
+          <p v-if="timeTotal !== null">總計時間: {{ timeTotal }} 小時</p>
+          <p v-if="timeTotal !== null">總計費用: {{ rentalTotal }} 元</p>
+        </div>
       </div>
 
       <button class="w-100 btn btn-lg btn-primary" @click.prevent="create">
@@ -186,7 +196,6 @@ export default {
         } else {
           this.rentalTotal = (intPart + 1) * this.venueRent;
         }
-
         return;
       }
     },
@@ -194,7 +203,7 @@ export default {
       const memberStore = useMemberStore();
       if (
         memberStore.memberRole != null &&
-        memberStore.memberRole.startsWith("ACT")
+        memberStore.memberRole.startsWith("Act")
       ) {
         axios
           .post(`${this.API_URL}/activity/api/rental/add`, {
@@ -244,4 +253,17 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+#title {
+  margin: auto 20px;
+  padding: 20px 20px;
+  text-align: center;
+}
+.note {
+  color: #2990aa;
+}
+
+#managerPic {
+  height: 75px;
+}
+</style>
