@@ -203,7 +203,7 @@ const router = createRouter({
     },
     {
       path: "/shop",
-      component: () => import("@/views/shop/ShopPage.vue"),
+      component: () => import("@/views/shop/ShopSidebar.vue"),
       children: [
         {
           path: "shopPage",
