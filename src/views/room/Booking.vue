@@ -2,7 +2,7 @@
   <div id="app">
     <div class="main">
       <h2>訂房</h2>
-      <div class="top flex" v-if="dogs.length != 0 && role == null">
+      <div class="top flex" v-if="dogs.length != 0 && role != 'ROLE_C1'">
         <span>請選擇要住宿的寵物:</span>
         <select v-model="selectedDog" @change="RoomsDate()" class="">
           <option v-for="(dog, dogId) in dogs" :key="dogId" :value="dog">
@@ -46,7 +46,7 @@
                 @click="bookRoom(room)"
                 href="javascript: void(0)"
                 class="btn btn-primary"
-                v-if="dogs.length != 0 && role == null"
+                v-if="dogs.length != 0 && role != 'ROLE_C1'"
                 >訂房<span></span><span></span><span></span><span></span
               ></a>
             </div>
@@ -108,7 +108,10 @@
                           >☆</span
                         >
                         <div class="jcsb">
-                          <span v-if="roomReservation.conments != ''">
+                          <span
+                            v-if="roomReservation.conments != ''"
+                            style="white-space: pre-wrap; width: 250px"
+                          >
                             評分說明: {{ roomReservation.conments }}
                           </span>
                           <span class="gray" v-else>無評分說明</span
@@ -524,6 +527,7 @@ select {
 
 .gray {
   color: #515e63;
+  margin-top: auto;
 }
 
 .star-rating {
