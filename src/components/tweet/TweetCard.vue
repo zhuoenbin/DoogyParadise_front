@@ -2,7 +2,7 @@
 
     <div class="colored-header">
         <div class="tweet-item">
-
+            {{ this.tweetUserName }}
             <button v-if="tweet.preNode != 0" class="reply-message" @click="goPreNodeTweetPage">此則為回覆{{ preNodeUserName
                 }}的留言
             </button>
@@ -205,6 +205,7 @@ export default {
 
     data() {
         return {
+            tweetUserName: "",
             numOfComment: 0,
             numOfLike: 0,
             showComments: false,
@@ -277,8 +278,11 @@ export default {
 
 
         if (this.tweet.preNode == 0) {
+
             axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.tweetId}`).then(re => {
                 this.thisTweetUserId = re.data.userId;
+                this.tweetUserName = re.data.lastName
+                console.log("這是第:" + this.tweet.tweetId + "則，推文名字: " + this.tweetUserName)
             })
         }
     },
