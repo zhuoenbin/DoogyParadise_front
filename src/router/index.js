@@ -184,8 +184,16 @@ const router = createRouter({
       component: () => import("@/views/employee/room/Room.vue"),
       children: [
         {
-          path: "r_page",
-          component: () => import("@/views/employee/room/RoomReservation.vue"),
+          path: "conduct_page",
+          component: () => import("@/views/employee/room/RoomConduct.vue"),
+        },
+        {
+          path: "unstarted_page",
+          component: () => import("@/views/employee/room/RoomUnstarted.vue"),
+        },
+        {
+          path: "over_page",
+          component: () => import("@/views/employee/room/RoomOver.vue"),
         },{
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
