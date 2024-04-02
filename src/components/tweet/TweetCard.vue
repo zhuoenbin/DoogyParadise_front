@@ -118,10 +118,17 @@
             <br>
 
             <!-- 推文圖片 -->
-            <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0" class="tweet-galleries">
+            <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0 && !imgOnline" class="tweet-galleries">
                 <div class="d-flex justify-content-center">
                     <div v-for="(gallery, index) in tweet.tweetGalleries" :key="index" class="gallery-item">
                         <img :src="getImageUrl(gallery.imgPath)" alt="Gallery Image" class="gallery-image">
+                    </div>
+                </div>
+            </div>
+            <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0 && imgOnline" class="tweet-galleries">
+                <div class="d-flex justify-content-center">
+                    <div class="gallery-item">
+                        <img :src="imgOnlinePath" alt="Gallery Image" class="gallery-image">
                     </div>
                 </div>
             </div>
@@ -227,6 +234,8 @@ export default {
             userDogs: [],
             reportPost: [],//檢舉內容
             reportPostText: '',
+            imgOnlinePath: "",
+            imgOnline: false,
         }
     },
     props: {
@@ -299,6 +308,12 @@ export default {
     },
     methods: {
         getImageUrl(imgPath) {
+            if (imgPath.startsWith('http')) {
+                this.imgOnlinePath = imgPath;
+                this.imgOnline = true;
+                return;
+            }
+            console.log(imgPath)
             return `${this.API_URL}/tweet/getImage/${imgPath}`;
         },
         getCommentsLink() {
