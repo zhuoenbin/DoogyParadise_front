@@ -29,6 +29,14 @@ const router = createRouter({
           component: () => import("@/views/member/MemberDetail.vue"),
         },
         {
+          path: "order",
+          component: () => import("@/views/member/MemberOrders.vue"),
+        },
+        {
+          path: "order/:orderId/orderdetails",
+          component: () => import("@/views/member/MemberOrderDetails.vue"),
+        },
+        {
           path: "mydog",
           name: "mydog",
           component: () => import("@/views/member/MemberDog.vue"),
@@ -169,6 +177,14 @@ const router = createRouter({
       path: "/employee",
       component: () => import("@/views/employee/Employee.vue"),
       children: [
+        // {
+        //   path: "r_page",
+        //   component: () => import("@/views/employee/RoomReservation.vue"),
+        // },
+        {
+          path: "pm_page",
+          component: () => import("@/views/employee/ProductManage.vue"),
+        },
         {
           path: "t_page",
           component: () => import("@/views/employee/TweetManage.vue"),
@@ -180,20 +196,28 @@ const router = createRouter({
       ],
     },
     {
+      path: "/forum",
+      component: () => import("@/views/forum/Forum.vue"),
+    },
+    {
       path: "/employee/room",
       component: () => import("@/views/employee/room/Room.vue"),
       children: [
         {
-          path: "r_page",
-          component: () => import("@/views/employee/room/RoomReservation.vue"),
+          path: "conduct_page",
+          component: () => import("@/views/employee/room/RoomConduct.vue"),
+        },
+        {
+          path: "unstarted_page",
+          component: () => import("@/views/employee/room/RoomUnstarted.vue"),
+        },
+        {
+          path: "over_page",
+          component: () => import("@/views/employee/room/RoomOver.vue"),
         },
         {
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
-        },
-        {
-          path: "s_page",
-          component: () => import("@/views/employee/room/Schedule.vue"),
         },
       ],
     },

@@ -2,19 +2,16 @@
 
     <div class="colored-header">
         <div class="tweet-item">
-            {{ this.tweetUserName }}
             <button v-if="tweet.preNode != 0" class="reply-message" @click="goPreNodeTweetPage">此則為回覆{{ preNodeUserName
                 }}的留言
             </button>
 
             <!-- 使用者的名字 -->
-            <div class="row align-items-center with-background">
+            <div v-if="this.tweetUserName" class="row align-items-center with-background">
                 <div class="col">
-                    <h4 @click="goOthersPage(tweet.userName, tweet.tweetId)" class="tweet-name like-count">{{
-                tweet.userName
-            }} :</h4>
+                    <h3 @click="goOthersPage(this.tweetUserName, tweet.tweetId)" class="tweet-name like-count">
+                        {{ this.tweetUserName }} :</h3>
                 </div>
-
 
                 <!-- ...按紐們 -->
                 <div class="col-auto">
@@ -23,12 +20,13 @@
                             ...
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li v-if="this.userName == tweet.userName"><a class="dropdown-item"
-                                    @click="editTweetContent = true">編輯貼文</a></li>
-                            <li v-if="this.userName != tweet.userName"><a @click="showReportPostPage"
-                                    class="dropdown-item">檢舉貼文</a></li>
-                            <li v-if="this.userName != tweet.userName"><a class="dropdown-item"
-                                    @click="goOthersPage(tweet.userName, tweet.tweetId)">到{{ tweet.userName }}的主頁</a>
+                            <li v-if="this.userName == this.tweetUserName"><a class="dropdown-item"
+                                    @click="editTweetContent = true">編輯推文</a></li>
+                            <li v-if="this.userName != this.tweetUserName && userId"><a @click="showReportPostPage"
+                                    class="dropdown-item">檢舉推文</a></li>
+                            <li v-if="this.userName != this.tweetUserName"><a class="dropdown-item"
+                                    @click="goOthersPage(this.tweetUserName, tweet.tweetId)">到{{ this.tweetUserName
+                                    }}的主頁</a>
                             </li>
 
                         </ul>
@@ -135,7 +133,7 @@
                 {{ tweetLikeNum }} 個骨頭
             </span>
             <!-- 按讚按钮 -->
-            <span v-if="tweet.preNode == 0">
+            <span v-if="tweet.preNode == 0 && userId">
                 <button v-if="!this.liked" @click="likeTweet" class="btn btn-primary">🦴</button>
                 <button v-else @click="unlikeTweet" class="btn btn-warning">💩</button>
                 <!-- 發文時間 -->
@@ -149,7 +147,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">按讚的人~</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
                         </div>
 
                         <div class="modal-body" v-for="n in userLikeList">
@@ -182,7 +180,7 @@
             </div>
 
             <!-- 回覆推文的地方 -->
-            <span v-if="tweet.preNode == 0">
+            <span v-if="tweet.preNode == 0 && userId">
                 <input type="text" v-model="replyContent" placeholder="在此輸入回覆內容"
                     style="height: 0px; padding-top: 16px; padding-bottom: 18px;">
                 <span>
@@ -191,6 +189,7 @@
             </span>
         </div>
     </div>
+
 </template>
 
 <script>
@@ -205,7 +204,7 @@ export default {
 
     data() {
         return {
-            tweetUserName: "",
+
             numOfComment: 0,
             numOfLike: 0,
             showComments: false,
@@ -217,6 +216,7 @@ export default {
             userLikeList: [],
             replyContent: '',
             thisTweetUserId: '',
+            tweetUserName: "",
             currentReply: '',//當下留言立即出現
             preNodeUserName: '',//如果是回文的話，主文的推主是誰
             preNodeUserId: '',//如果是回文的話，主文的推主id
@@ -266,23 +266,25 @@ export default {
         })
     },
     mounted() {
-        if (this.tweet.preNode != 0) {
-            axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.preNode}`).then(re => {
-                this.preNodeUserName = re.data.lastName;
-                this.preNodeUserId = re.data.userId;
-            })
-            axios.get(`${this.API_URL}/tweet/getTweetById/${this.tweet.preNode}`).then(re => {
-                this.preNodeTweet = re.data;
-            })
-        }
+        // if (this.tweet.preNode != 0) {
+        //     axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.preNode}`).then(re => {
+        //         this.preNodeUserName = re.data.lastName;
+        //         this.preNodeUserId = re.data.userId;
+        //     })
+        //     axios.get(`${this.API_URL}/tweet/getTweetById/${this.tweet.preNode}`).then(re => {
+        //         this.preNodeTweet = re.data;
+        //     })
+        // }
 
 
         if (this.tweet.preNode == 0) {
-
-            axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.tweetId}`).then(re => {
-                this.thisTweetUserId = re.data.userId;
-                this.tweetUserName = re.data.lastName
-                console.log("這是第:" + this.tweet.tweetId + "則，推文名字: " + this.tweetUserName)
+            axios.get(`${this.API_URL}/tweet/getUserNameByTweetId/${this.tweet.tweetId}`).then(re => {
+                this.tweetUserName = re.data;
+            })
+        }
+        if (this.tweet.preNode == 0) {
+            axios.get(`${this.API_URL}/tweet/getUserIdByTweetId/${this.tweet.tweetId}`).then(re => {
+                this.thisTweetUserId = re.data;
             })
         }
     },

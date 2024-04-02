@@ -32,6 +32,7 @@ export default {
     },
     mounted() {
         const memberStore = useMemberStore();
+
         axios.get(`${this.API_URL}/tweet/getMyFollowTweets?userId=${memberStore.memberId}`)
             .then(response => {
                 this.tweets = response.data;
@@ -39,6 +40,7 @@ export default {
             .catch(error => {
                 console.error(error);
             });
+
         axios.get(`${this.API_URL}/tweet/getMyFollowUsers?userId=${memberStore.memberId}`)
             .then(response => {
                 this.users = response.data;
@@ -46,6 +48,7 @@ export default {
             .catch(error => {
                 console.error(error);
             });
+
     },
     methods: {
         goOthersPage(name) {

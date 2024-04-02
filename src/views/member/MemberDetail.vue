@@ -158,6 +158,7 @@ export default {
         }
 
         axios.get(`${this.API_URL}/getUserDetail`).then(re => {
+            console.log(re.data)
             const tmp = re.data;
             this.memberName = tmp.lastName;
             this.memberEmail = tmp.userEmail;
@@ -165,7 +166,11 @@ export default {
             this.memberViolationCount = tmp.userViolationCount;
             this.memberGender = tmp.userGender
             this.memberBirthday = tmp.birthDate
+        })
 
+        axios.get(`${this.API_URL}/account/checkPasswordIsEmpty`).then(re => {
+            console.log("checkPasswordIsEmpty: " + re.data)
+            this.googleFirstTime = re.data;
         })
     },
     watch: {
@@ -192,11 +197,15 @@ export default {
                 }
             }).then(response => {
                 if (response.status === 200) {
-                    console.log('change success');
+                    const memberStore = useMemberStore();
+                    memberStore.memberName = response.data.lastName;
+                    sessionStorage.setItem("loggedInMenber", JSON.stringify(response.data));
+                    window.location.reload();
                 } else {
                     console.error('change failed');
                 }
             })
+
             this.mainImgUpload();
 
         },
@@ -231,14 +240,6 @@ export default {
             })
         },
         showResetPasswordPage() {
-
-
-            axios.get(`${this.API_URL}/account/checkPasswordIsEmpty`).then(re => {
-                console.log("checkPasswordIsEmpty: " + re.data)
-                this.googleFirstTime = re.data;
-
-            })
-
             const resetPasswordPage = new bootstrap.Modal(this.$refs.ResetPasswordPage);
             resetPasswordPage.show()
         },

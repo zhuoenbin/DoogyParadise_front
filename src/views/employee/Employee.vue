@@ -21,7 +21,7 @@
             訂房管理
           </button></router-link
         >
-        <router-link to="/"
+        <router-link to="/employee/pm_page"
           ><button class="sidebar-button custom-router-link">
             商品管理
           </button></router-link

@@ -13,25 +13,20 @@
           class="sidebar-button custom-router-link"
           data-bs-toggle="collapse"
           data-bs-target="#collapseExample"
-          aria-expanded="false"
-          aria-controls="collapseExample"
         >
           訂單管理
         </button>
         <div class="collapse" id="collapseExample">
-          <!-- <router-link to="/employee/room/r_page">
+          <router-link to="/employee/room/conduct_page">
             <button class="sidebar-button custom-router-link">進行中</button>
-          </router-link> -->
-          <router-link to="/employee/room/r_page">
-            <button class="sidebar-button custom-router-link">未結束</button>
           </router-link>
-          <router-link to="/employee/room/r_page">
+          <router-link to="/employee/room/unstarted_page">
+            <button class="sidebar-button custom-router-link">未開始</button>
+          </router-link>
+          <router-link to="/employee/room/over_page">
             <button class="sidebar-button custom-router-link">已結束</button>
           </router-link>
         </div>
-        <!-- <router-link to="/employee/room/s_page">
-          <button class="sidebar-button custom-router-link">排班系統</button>
-        </router-link> -->
         <router-link to="/employee">
           <button class="sidebar-button custom-router-link">後臺管理</button>
         </router-link>
@@ -92,6 +87,5 @@
 /* sideBar 按鈕的寬度 */
 .custom-router-link {
   width: 100%;
-  /* 設置寬度為父元素的 100% */
 }
 </style>
