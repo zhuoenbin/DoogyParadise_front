@@ -177,10 +177,10 @@ const router = createRouter({
       path: "/employee",
       component: () => import("@/views/employee/Employee.vue"),
       children: [
-        {
-          path: "r_page",
-          component: () => import("@/views/employee/RoomReservation.vue"),
-        },
+        // {
+        //   path: "r_page",
+        //   component: () => import("@/views/employee/RoomReservation.vue"),
+        // },
         {
           path: "pm_page",
           component: () => import("@/views/employee/ProductManage.vue"),
@@ -227,10 +227,6 @@ const router = createRouter({
     },
     {
       path: "/shop",
-      component: () => import("@/views/ShopPage.vue"),
-    },
-    {
-      path: "/cart",
       component: () => import("@/views/shop/ShopSidebar.vue"),
       children: [
         {
