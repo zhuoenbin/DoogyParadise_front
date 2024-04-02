@@ -278,15 +278,15 @@ export default {
         })
     },
     mounted() {
-        // if (this.tweet.preNode != 0) {
-        //     axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.preNode}`).then(re => {
-        //         this.preNodeUserName = re.data.lastName;
-        //         this.preNodeUserId = re.data.userId;
-        //     })
-        //     axios.get(`${this.API_URL}/tweet/getTweetById/${this.tweet.preNode}`).then(re => {
-        //         this.preNodeTweet = re.data;
-        //     })
-        // }
+        if (this.tweet.preNode != 0) {
+            axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.preNode}`).then(re => {
+                this.preNodeUserName = re.data.lastName;
+                // this.preNodeUserId = re.data.userId;
+            })
+            // axios.get(`${this.API_URL}/tweet/getTweetById/${this.tweet.preNode}`).then(re => {
+            //     this.preNodeTweet = re.data;
+            // })
+        }
 
 
         if (this.tweet.preNode == 0) {
