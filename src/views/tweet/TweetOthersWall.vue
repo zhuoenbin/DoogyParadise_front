@@ -2,8 +2,10 @@
     <div class="tweet-container">
         <div style="display: flex; align-items: center;">
             <h3 style="margin-right: 10px;">{{ name }}的主頁</h3>
-            <button v-if="!isFollwer" @click="followUser" class="btn btn-primary">追蹤</button>
-            <button v-else @click="unfollowUser" class="btn btn-primary">取消追蹤</button>
+            <span v-if="userId">
+                <button v-if="!isFollwer" @click="followUser" class="btn btn-primary">追蹤</button>
+                <button v-else @click="unfollowUser" class="btn btn-primary">取消追蹤</button>
+            </span>
         </div>
         <hr>
         <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" />
@@ -22,10 +24,12 @@ export default {
     data() {
         return {
             tweets: [],
+            tweet: "",
             name: "",
             isFollwer: false,
             myUserId: '',
             otherUserId: '',
+            userId: useMemberStore().memberId,
         }
     },
     mounted() {
@@ -33,23 +37,18 @@ export default {
         this.tweets = tweetStore.tweets;
         this.name = tweetStore.user;
 
+
         if (this.name.length === 0) {
             this.$router.push("/tweetPage/tweetsWallPage");
         } else {
             const memberStore = useMemberStore();
-            console.log("我的ID" + memberStore.memberId);
             this.myUserId = memberStore.memberId;
-            console.log("他的名字" + this.tweets[0].userName
-            )
 
             axios.post(`${this.API_URL}/tweet/checkFollerRelationship`, {
                 myId: memberStore.memberId,
-                tweetUserName: this.tweets[0].userName
+                tweetUserId: this.tweets[0].tweetId
             })
                 .then(response => {
-                    // this.isFollwer = response.data
-                    console.log("isFollowing: " + response.data.isFollowing);
-                    console.log("userId: " + response.data.userId);
                     this.isFollwer = response.data.isFollowing;
                     this.otherUserId = response.data.userId
                     window.scrollTo(0, 0);

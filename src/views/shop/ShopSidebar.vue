@@ -1,24 +1,24 @@
 <template>
   <div class="main-container">
     <!-- sideBar -->
-    <div class="sidebar" v-if="memberId != '' && role != 'ROLE_C1'">
+    <div class="sidebar">
       <div class="sidebar-header">
-        <h2>寵物旅館</h2>
+        <h2>狗狗商城</h2>
       </div>
       <div class="sidebar-buttons">
-        <router-link to="/room/b_page"
+        <router-link to="/shop/shopPage"
           ><button class="sidebar-button custom-router-link">
-            訂房
+            全部商品
           </button></router-link
         >
-        <router-link to="/room/o_page"
+        <router-link to="/shop/category"
           ><button class="sidebar-button custom-router-link">
-            預約訂房管理
+            狗狗零食
           </button></router-link
         >
-        <router-link to="/room/h_page"
+        <router-link to=""
           ><button class="sidebar-button custom-router-link">
-            歷史訂房紀錄
+            狗狗罐頭
           </button></router-link
         >
         <!-- 其他按鈕 -->
@@ -31,24 +31,11 @@
     </div>
   </div>
 </template>
-<script setup>
-import { ref, onMounted } from "vue";
-import { useMemberStore } from "@/stores/memberStore";
-
-const memberId = ref();
-const role = ref();
-
-onMounted(() => {
-  const memberStore = useMemberStore();
-  memberId.value = memberStore.memberId;
-  role.value = memberStore.memberRole;
-});
-</script>
+<script setup></script>
 <style scoped>
 .main {
-  width: 80vw;
-  padding: 40px 0 0 40px;
-  margin: 0 auto; /* 水平置中 */
+  width: 80%;
+  padding: 40px 0 0 80px;
 }
 
 .main-container {
@@ -59,9 +46,9 @@ onMounted(() => {
   flex: 1;
   padding: 20px;
 }
-
+/* background-color(sidebar底色) */
 .sidebar {
-  background-color: #f0f0f0;
+  background-color: #ffe66f;
   padding: 20px;
   min-height: 82vh;
 }
@@ -78,7 +65,7 @@ onMounted(() => {
 .sidebar-button {
   margin-bottom: 20px;
   padding: 10px;
-  background-color: #fff;
+  background-color: #bbffbb;
   border: 1px solid #ddd;
   border-radius: 5px;
   cursor: pointer;
@@ -95,4 +82,9 @@ onMounted(() => {
   width: 100%;
   /* 設置寬度為父元素的 100% */
 }
+/* 添加每一個page的背景颜色 */
+.main-container {
+  background-color: #fff8d7;
+}
+/* display: flex; */
 </style>

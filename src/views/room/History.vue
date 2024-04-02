@@ -1,6 +1,10 @@
 <template>
   <h2>歷史訂房紀錄</h2>
-  <div class="room-container" v-for="(reservation, reservationId) in reservations" :key="reservationId">
+  <div
+    class="room-container"
+    v-for="(reservation, reservationId) in reservations"
+    :key="reservationId"
+  >
     <div v-if="!isEndDateAfterToday(reservation.endTime)">
       <div class="card card-body">
         <span>
@@ -9,25 +13,41 @@
         </span>
         <span> 訂房Id: {{ reservation.reservationId }} </span>
         <span> 房間Id: {{ reservation.room.roomId }} </span>
-        {{ reservation.dog }}
-        <!-- <span> DogId: {{ reservation.dog.dogId }} </span>
-        <span> DogName: {{ reservation.dog.dogName }} </span> -->
-        <!-- <button>投訴</button> -->
+        <!-- <span> DogId: {{ reservation.dog.dogId }} </span> -->
+        <span> DogName: {{ reservation.dog.dogName }} </span>
+        <br />
+        <button
+          class="btn btn-primary"
+          @click="handleModifyReservation(reservation.reservationId, 'score')"
+          v-if="reservation.star == null"
+        >
+          評分
+        </button>
+        <button
+          class="btn"
+          style="background-color: #85d38e"
+          v-if="reservation.star != null"
+        >
+          已評分
+        </button>
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import axios from "axios";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const reservations = ref([]);
 
 onMounted(() => {
-  axios.get("http://localhost:8080/employee/room").then((response) => {
-    console.log(response.data)
-    reservations.value = response.data;
-  });
+  axios
+    .get("http://localhost:8080/room/allRoomReservationByUser")
+    .then((response) => {
+      reservations.value = response.data;
+    });
 });
 
 const formatDate = (dateString) => {
@@ -43,6 +63,13 @@ const isEndDateAfterToday = (endDate) => {
   const today = new Date();
   const end = new Date(endDate);
   return end > today;
+};
+
+const handleModifyReservation = (reservationId, str) => {
+  router.push({
+    name: "u_page",
+    params: { reservationId: reservationId, str: str },
+  });
 };
 </script>
 <style scoped>

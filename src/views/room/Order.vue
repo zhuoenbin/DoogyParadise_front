@@ -1,50 +1,72 @@
 <template>
-  <h2>預約訂房管理</h2>
-  <div
-    class="room-container"
-    v-for="(reservation, reservationId) in reservations"
-    :key="reservationId"
-  >
-    <div v-if="isEndDateAfterToday(reservation.endTime)">
-      <div class="card card-body">
-        <span>
-          訂房時段: {{ formatDate(reservation.startTime) }} -
-          {{ formatDate(reservation.endTime) }}
-        </span>
-        <span> 訂房Id: {{ reservation.reservationId }} </span>
-        <span> 房間Id: {{ reservation.room.roomId }} </span>
-        <span> 寵物名稱: {{ reservation.dog.dogName }} </span>
-        <span> 費用: {{ reservation.totalPrice }} </span>
-        <div v-if="formatDate(reservation.cancelTime) != '1970/01/01'">
-          <div>取消時間: {{ formatDate(reservation.cancelTime) }}</div>
-          <div>取消原因: {{ reservation.cancelDirection }}</div>
-        </div>
-        <div
-          class="flex"
-          v-if="
-            !isStartDateWithinThreeDays(reservation.startTime) &&
-            formatDate(reservation.cancelTime) == '1970/01/01'
-          "
+  <h2 class="page-title">預約訂房管理</h2>
+  <div class="table-container">
+    <table class="room-table">
+      <thead>
+        <tr>
+          <th>訂房時段</th>
+          <th>訂房Id</th>
+          <th>房間Id</th>
+          <th>寵物名</th>
+          <th>費用</th>
+          <th>取消時間</th>
+          <th>取消原因</th>
+          <th>修改時段</th>
+          <th>取消訂房</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(reservation, reservationId) in reservations"
+          :key="reservationId"
         >
-          <button
-            class="btn btn-primary"
-            @click="
-              handleModifyReservation(reservation.reservationId, 'update')
-            "
-          >
-            修改時段
-          </button>
-          <button
-            class="btn btn-primary"
-            @click="
-              handleModifyReservation(reservation.reservationId, 'cancel')
-            "
-          >
-            取消訂房
-          </button>
-        </div>
-      </div>
-    </div>
+          <td>
+            {{ formatDate(reservation.startTime) }} -
+            {{ formatDate(reservation.endTime) }}
+          </td>
+          <td>{{ reservation.reservationId }}</td>
+          <td>{{ reservation.room.roomId }}</td>
+          <td>{{ reservation.dog.dogName }}</td>
+          <td>{{ reservation.totalPrice }}</td>
+          <td v-if="formatDate(reservation.cancelTime) != '1970/01/01'">
+            {{ formatDate(reservation.cancelTime) }}
+          </td>
+          <td v-else></td>
+          <td v-if="formatDate(reservation.cancelTime) != '1970/01/01'">
+            {{ reservation.cancelDirection }}
+          </td>
+          <td v-else></td>
+          <td>
+            <button
+              v-if="
+                !isStartDateWithinThreeDays(reservation.startTime) &&
+                formatDate(reservation.cancelTime) == '1970/01/01'
+              "
+              class="btn btn-update"
+              @click="
+                handleModifyReservation(reservation.reservationId, 'update')
+              "
+            >
+              修改時段
+            </button>
+          </td>
+          <td>
+            <button
+              v-if="
+                !isStartDateWithinThreeDays(reservation.startTime) &&
+                formatDate(reservation.cancelTime) == '1970/01/01'
+              "
+              class="btn btn-cancel"
+              @click="
+                handleModifyReservation(reservation.reservationId, 'cancel')
+              "
+            >
+              取消訂房
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -58,9 +80,13 @@ const router = useRouter();
 const reservations = ref([]);
 
 onMounted(() => {
-  axios.get("http://localhost:8080/employee/room").then((response) => {
-    reservations.value = response.data;
-  });
+  axios
+    .get("http://localhost:8080/room/allRoomReservationByUser")
+    .then((response) => {
+      // 日期排列順序反過來
+      const reversedData = response.data.reverse();
+      reservations.value = reversedData;
+    });
 });
 
 const formatDate = (dateString) => {
@@ -95,19 +121,56 @@ const handleModifyReservation = (reservationId, str) => {
 </script>
 
 <style scoped>
-.card.card-body {
-  width: 40%;
-  margin: 2rem;
-  margin-left: 0;
-  padding: 1.5rem;
+.page-title {
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
-button {
-  margin: 0.5rem;
-  margin-left: 0;
+.room-table {
+  width: 95%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 2rem;
 }
 
-.flex {
-  display: flex;
+.room-table th,
+.room-table td {
+  /* border: 1px solid #c2bdbd; */
+  padding: 12px;
+  text-align: center;
+}
+
+.room-table th {
+  background-color: rgb(197, 195, 195);
+}
+
+.room-table tr:nth-child(even) {
+  background-color: #e3e1e1;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-update {
+  background-color: #249527;
+  color: #fff;
+}
+
+.btn-update:hover {
+  background-color: #145e18;
+}
+
+.btn-cancel {
+  background-color: #c72519;
+  color: #fff;
+}
+
+.btn-cancel:hover {
+  background-color: #d6331d;
 }
 </style>

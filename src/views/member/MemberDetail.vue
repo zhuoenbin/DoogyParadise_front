@@ -51,7 +51,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <button v-if="editing" @click="" class="btn btn-primary">修改密碼</button>
+                    <button v-if="editing" @click="showResetPasswordPage" class="btn btn-primary">修改密碼</button>
                     <hr>
                     <button v-if="!editing" @click="toggleEdit" class="btn btn-primary">编辑個人資訊</button>
                     <div v-else>
@@ -61,11 +61,67 @@
                 </div>
             </div>
         </main>
+
+        <!--重設密碼的彈出式視窗 -->
+        <div ref="ResetPasswordPage" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>重設密碼</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+
+                        <div v-if="!resetSuccess" class="col-md-10 mx-auto col-lg-11">
+                            <form class="p-4 p-md-5 border rounded-3 bg-light">
+                                <div v-if="!googleFirstTime" class="form-floating mb-3">
+                                    <input type="password" class="form-control" placeholder="" v-model="oldPassword"
+                                        required />
+                                    <label>請輸入原始密碼</label>
+                                </div>
+                                <div v-if="googleFirstTime" class="text-center">
+                                    <h3>您為 Google 登入，請設置新密碼</h3>
+                                    <hr class="my-4">
+                                </div>
+
+
+                                <div class="form-floating mb-3">
+                                    <input type="password" class="form-control" placeholder="" v-model="newPassword"
+                                        required />
+                                    <label>請輸入新密碼</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="password" class="form-control" placeholder="" v-model="confirmPassword"
+                                        required />
+                                    <label>請再次輸入新密碼</label>
+                                </div>
+                                <button class="w-100 btn btn-lg btn-primary" @click.prevent="updatePassword"
+                                    :disabled="showPassWordMismatch">重設密碼</button>
+                                <div class="text-danger text-center mt-3" v-if="showPassWordMismatch">新密碼不一致</div>
+                                <hr class="my-4" />
+                                <small class="text-muted">謹慎操作，以免遺失密碼或造成不必要的麻煩。Doggy Paradise關心您</small>
+                            </form>
+                        </div>
+
+                        <h3 v-if="resetSuccess">修改密碼成功，將自動導回個人資訊頁</h3>
+
+
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
 </template>
 <script>
 import axios from 'axios';
 import { useMemberStore } from '@/stores/memberStore';
+
 
 export default {
     data() {
@@ -79,6 +135,14 @@ export default {
             memberGender: "",
             memberBirthday: "",
             editing: false,
+
+            //修改密碼
+            showPassWordMismatch: false,
+            oldPassword: "",
+            newPassword: "",
+            confirmPassword: '',
+            resetSuccess: false,
+            googleFirstTime: false,
         }
     },
     mounted() {
@@ -94,6 +158,7 @@ export default {
         }
 
         axios.get(`${this.API_URL}/getUserDetail`).then(re => {
+            console.log(re.data)
             const tmp = re.data;
             this.memberName = tmp.lastName;
             this.memberEmail = tmp.userEmail;
@@ -101,8 +166,17 @@ export default {
             this.memberViolationCount = tmp.userViolationCount;
             this.memberGender = tmp.userGender
             this.memberBirthday = tmp.birthDate
-
         })
+
+        axios.get(`${this.API_URL}/account/checkPasswordIsEmpty`).then(re => {
+            console.log("checkPasswordIsEmpty: " + re.data)
+            this.googleFirstTime = re.data;
+        })
+    },
+    watch: {
+        confirmPassword(newVal, oldVal) {
+            this.showPassWordMismatch = this.newPassword != this.confirmPassword
+        }
     },
     methods: {
         toggleEdit() {
@@ -123,11 +197,15 @@ export default {
                 }
             }).then(response => {
                 if (response.status === 200) {
-                    console.log('change success');
+                    const memberStore = useMemberStore();
+                    memberStore.memberName = response.data.lastName;
+                    sessionStorage.setItem("loggedInMenber", JSON.stringify(response.data));
+                    window.location.reload();
                 } else {
                     console.error('change failed');
                 }
             })
+
             this.mainImgUpload();
 
         },
@@ -160,6 +238,30 @@ export default {
             axios.get(`${this.API_URL}/getUserPassport`).then(re => {
                 sessionStorage.setItem("loggedInMenber", JSON.stringify(re.data));
             })
+        },
+        showResetPasswordPage() {
+            const resetPasswordPage = new bootstrap.Modal(this.$refs.ResetPasswordPage);
+            resetPasswordPage.show()
+        },
+        updatePassword() {
+            const apiUrl = `${this.API_URL}/account/updatePassword`;
+            const requestData = {
+                oldPassword: this.oldPassword,
+                newPassword: this.newPassword
+            };
+
+            axios.post(apiUrl, requestData)
+                .then(response => {
+                    this.resetSuccess = true;
+                    console.log('成功：', response.data);
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                })
+                .catch(error => {
+                    console.error('失敗：', error);
+                });
+
         }
     }
 
@@ -208,5 +310,10 @@ export default {
 .custom-router-link {
     width: 100%;
     /* 設置寬度為父元素的 100% */
+}
+
+.error {
+    color: red;
+    /* 錯誤提示的顏色 */
 }
 </style>

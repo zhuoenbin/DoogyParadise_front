@@ -10,12 +10,16 @@
           <button class="sidebar-button custom-router-link">個人資訊</button>
         </router-link>
 
-        <router-link to="/profile/order">
+        <router-link to="">
           <button class="sidebar-button custom-router-link">我的訂單</button>
         </router-link>
 
         <router-link to="/profile/mydog">
           <button class="sidebar-button custom-router-link">我的狗勾</button>
+        </router-link>
+
+        <router-link to="/profile/addDog">
+          <button class="sidebar-button custom-router-link">新增狗勾</button>
         </router-link>
       </div>
     </div>
@@ -32,6 +36,7 @@
 .sidebar {
   background-color: #f0f0f0;
   padding: 20px;
+  min-width: 200px;
 }
 
 .sidebar-header h2 {

@@ -12,7 +12,9 @@
           <p>{{ firstvenue.venueDescription }}</p>
           <p>空間可活動狗數: {{ firstvenue.venueCapacityDog }} 隻</p>
         </div>
-        <button type="button" class="btn btn-outline-info">我要預約</button>
+        <button type="button" class="btn btn-outline-info" @click="goRent">
+          我要預約
+        </button>
       </div>
     </div>
     <div class="card mb-3">
@@ -27,7 +29,9 @@
           <p>{{ secondvenue.venueDescription }}</p>
           <p>空間可活動狗數: {{ secondvenue.venueCapacityDog }} 隻</p>
         </div>
-        <button type="button" class="btn btn-outline-info">我要預約</button>
+        <button type="button" class="btn btn-outline-info" @click="goRent">
+          我要預約
+        </button>
       </div>
     </div>
   </div>
@@ -53,6 +57,11 @@ export default {
         console.log(this.firstvenue);
         console.log(this.secondvenue);
       });
+  },
+  methods: {
+    goRent() {
+      this.$router.push("/activity/venueRental");
+    },
   },
 };
 </script>

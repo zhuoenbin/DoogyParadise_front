@@ -13,10 +13,18 @@ export default {
           hiddenOnCollapse: true,
         },
         {
-          href: "/activity",
+          href: "/activity/all",
           title: "寵活動",
           icon: "fa-solid fa-seedling",
           child: [
+            {
+              href: "/activity/holdingActs",
+              title: "現在活動",
+            },
+            {
+              href: "/activity/pastActs",
+              title: "過去所有活動",
+            },
             {
               href: "/activity/all",
               title: "所有活動",
@@ -25,14 +33,10 @@ export default {
               href: "/activity/create",
               title: "舉辦活動",
             },
-            {
-              href: "/",
-              title: "",
-            },
           ],
         },
         {
-          href: "/venues",
+          href: "/activity/venuesIntro",
           title: "場地租借",
           icon: "fa fa-chart-area",
           child: [
@@ -51,16 +55,16 @@ export default {
           ],
         },
         {
-          href: "/",
+          href: "/activity/myJoinedManager",
           title: "我的活動",
           icon: "fa fa-user",
           child: [
             {
-              href: "/charts/sublink",
+              href: "/activity/myJoinedManager",
               title: "報名中",
             },
             {
-              href: "/charts/sublink",
+              href: "/activity/myPastJoinedManager",
               title: "過去參加",
             },
             {

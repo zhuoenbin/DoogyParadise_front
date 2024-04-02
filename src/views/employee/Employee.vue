@@ -16,7 +16,7 @@
             檢舉管理
           </button></router-link
         >
-        <router-link to="/employee/r_page"
+        <router-link to="/employee/room/u_page"
           ><button class="sidebar-button custom-router-link">
             訂房管理
           </button></router-link
@@ -28,6 +28,11 @@
         ><router-link to="/"
           ><button class="sidebar-button custom-router-link">
             退貨處理
+          </button></router-link
+        >
+        <router-link to="/employee/act_page"
+          ><button class="sidebar-button custom-router-link">
+            活動管理
           </button></router-link
         >
         <!-- 其他按鈕 -->
