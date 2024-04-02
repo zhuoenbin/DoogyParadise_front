@@ -128,7 +128,9 @@
             <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0 && imgOnline" class="tweet-galleries">
                 <div class="d-flex justify-content-center">
                     <div class="gallery-item">
-                        <img :src="imgOnlinePath" alt="Gallery Image" class="gallery-image">
+                        <a :href="activityLink">
+                            <img :src="imgOnlinePath" alt="Gallery Image" class="gallery-image">
+                        </a>
                     </div>
                 </div>
             </div>
@@ -236,6 +238,7 @@ export default {
             reportPostText: '',
             imgOnlinePath: "",
             imgOnline: false,
+            activityLink: "http://localhost:5173/activity/all",
         }
     },
     props: {
@@ -313,7 +316,6 @@ export default {
                 this.imgOnline = true;
                 return;
             }
-            console.log(imgPath)
             return `${this.API_URL}/tweet/getImage/${imgPath}`;
         },
         getCommentsLink() {
