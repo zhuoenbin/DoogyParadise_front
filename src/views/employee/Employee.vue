@@ -25,7 +25,7 @@
           ><button class="sidebar-button custom-router-link">
             商品管理
           </button></router-link
-        ><router-link to="/"
+        ><router-link to="/employee/om_page"
           ><button class="sidebar-button custom-router-link">
             退貨處理
           </button></router-link

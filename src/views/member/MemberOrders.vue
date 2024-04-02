@@ -7,8 +7,8 @@
           <th scope="col">訂購日期</th>
           <th scope="col">狀態</th>
           <th scope="col">總金額</th>
-          <th scope="col">地址</th>
           <th scope="col">付款方式</th>
+          <th scope="col"></th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -22,7 +22,6 @@
           <td>{{ payMethod }}</td>
 
           <td>{{ o.totalPrice }}</td>
-          <td>{{ o.city + o.district + o.address }}</td>
           {{
             paymentStatus(o.paymentStatus)
           }}
@@ -32,9 +31,63 @@
               >查看詳細</router-link
             >
           </td>
+          <td>
+            <button
+              id="cancel"
+              name="cancel"
+              type="button"
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop"
+            >
+              取消訂單
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
+    <div
+      class="modal fade"
+      id="staticBackdrop"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">系統訊息</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">要取消該筆訂單？</div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              否
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+              @click=""
+            >
+              <!--cancelOrder-->
+              確定
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 <script>
