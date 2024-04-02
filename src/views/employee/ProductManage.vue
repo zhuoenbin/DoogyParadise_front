@@ -138,9 +138,9 @@ export default {
           this.imageUrl = "";
           this.productName = "";
           this.productPrice = "";
-          this.productCategory = [0];
           this.productDescription = "";
           this.stock = "";
+          location.reload();
         })
         .catch((error) => {
           console.error("", error);
