@@ -151,12 +151,13 @@ export default {
     //購物車點擊事件
     addToCart(productId) {
       axios
-        .post(`http://localhost:8080/product/add/${productId}`)
+        .post(`http://localhost:8080/totalAddToCart/add/${productId}`)
         .then((response) => {
           console.log("已成功加入購物車！");
         })
         .catch((error) => {
           console.error("加入購物車時發生錯誤：", error);
+          window.location.href = "http://localhost:5173/login";
         });
     },
   },
@@ -172,20 +173,6 @@ export default {
 };
 </script>
 <style>
-.fixed-size-img {
-  height: 250px; /* 固定上下高度 */
-}
-/* 商品名稱的樣式 */
-.modal-body h5 {
-  font-size: 24px;
-  margin-top: 0;
-}
-/* 商品價格的樣式 */
-.modal-body p {
-  font-size: 18px;
-  color: #888;
-  margin-bottom: 20px;
-}
 /* 將活動頁面按鈕的顏色設置為與非活動按鈕相同 */
 .page-item.active .page-link {
   background-color: #fcfcfc; /* 將背景色設置為透明(這個重要) */

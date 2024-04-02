@@ -160,7 +160,9 @@ export default {
         .then((response) => {
           console.log("已成功加入購物車！");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          window.location.href = "http://localhost:5173/login";
+        });
     },
     //數字鍵
     decrementQuantity() {

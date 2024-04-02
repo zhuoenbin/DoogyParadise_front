@@ -213,6 +213,10 @@ const router = createRouter({
           path: "category",
           component: () => import("@/views/shop/ShopCategory.vue"),
         },
+        {
+          path: "categoryTwo",
+          component: () => import("@/views/shop/ShopCategoryTwo.vue"),
+        },
         // :productId動態綁定參數道路由上傳遞
         {
           path: "productPage/:productId",

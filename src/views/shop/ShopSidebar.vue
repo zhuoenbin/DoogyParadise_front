@@ -16,7 +16,7 @@
             狗狗零食
           </button></router-link
         >
-        <router-link to=""
+        <router-link to="/shop/categoryTwo"
           ><button class="sidebar-button custom-router-link">
             狗狗罐頭
           </button></router-link

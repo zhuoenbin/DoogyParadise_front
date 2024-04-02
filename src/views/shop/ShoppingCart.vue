@@ -4,7 +4,7 @@
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-10">
           <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-normal mb-0 text-black">Shopping Cart</h3>
+            <h3 class="fw-normal mb-0 text-black">購物車</h3>
             <div>
               排序：<select v-model="sortBy" @change="sortCart">
                 <option>價格低至高</option>
@@ -145,8 +145,12 @@
                         type="button"
                         class="btn btn-primary"
                         data-bs-dismiss="modal"
-                        @click.native="linePay(totalCartPrice)"
+                        @click.native="
+                          linePay(totalCartPrice);
+                          deleteAllCart();
+                        "
                       >
+                        <!-- lineConfirm(totalCartPrice); -->
                         結帳
                       </button>
                     </div>
@@ -229,6 +233,17 @@ export default {
           console.error("刪除購物車時發生錯誤：", error); // 處理錯誤
         });
     },
+    //結帳時刪除所有購物車商品
+    deleteAllCart() {
+      axios
+        .post(`http://localhost:8080/product/deleteByUser`)
+        .then((response) => {
+          console.log("已成功刪除購物車商品！"); // 處理後端回應
+        })
+        .catch((error) => {
+          console.error("刪除購物車時發生錯誤：", error); // 處理錯誤
+        });
+    },
     // 傳入一個totalCartPrice的參數到後端
     linePay(totalCartPrice) {
       console.log(totalCartPrice);
@@ -247,6 +262,21 @@ export default {
           console.error("結帳時發生錯誤：", error);
         });
     },
+    // lineConfirm(totalCartPrice) {
+    //   const data = {
+    //     totalCartPrice: totalCartPrice,
+    //   };
+    //   setTimeout(() => {
+    //     axios
+    //       .post(`http://localhost:8080/confirm/${totalCartPrice}`)
+    //       .then((response) => {
+    //         console.log("確認請求已發送");
+    //       })
+    //       .catch((error) => {
+    //         console.error("結帳時發生錯誤：", error);
+    //       });
+    //   }, 10000); // 10 秒延遲
+    // },
     //傳送購物車的訂單到後端
     sendCartToBackend() {
       const backendEndpoint = "http://localhost:8080/order";
@@ -265,6 +295,7 @@ export default {
         })
         .catch((error) => {
           console.error("發送購物車資料到後端時發生錯誤：", error);
+          window.location.href = "http://localhost:5173/login";
         });
     },
   },
