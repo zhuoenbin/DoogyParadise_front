@@ -109,7 +109,6 @@ export default {
             myModal.show();
         },
         reloadPage() {
-            // 调用 window.location.reload() 方法重新加载页面
             window.location.reload();
         },
         postTweet() {
@@ -127,22 +126,31 @@ export default {
             formData.append('dogList', this.selectedDogs);
 
             if (this.$refs.imageUpload.files.length > 0) {
-                formData.append('image', this.$refs.imageUpload.files[0]);
-                axios.post(`${this.API_URL}/tweet/postTweetWithPhoto`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
-                    .then(response => {
-                        console.log("發文成功:", response.data);
-                        // 清空推文内容
-                        this.postTweetContent = "";
-                        this.$refs.imageUpload.value = "";
-                        this.$router.go(0)
+                const file = this.$refs.imageUpload.files[0];
+
+                // 壓縮圖片
+                this.compressImage(file)
+                    .then(compressedFile => {
+                        formData.append('image', compressedFile);
+                        axios.post(`${this.API_URL}/tweet/postTweetWithPhoto`, formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        })
+                            .then(response => {
+                                console.log("發文成功:", response.data);
+                                // 清空推文内容
+                                this.postTweetContent = "";
+                                this.$refs.imageUpload.value = "";
+                                this.$router.go(0)
+                            })
+                            .catch(error => {
+                                console.error("發文失败:", error);
+                            });
                     })
                     .catch(error => {
-                        console.error("發文失败:", error);
-                    })
+                        console.error("圖片壓縮失敗:", error);
+                    });
             } else {
                 axios.post(`${this.API_URL}/tweet/postTweetOnlyText`, formData, {
                     headers: {
@@ -157,11 +165,53 @@ export default {
                     })
                     .catch(error => {
                         console.error("發文失败:", error);
-                    })
+                    });
             }
+        },
+        compressImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const maxSize = 1024;
+                        let width = img.width;
+                        let height = img.height;
 
+                        if (file.size > 3 * 1024 * 1024) {
+                            if (width > height) {
+                                if (width > maxSize) {
+                                    height *= maxSize / width;
+                                    width = maxSize;
+                                }
+                            } else {
+                                if (height > maxSize) {
+                                    width *= maxSize / height;
+                                    height = maxSize;
+                                }
+                            }
+                        }
 
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        canvas.toBlob((blob) => {
+                            const compressedFile = new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() });
+                            resolve(compressedFile);
+                        }, 'image/jpeg', 0.9);
+                    };
+                };
+                reader.onerror = (error) => reject(error);
+            });
         }
+
+
     }
 
 }

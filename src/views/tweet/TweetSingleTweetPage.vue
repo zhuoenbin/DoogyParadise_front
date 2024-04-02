@@ -33,7 +33,7 @@ export default {
         console.log("this.tweets" + this.tweets)
         this.name = tweetStore.user;
 
-        if (this.name.length === 0) {
+        if (this.name.length == 0) {
             this.$router.push("/tweetPage/tweetsMyWallPage");
 
         }
