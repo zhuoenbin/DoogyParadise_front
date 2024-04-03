@@ -107,8 +107,12 @@
                             :id="'collapse_' + index"
                           >
                             <div class="card card-body">
-                              <div v-for="dog in p.dogNameList" :key="dog">
-                                {{ dog }}
+                              <div v-for="d in p.dogNameList.length" :key="d">
+                                <img
+                                  :src="p.dogProfileList[d - 1]"
+                                  alt="🐶"
+                                  class="dogProfile"
+                                />{{ p.dogNameList[d - 1] }}
                               </div>
                             </div>
                           </div>
@@ -214,7 +218,8 @@ export default {
   text-align: center;
 }
 .dogProfile {
-  height: 65px;
+  height: 50px;
+  margin-bottom: 2px;
 }
 /* loading icon */
 #loading {

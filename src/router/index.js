@@ -163,6 +163,12 @@ const router = createRouter({
           component: () =>
             import("@/views/activity/MyPastActivitiesManager.vue"),
         },
+        // 動態綁定參數
+        {
+          path: "activityPage/:activityId",
+          name: "activityInfo",
+          component: () => import("@/views/activity/ActivityInfoPage.vue"),
+        },
       ],
     },
     {
@@ -194,11 +200,12 @@ const router = createRouter({
         {
           path: "over_page",
           component: () => import("@/views/employee/room/RoomOver.vue"),
-        },{
+        },
+        {
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
-        }
-      ]
+        },
+      ],
     },
     {
       path: "/:pathMatch(.*)*",
