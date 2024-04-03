@@ -45,15 +45,33 @@
                             placeholder="What's happening?" rows="3"></textarea>
                         <small v-if="noText" class="text-danger">必須要有內容喔</small>
                     </div>
-                    <!-- 其他仿推特功能 -->
+
+                    <!-- 上傳圖片 -->
                     <div class="mb-3">
                         <label for="imageUpload" class="form-label">Upload Image:</label>
-                        <input type="file" class="form-control" id="imageUpload" ref="imageUpload" />
+                        <input type="file" class="form-control" id="imageUpload" ref="imageUpload"
+                            @change="previewImage" />
                     </div>
+                    <!-- 圖片預覽 -->
+                    <div v-if="imagePreviewUrl" class="mb-3">
+
+                        <img :src="imagePreviewUrl" class="img-fluid" alt="Image Preview" />
+                    </div>
+                    <!-- 上傳影片 -->
                     <!-- <div class="mb-3">
-                        <label for="tagFriends" class="form-label">Tag My Dogs:</label>
-                        <input type="text" class="form-control" id="tagFriends" placeholder="Tag dogs..." />
+                        <label for="videoUpload" class="form-label">Upload Video:</label>
+                        <input type="file" class="form-control" id="videoUpload" ref="videoUpload"
+                            @change="previewVideo" />
                     </div> -->
+                    <!-- 影片預覽 -->
+                    <!-- <div v-if="videoPreviewUrl" class="mb-3">
+                        <label>Video Preview:</label>
+                        <video controls class="img-fluid">
+                            <source :src="videoPreviewUrl" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div> -->
+
                     <div>選一下要tag的狗狗</div>
                     <div v-for="dog in myDogs" :key="dog.dogId">
                         <input type="checkbox" :id="'dogCheckbox' + dog.dogId" :value="dog.dogId"
@@ -90,6 +108,7 @@ export default {
             myDogs: [],
             selectedDogs: [],
             userId: useMemberStore().memberId,
+            imagePreviewUrl: '',
         };
     },
     mounted() {
@@ -209,6 +228,22 @@ export default {
                 };
                 reader.onerror = (error) => reject(error);
             });
+        },
+        previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    this.imagePreviewUrl = reader.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        },
+        previewVideo(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.videoPreviewUrl = URL.createObjectURL(file);
+            }
         }
 
 

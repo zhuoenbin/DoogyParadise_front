@@ -25,10 +25,13 @@ export default {
     },
     mounted() {
         const memberStore = useMemberStore();
-        axios.get(`${this.API_URL}/tweet/getTweetsByUserIdWithNoComments/${memberStore.memberId}`).then(re => {
-            this.tweets = re.data;
-            this.noShowCommentButton = !this.noShowCommentButton
-        })
+        if (memberStore.memberRole.startsWith("Act")) {
+            axios.get(`${this.API_URL}/tweet/getTweetsByUserIdWithNoComments/${memberStore.memberId}`).then(re => {
+                this.tweets = re.data;
+                this.noShowCommentButton = !this.noShowCommentButton
+            })
+        }
+
     },
     methods: {
         noShowComment() {

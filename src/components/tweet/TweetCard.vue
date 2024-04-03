@@ -256,18 +256,33 @@ export default {
                 console.error('Error fetching number of comments:', error);
             });
 
-        axios.get(`${this.API_URL}/tweet/getTweetLikesNum`, {
-            params: {
-                tweetId: this.tweet.tweetId,
-                userId: this.userId
-            }
-        }).then(re => {
-            this.tweetLikeNum = re.data.tweetLikesNum;
-            //確認使用者是否已經按讚
-            if (re.data.isUserLiked == 1) {
-                this.liked = true
-            }
-        })
+        if (this.userId) {
+            axios.get(`${this.API_URL}/tweet/getTweetLikesNum`, {
+                params: {
+                    tweetId: this.tweet.tweetId,
+                    userId: this.userId
+                }
+            }).then(re => {
+                this.tweetLikeNum = re.data.tweetLikesNum;
+                //確認使用者是否已經按讚
+                if (re.data.isUserLiked == 1) {
+                    this.liked = true
+                }
+            })
+        } else {
+            axios.get(`${this.API_URL}/tweet/getTweetLikesNumForVisitor`, {
+                params: {
+                    tweetId: this.tweet.tweetId,
+                }
+            }).then(re => {
+                this.tweetLikeNum = re.data.tweetLikesNum;
+                //確認使用者是否已經按讚
+                if (re.data.isUserLiked == 1) {
+                    this.liked = true
+                }
+            })
+        }
+
 
         //載入使用者的狗狗們
         axios.get(`${this.API_URL}/tweet/getTweetDogTags/${this.tweet.tweetId}`).then(re => {

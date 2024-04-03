@@ -65,15 +65,19 @@ export default {
     },
     mounted() {
         const memberStore = useMemberStore();
-        this.memberId = memberStore.memberId;
+        if (memberStore.memberRole.startsWith("Act")) {
+            this.memberId = memberStore.memberId;
 
-        // 第一次載入頁面
-        this.loadNotifications();
-
-        // 每隔5秒更新頁面
-        setInterval(() => {
+            // 第一次載入頁面
             this.loadNotifications();
-        }, 5000);
+
+            // 每隔5秒更新頁面
+            setInterval(() => {
+                this.loadNotifications();
+            }, 5000);
+        }
+
+
 
 
     },
