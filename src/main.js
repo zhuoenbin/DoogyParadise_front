@@ -14,6 +14,8 @@ import "vue-sidebar-menu/dist/vue-sidebar-menu.css";
 //element plus
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
+//ckeditor 5
+import CKEditor from "@ckeditor/ckeditor5-vue";
 
 const API_URL = "http://localhost:8080";
 
@@ -33,6 +35,7 @@ app.use(router);
 app.component("VueDatePicker", VueDatePicker);
 app.use(VueSidebarMenu);
 app.use(ElementPlus);
+app.use(CKEditor);
 app.config.globalProperties.API_URL = API_URL;
 
 app.mount("#app");

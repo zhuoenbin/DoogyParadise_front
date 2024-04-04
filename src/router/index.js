@@ -179,10 +179,6 @@ const router = createRouter({
           path: "t_page",
           component: () => import("@/views/employee/TweetManage.vue"),
         },
-        {
-          path: "act_page",
-          component: () => import("@/views/employee/ActivityManager.vue"),
-        },
       ],
     },
     {
@@ -204,6 +200,27 @@ const router = createRouter({
         {
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
+        },
+      ],
+    },
+    {
+      path: "/employee/activity",
+      component: () => import("@/views/employee/activity/Activity.vue"),
+      children: [
+        {
+          path: "act_PastManager",
+          component: () =>
+            import("@/views/employee/activity/OffiPastActsManager.vue"),
+        },
+        {
+          path: "act_HoldingManager",
+          component: () =>
+            import("@/views/employee/activity/OffiActsHoldingManager.vue"),
+        },
+        {
+          path: "act_Create",
+          component: () =>
+            import("@/views/employee/activity/OffiActsCreater.vue"),
         },
       ],
     },

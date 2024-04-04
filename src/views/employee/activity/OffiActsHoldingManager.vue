@@ -2,8 +2,8 @@
   <div class="">
     <div id="title">
       <h4>
-        <b>過去活動區</b
-        ><img src="../../assets/pastManager.png" alt="🐶" id="managerPic" />
+        <b>現行活動區</b
+        ><img src="../../../assets/pastManager.png" alt="🐶" id="managerPic" />
       </h4>
     </div>
 
@@ -72,7 +72,7 @@
                   :id="a.activityId"
                   @click="updatePrepare(a.activityId, a.activityTitle)"
                 >
-                  修改
+                  更新
                 </button>
               </th>
               <td>
@@ -186,7 +186,7 @@ export default {
     if (memberStore.memberRole.startsWith("R")) {
       this.empId = memberStore.memberId;
       axios
-        .get(`${this.API_URL}/activity/api/official/activityManager/past`)
+        .get(`${this.API_URL}/activity/api/official/activityManager/now`)
         .then((rs) => {
           const OffiActivitiesObj = Object.values(rs.data);
           this.OfficialActList = JSON.parse(JSON.stringify(OffiActivitiesObj));
@@ -210,7 +210,7 @@ export default {
         if (this.queryStart !== null && this.queryEnd !== null) {
           axios
             .post(
-              `${this.API_URL}/activity/api/official/activityManager/past`,
+              `${this.API_URL}/activity/api/official/activityManager/now`,
               fd
             )
             .then((rs) => {

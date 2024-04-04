@@ -3,7 +3,7 @@
     <div id="title">
       <h4>
         <b>過去活動區</b
-        ><img src="../../assets/pastManager.png" alt="🐶" id="managerPic" />
+        ><img src="../../../assets/pastManager.png" alt="🐶" id="managerPic" />
       </h4>
     </div>
 
@@ -72,7 +72,7 @@
                   :id="a.activityId"
                   @click="updatePrepare(a.activityId, a.activityTitle)"
                 >
-                  修改
+                  查看
                 </button>
               </th>
               <td>
