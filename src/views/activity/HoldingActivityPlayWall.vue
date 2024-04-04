@@ -125,7 +125,14 @@
           <!-- v-for -->
           <div class="col" v-for="a in activities" :key="a.activityId">
             <div class="card">
-              <img :src="`${a.galleryImgUrl}`" class="card-img-top" alt="..." />
+              <router-link
+                :to="{
+                  name: 'activityInfo',
+                  params: { activityId: a.activityId },
+                }"
+              >
+                <img :src="`${a.galleryImgUrl}`" class="card-img-top" alt="..."
+              /></router-link>
 
               <div class="card-body">
                 <h5 class="card-title">
