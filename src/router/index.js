@@ -67,7 +67,10 @@ const router = createRouter({
         {
           path: "tweetsMyNotificationPath",
           component: () => import("@/views/tweet/TweetNotification.vue"),
-        },
+        },{
+          path: "card2",
+          component: () => import("@/components/tweet/TweetCard2.vue"),
+        }
       ],
     },
     {
