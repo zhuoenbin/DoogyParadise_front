@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-10 mx-auto col-lg-3">
+  <div>
     <div id="title">
       <h5>
         <b>所有活動</b>
@@ -48,7 +48,27 @@
           <!-- v-for -->
           <div class="col" v-for="a in activities" :key="a.activityId">
             <div class="card">
-              <img :src="`${a.galleryImgUrl}`" class="card-img-top" alt="..." />
+              <router-link
+                :to="{
+                  name: 'activityInfo',
+                  params: { activityId: a.activityId },
+                }"
+              >
+                <img :src="`${a.galleryImgUrl}`" class="card-img-top" alt="..."
+              /></router-link>
+              <div class="card-img-overlay" style="height: 50px" v-if="isUser">
+                <button class="likebtn" @click="toggleLike(a.activityId)">
+                  <i
+                    :class="{
+                      'fa-solid fa-heart': userLikedList.includes(a.activityId),
+                      'fa-regular fa-heart': !userLikedList.includes(
+                        a.activityId
+                      ),
+                    }"
+                    style="color: #ff0550"
+                  ></i>
+                </button>
+              </div>
 
               <div class="card-body">
                 <h5 class="card-title">
@@ -253,6 +273,7 @@ export default {
   data() {
     return {
       activities: [],
+      userLikedList: [],
       myDogsNotAttend: [],
       userId: "",
       chooseAct: "",
@@ -271,20 +292,31 @@ export default {
     };
   },
   mounted() {
-    axios.get(`${this.API_URL}/activity/api/all/1`).then((rs) => {
-      console.log(rs.data);
-      this.activities = rs.data.content;
-      this.totalPage = rs.data.totalPages;
-      this.currentPage = rs.data.number + 1;
-      console.log("現在是", this.currentPage);
-    });
-
     const memberStore = useMemberStore();
     console.log(memberStore.memberRole);
     if (!memberStore.memberRole.startsWith("Act")) {
       this.isJoinButtonVisible = false;
       this.isJoinButtonDisabled = true;
     }
+    if (memberStore.memberRole.startsWith("Act")) {
+      this.isUser = true;
+      this.userId = memberStore.memberId;
+    }
+    axios
+      .get(`${this.API_URL}/activity/api/all/1`)
+      .then((rs) => {
+        console.log(rs.data);
+        this.activities = rs.data.content;
+        this.totalPage = rs.data.totalPages;
+        this.currentPage = rs.data.number + 1;
+        console.log("現在是", this.currentPage);
+        console.log(this.isUser);
+      })
+      .then((rs) => {
+        if (this.isUser) {
+          this.getLikedActs();
+        }
+      });
   },
   computed: {
     showPageBar() {
@@ -327,6 +359,48 @@ export default {
     },
   },
   methods: {
+    getLikedActs() {
+      axios
+        .get(`${this.API_URL}/activity/api/usersLiked/${this.userId}`)
+        .then((rs) => {
+          this.userLikedList = rs.data;
+          console.log(this.userLikedList);
+        });
+    },
+    toggleLike(activityId) {
+      const index = this.userLikedList.indexOf(activityId);
+      if (index === -1) {
+        this.userLikedList.push(activityId); //不在list就加進去
+        if (this.isUser) {
+          const fd = new FormData();
+          fd.append("userId", this.userId);
+          fd.append("activityId", activityId);
+          axios
+            .post(`${this.API_URL}/activity/api/userDo/like`, fd)
+            .then((response) => {
+              console.log("like成功", response.data);
+            })
+            .catch((error) => {
+              console.error("like失敗", error);
+            });
+        }
+      } else {
+        this.userLikedList.splice(index, 1);
+        if (this.isUser) {
+          const fd = new FormData();
+          fd.append("userId", this.userId);
+          fd.append("activityId", activityId);
+          axios
+            .post(`${this.API_URL}/activity/api/userDo/dislike`, fd)
+            .then((response) => {
+              console.log("dislike成功", response.data);
+            })
+            .catch((error) => {
+              console.error("dislike失敗", error);
+            });
+        }
+      }
+    },
     goForwardPage() {
       this.currentPage = this.currentPage - 1;
     },
@@ -472,6 +546,13 @@ export default {
   margin: auto 20px;
   padding: 20px 20px;
   text-align: center;
+}
+.likebtn {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
 }
 .checkbox-wrapper-33 {
   --s-xsmall: 0.625em;

@@ -100,10 +100,6 @@ const router = createRouter({
       component: () => import("@/views/activity/ActivityMainPage.vue"),
       children: [
         {
-          path: "create",
-          component: () => import("@/views/activity/CreateActivity.vue"),
-        },
-        {
           path: "all",
           component: () => import("@/views/activity/ActivityWall.vue"),
         },
@@ -163,6 +159,16 @@ const router = createRouter({
           component: () =>
             import("@/views/activity/MyPastActivitiesManager.vue"),
         },
+        {
+          path: "myFavoriteManager",
+          component: () => import("@/views/activity/MyFavoriteWall.vue"),
+        },
+        // 動態綁定參數
+        {
+          path: "activityPage/:activityId",
+          name: "activityInfo",
+          component: () => import("@/views/activity/ActivityInfoPage.vue"),
+        },
       ],
     },
     {
@@ -172,10 +178,6 @@ const router = createRouter({
         {
           path: "t_page",
           component: () => import("@/views/employee/TweetManage.vue"),
-        },
-        {
-          path: "act_page",
-          component: () => import("@/views/employee/ActivityManager.vue"),
         },
       ],
     },
@@ -194,11 +196,44 @@ const router = createRouter({
         {
           path: "over_page",
           component: () => import("@/views/employee/room/RoomOver.vue"),
-        },{
+        },
+        {
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
-        }
-      ]
+        },
+      ],
+    },
+    {
+      path: "/employee/activity",
+      component: () => import("@/views/employee/activity/Activity.vue"),
+      children: [
+        {
+          path: "act_PastManager",
+          component: () =>
+            import("@/views/employee/activity/OffiPastActsManager.vue"),
+        },
+        {
+          path: "act_HoldingManager",
+          component: () =>
+            import("@/views/employee/activity/OffiActsHoldingManager.vue"),
+        },
+        {
+          path: "act_Creater",
+          component: () =>
+            import("@/views/employee/activity/OffiActsCreater.vue"),
+        },
+        {
+          path: "act_Creater/FormStyle",
+          component: () =>
+            import("@/views/employee/activity/CreateActivity.vue"),
+        },
+        {
+          path: "act_UpdateManager/:activityId",
+          name: "activityUpdater",
+          component: () =>
+            import("@/views/employee/activity/OffiActsUpdater.vue"),
+        },
+      ],
     },
     {
       path: "/:pathMatch(.*)*",

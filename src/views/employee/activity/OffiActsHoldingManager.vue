@@ -2,8 +2,12 @@
   <div class="">
     <div id="title">
       <h4>
-        <b>過去活動區</b
-        ><img src="../../assets/pastManager.png" alt="🐶" id="managerPic" />
+        <b>現行活動區</b
+        ><img
+          src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1712297720/activityFolder/sjwop8uq4hb3objr0csd.png"
+          alt="🐶"
+          id="managerPic"
+        />
       </h4>
     </div>
 
@@ -16,7 +20,7 @@
             v-model.lazy="selectedDates"
             range
             :enable-time-picker="false"
-            :max-date="new Date()"
+            :min-date="new Date()"
             @blur="queryDate"
           />
         </div>
@@ -70,17 +74,27 @@
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
                   :id="a.activityId"
-                  @click="updatePrepare(a.activityId, a.activityTitle)"
+                  @click="updatePrepare(a.activityId)"
                 >
-                  修改
+                  更新
                 </button>
               </th>
-              <td>
+              <td class="smallText">
                 {{ a.activityDate }} {{ this.timeFormat(a.activityStart) }} -
                 {{ this.timeFormat(a.activityEnd) }}
               </td>
-              <td>{{ a.activityTitle }}</td>
-              <td>{{ a.activityStatus }}</td>
+              <td class="smallText">
+                <router-link
+                  :to="{
+                    name: 'activityInfo',
+                    params: { activityId: a.activityId },
+                  }"
+                  ><button class="actTag btn smallText">
+                    {{ a.activityTitle }}
+                  </button>
+                </router-link>
+              </td>
+              <td class="smallText">{{ a.activityStatus }}</td>
               <td>
                 <div
                   class="accordion accordion-flush"
@@ -186,7 +200,7 @@ export default {
     if (memberStore.memberRole.startsWith("R")) {
       this.empId = memberStore.memberId;
       axios
-        .get(`${this.API_URL}/activity/api/official/activityManager/past`)
+        .get(`${this.API_URL}/activity/api/official/activityManager/now`)
         .then((rs) => {
           const OffiActivitiesObj = Object.values(rs.data);
           this.OfficialActList = JSON.parse(JSON.stringify(OffiActivitiesObj));
@@ -198,6 +212,9 @@ export default {
     }
   },
   methods: {
+    updatePrepare(id) {
+      this.$router.push(`/employee/activity/act_UpdateManager/${id}`);
+    },
     queryDate() {
       // console.log(this.selectedDates[1]);
       if (this.selectedDates != null) {
@@ -210,7 +227,7 @@ export default {
         if (this.queryStart !== null && this.queryEnd !== null) {
           axios
             .post(
-              `${this.API_URL}/activity/api/official/activityManager/past`,
+              `${this.API_URL}/activity/api/official/activityManager/now`,
               fd
             )
             .then((rs) => {
@@ -295,8 +312,15 @@ export default {
   text-align: center;
 }
 #managerPic {
-  height: 60px;
+  height: 70px;
 }
+.actTag {
+  background-color: white;
+  border-radius: 20px;
+  border: none;
+  /* transition: background-color 0.3s ease; */
+}
+
 .queryContainer {
   background-color: #fcebeb;
   padding: 1px;
@@ -338,5 +362,8 @@ td {
 }
 .dogNum {
   color: cadetblue;
+}
+.smallText {
+  font-size: 14px;
 }
 </style>

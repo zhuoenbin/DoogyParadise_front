@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-10 mx-auto col-lg-3">
+  <div>
     <div id="title">
       <h4>
         <b>過去參加活動紀錄</b
@@ -7,6 +7,7 @@
       </h4>
     </div>
 
+    <!-- 主要內容 -->
     <div class="py-1 bg-light">
       <div class="container">
         <table class="table table-striped">

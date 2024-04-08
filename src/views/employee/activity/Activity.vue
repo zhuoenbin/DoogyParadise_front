@@ -3,24 +3,24 @@
     <!-- sideBar -->
     <div class="sidebar">
       <div class="sidebar-header">
-        <h2>活動</h2>
+        <h2>活動管理</h2>
       </div>
       <button
         class="sidebar-button custom-router-link"
         data-bs-toggle="collapse"
-        data-bs-target="#collapse1"
+        data-bs-target="#collapseExample"
       >
-        Activity
+        活動管理
       </button>
-      <div class="collapse" id="collapse1">
-        <router-link to="/activity/holdingActs">
+      <div class="collapse" id="collapseExample">
+        <router-link to="/employee/activity/act_HoldingManager">
           <button class="sidebar-button custom-router-link">現行活動</button>
         </router-link>
-        <router-link to="/activity/pastActs">
+        <router-link to="/employee/activity/act_PastManager">
           <button class="sidebar-button custom-router-link">過去活動</button>
         </router-link>
-        <router-link to="/activity/all">
-          <button class="sidebar-button custom-router-link">所有活動</button>
+        <router-link to="/employee/activity/act_Creater">
+          <button class="sidebar-button custom-router-link">創建活動</button>
         </router-link>
       </div>
       <button
@@ -28,37 +28,32 @@
         data-bs-toggle="collapse"
         data-bs-target="#collapse2"
       >
-        Venue
+        場地管理
       </button>
       <div class="collapse" id="collapse2">
-        <router-link to="/activity/venuesIntro">
-          <button class="sidebar-button custom-router-link">場地介紹</button>
+        <router-link to="/employee/activity/act_HoldingManager">
+          <button class="sidebar-button custom-router-link">場地資訊</button>
         </router-link>
-        <router-link to="/activity/venueRental">
+        <router-link to="/employee/activity/act_PastManager">
           <button class="sidebar-button custom-router-link">客戶租借</button>
         </router-link>
-        <!-- <router-link to="/employee/activity/act_PastManager">
-          <button class="sidebar-button custom-router-link">##</button>
-        </router-link> -->
+        <router-link to="/employee/activity/act_Creater">
+          <button class="sidebar-button custom-router-link">官方租借</button>
+        </router-link>
       </div>
 
-      <button
-        class="sidebar-button custom-router-link"
-        data-bs-toggle="collapse"
-        data-bs-target="#collapse3"
-      >
-        My
-      </button>
-      <div class="collapse" id="collapse3">
-        <router-link to="/activity/myJoinedManager">
-          <button class="sidebar-button custom-router-link">報名中</button>
+      <div class="sidebar-buttons">
+        <router-link to="/employee/activity/act_HoldingManager">
+          <button class="sidebar-button custom-router-link">##</button>
         </router-link>
-        <router-link to="/activity/myPastJoinedManager">
-          <button class="sidebar-button custom-router-link">過去參加</button>
+        <router-link to="/employee/activity/act_PastManager">
+          <button class="sidebar-button custom-router-link">##</button>
         </router-link>
-        <router-link to="/activity/myFavoriteManager">
-          <button class="sidebar-button custom-router-link">我的收藏</button>
+
+        <router-link to="/employee">
+          <button class="sidebar-button custom-router-link">後臺管理</button>
         </router-link>
+        <!-- 其他按鈕 -->
       </div>
     </div>
 
@@ -68,11 +63,13 @@
     </div>
   </div>
 </template>
+
 <script setup></script>
+
 <style scoped>
 .main {
   flex: 1;
-  padding: 20px;
+  padding: 40px;
 }
 
 .main-container {
@@ -88,7 +85,6 @@
 
 .sidebar-header h2 {
   margin: 20px 0 40px;
-  text-align: center;
 }
 
 .sidebar-buttons {

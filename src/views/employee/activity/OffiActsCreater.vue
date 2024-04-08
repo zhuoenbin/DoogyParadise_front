@@ -1,13 +1,21 @@
 <template>
-  <main class="container col-xl-10 col-xxl-8 px-4 py-5">
-    <div class="row align-items-center g-lg-7 py-7">
-      <!-- <div class="col-lg-5 text-center text-lg-start">
-        <h1 @click="check" class="display-4 fw-bold lh-1 mb-3">辦活動!</h1>
-        <p class="col-lg-10 fs-4">由我開始的Doggy Paradise!</p>
-      </div> -->
-      <!-- 表單 -->
-      <div class="col-lg-10 mx-auto col-lg-3">
-        <form class="p-4 p-md-7 border rounded-3 bg-light">
+  <div id="app">
+    <div id="title">
+      <h4>
+        <b>創建活動區</b
+        ><img
+          src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1712297980/activityFolder/r19hqhsblnnlqffgimpr.png"
+          alt="🐶"
+          id="managerPic"
+        /><router-link to="/employee/activity/act_Creater/FormStyle">
+          <button class="btn btn-outline-secondary">點擊切換編輯模式</button>
+        </router-link>
+      </h4>
+    </div>
+    <div class="col-lg-10 mx-auto col-lg-3">
+      <form class="p-4 p-md-7 border rounded-3 bg-light">
+        <div>
+          <h6 style="text-align: left"><b>活動必要資訊</b></h6>
           <div class="row g-2">
             <div class="col-md">
               <div class="form-floating mb-3">
@@ -61,9 +69,9 @@
                   type="date"
                   name="activityDate"
                   value="2024-04-26"
-                  min="2024-03-25"
-                  max="2026-04-26"
+                  :min="new Date()"
                   v-model.lazy="activityDate"
+                  required
                 />
                 <label>活動日期:</label>
               </div>
@@ -76,7 +84,8 @@
                   name="activityStart"
                   value="13:00"
                   min="10:00"
-                  max="18:00"
+                  max="22:00"
+                  required
                   v-model.lazy="activityStart"
                 /><label>開始時間:</label>
               </div>
@@ -87,10 +96,10 @@
                   class="form-control"
                   type="time"
                   name="activityEnd"
-                  value="13:00"
-                  min="10:00"
+                  :min="activityStart"
                   max="18:00"
                   v-model="activityEnd"
+                  required
                 /><label>結束時間:</label>
               </div>
             </div>
@@ -101,6 +110,7 @@
               type="text"
               class="form-control"
               v-model.lazy="activityTitle"
+              required
             />
             <label>活動主題</label>
           </div>
@@ -111,57 +121,21 @@
               id="mainImgUpload"
               ref="mainImgUpload"
               accept="image/*"
+              required
             />
             <label class="input-group-text" for="inputGroupFile02"
               >主題圖片上傳</label
             >
           </div>
 
-          <div class="form-floating mb-3">
-            <textarea
-              type="text"
-              class="form-control"
-              v-model.lazy="activityDescription"
-            ></textarea>
-            <label>活動簡介</label>
-          </div>
-          <div class="form-floating mb-3">
-            <textarea
-              type="text"
-              class="form-control"
-              v-model="activityProcess"
-            ></textarea>
-            <label>活動流程</label>
-          </div>
-          <div class="form-floating mb-3">
-            <textarea
-              type="text"
-              class="form-control"
-              v-model="activityNotice"
-            ></textarea>
-            <label>注意事項</label>
-          </div>
-          <div class="input-group mb-3">
-            <input
-              type="file"
-              class="form-control"
-              id="normalImage"
-              ref="normalImage"
-              accept="image/*"
-              multiple
-            />
-            <label class="input-group-text" for="inputGroupFile02"
-              >其他說明圖片上傳</label
-            >
-          </div>
-
-          <!-- <div class="row g-2">
+          <div class="row g-3">
             <div class="col-md-2">
               <div class="form-floating mb-3">
                 <input
                   type="number"
                   min="0"
                   class="form-control"
+                  value="0"
                   v-model.lazy="activityCost"
                 />
                 <label>參加費用</label>
@@ -169,17 +143,21 @@
             </div>
             <div class="col-md">
               <div class="form-floating mb-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model.lazy="activityCostDescription"
-                />
-                <label>費用敘述</label>
+                <select
+                  class="form-select"
+                  id="floatingSelect"
+                  name="activityDogNumber"
+                  aria-label="Floating label select example"
+                  v-model="dogNumber"
+                  required
+                >
+                  <option v-for="n in dogOptions" :key="n" :value="n">
+                    {{ n }}
+                  </option>
+                </select>
+                <label for="floatingSelect">預計狗數</label>
               </div>
             </div>
-          </div> -->
-
-          <div class="row g-3">
             <div class="col-md">
               <div class="form-floating mb-3">
                 <input
@@ -194,30 +172,30 @@
                 /><label>報名截止時間:</label>
               </div>
             </div>
+          </div>
+          <div class="input-group mb-3">
+            <input
+              type="file"
+              class="form-control"
+              id="normalImage"
+              ref="normalImage"
+              accept="image/*"
+              multiple
+            />
+            <label class="input-group-text" for="inputGroupFile02"
+              >其他說明圖片上傳</label
+            >
+          </div>
+        </div>
+        <div>
+          <h6 style="text-align: left"><b>聯絡人資訊</b></h6>
+          <div class="row g-3">
             <div class="col-md">
               <div class="form-floating mb-3">
                 <input type="text" class="form-control" v-model="contactInfo" />
                 <label>聯絡人稱呼</label>
               </div>
             </div>
-            <div class="col-md">
-              <div class="form-floating mb-3">
-                <select
-                  class="form-select"
-                  id="floatingSelect"
-                  name="activityDogNumber"
-                  aria-label="Floating label select example"
-                  v-model="activityDogNumber"
-                >
-                  <option v-for="n in 10" :key="n" :value="n">
-                    {{ n }}
-                  </option>
-                </select>
-                <label for="floatingSelect">預計狗數</label>
-              </div>
-            </div>
-          </div>
-          <div class="row g-2">
             <div class="col-md">
               <div class="form-floating mb-3">
                 <input type="text" class="form-control" v-model="contactMail" />
@@ -235,23 +213,59 @@
               </div>
             </div>
           </div>
+        </div>
+        <br />
+        <div>
+          <h6 style="text-align: center; color: brown"><b>活動內頁編輯</b></h6>
+          <ckeditor
+            :editor="editor"
+            v-model="editorData"
+            :config="editorConfig"
+            @blur="textOuputer"
+          ></ckeditor>
+        </div>
+        <hr />
+        <button class="w-100 btn btn-lg btn-primary" @click.prevent="create">
+          創建活動
+        </button>
 
-          <button class="w-100 btn btn-lg btn-primary" @click.prevent="create">
-            創建活動
-          </button>
-
-          <div class="text-danger text-center mt-3">{{ message }}</div>
-        </form>
-      </div>
+        <div class="text-danger text-center mt-3">{{ message }}</div>
+      </form>
     </div>
-  </main>
+  </div>
 </template>
 <script>
 import axios from "axios";
 import { useMemberStore } from "@/stores/memberStore";
 import { useActivityStore } from "@/stores/activityStore";
-
+import Editor from "@ckeditor/ckeditor5-custom-build/build/ckeditor";
 export default {
+  name: "app",
+  data() {
+    return {
+      editor: Editor,
+      editorData: "",
+      editorConfig: {
+        // The configuration of the editor.
+      },
+      myEmpPass: [],
+      types: [],
+      venues: [],
+      activityTypeId: null,
+      venueId: null,
+      activityDate: "",
+      activityStart: "",
+      activityEnd: "",
+      activityTitle: "",
+      activityCost: null,
+      activityClosingDate: "",
+      contactInfo: "",
+      contactMail: "",
+      contactPhone: "",
+      message: "",
+      dogNumber: "",
+    };
+  },
   mounted() {
     fetch(`${this.API_URL}/activity/api/types`)
       .then((rs) => rs.json())
@@ -263,7 +277,8 @@ export default {
       .then((rs) => rs.json())
       .then((venueObj) => {
         this.venues = Object.values(venueObj);
-        let venues = JSON.parse(JSON.stringify(venueObj));
+        // let venues = JSON.parse(JSON.stringify(venueObj));
+        console.log(this.venues);
       });
 
     const memberStore = useMemberStore();
@@ -285,30 +300,6 @@ export default {
         });
     }
   },
-  data() {
-    return {
-      myEmpPass: [],
-      types: [],
-      venues: [],
-      activityTypeId: null,
-      venueId: null,
-      activityDate: "",
-      activityStart: "",
-      activityEnd: "",
-      activityTitle: "",
-      activityDescription: "",
-      activityProcess: "",
-      activityNotice: "",
-      activityCostDescription: "",
-      activityCost: null,
-      activityClosingDate: "",
-      contactInfo: "",
-      contactMail: "",
-      contactPhone: "",
-      message: "",
-      activityDogNumber: "",
-    };
-  },
   computed: {
     dogOptions() {
       if (!this.venueId) return [];
@@ -323,6 +314,9 @@ export default {
     },
   },
   methods: {
+    textOuputer() {
+      console.log(this.editorData);
+    },
     mainImgUpload() {
       const activityStore = useActivityStore();
       if (activityStore.activityId != null) {
@@ -374,7 +368,7 @@ export default {
         console.log(new Date(this.activityDate));
         console.log(new Date(`${this.activityDate}T${this.activityStart}`));
         axios
-          .post(`${this.API_URL}/activity/api/official/addActivity`, {
+          .post(`${this.API_URL}/activity/api/official/createActivity`, {
             activityTypeId: this.activityTypeId,
             venueId: this.venueId,
             employeeId: memberStore.memberId,
@@ -384,13 +378,13 @@ export default {
               `${this.activityDate}T${this.activityStart}`
             ),
             activityEnd: new Date(`${this.activityDate}T${this.activityEnd}`),
-            activityDescription: this.activityDescription,
-            activityProcess: this.activityProcess,
-            activityNotice: this.activityNotice,
+            activityDescription: this.editorData,
+            // activityProcess: this.activityProcess,
+            // activityNotice: this.activityNotice,
             activityClosingDate: new Date(this.activityClosingDate),
-            activityDogNumber: this.activityDogNumber,
+            activityDogNumber: this.dogNumber,
             activityCost: this.activityCost,
-            activityCostDescription: this.activityCostDescription,
+            // activityCostDescription: this.activityCostDescription,
             contactInfo: this.contactInfo,
             contactMail: this.contactMail,
             contactPhone: this.contactPhone,
@@ -402,11 +396,15 @@ export default {
             console.log(rs.data);
             console.log(activityStore.activityTitle);
             console.log(activityStore.activityId);
+          })
+          .then((rs) => {
             this.mainImgUpload();
             if (this.$refs.normalImage.files.length > 0) {
               this.normalImgUpload();
             }
-            this.$router.push("/");
+          })
+          .then((rs) => {
+            this.$router.push("/employee/activity/act_HoldingManager");
           })
           .catch((error) => {
             this.message = "創建失敗";
@@ -417,26 +415,16 @@ export default {
       }
     },
   },
-  watch: {
-    activityTypeId: function (newValue, oldValue) {
-      console.log("活動類型是:", newValue);
-    },
-    venueId: function (newValue, oldValue) {
-      console.log("場地是:", newValue);
-    },
-    activityDate: function (newValue, oldValue) {
-      console.log("活動日期是:", newValue);
-    },
-    activityStart: function (newValue, oldValue) {
-      console.log("活動開始時間是:", newValue);
-    },
-    activityEnd: function (newValue, oldValue) {
-      console.log("活動結束時間是:", newValue);
-    },
-    activityTitle: function (newValue, oldValue) {
-      console.log("活動主題:", newValue);
-    },
-  },
 };
 </script>
-<style></style>
+<style>
+#title {
+  color: #3f427f;
+  margin: auto 20px;
+  padding: 20px 20px;
+  text-align: center;
+}
+#managerPic {
+  height: 60px;
+}
+</style>

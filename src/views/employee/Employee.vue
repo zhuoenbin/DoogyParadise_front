@@ -20,7 +20,7 @@
           </button></router-link><router-link to="/"><button class="sidebar-button custom-router-link">
             退貨處理
           </button></router-link>
-        <router-link to="/employee/act_page"><button class="sidebar-button custom-router-link">
+        <router-link to="/employee/activity/act_HoldingManager"><button class="sidebar-button custom-router-link">
             活動管理
           </button></router-link>
         <router-link to="/employee/t_page"><button class="sidebar-button custom-router-link">
