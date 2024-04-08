@@ -202,9 +202,6 @@
                     required
                     @change="selectFile"
                   />
-                  <label class="input-group-text" for="inputGroupFile02"
-                    >主題圖片上傳</label
-                  >
                 </div>
 
                 <!-- Crop result preview -->
@@ -253,9 +250,78 @@
           <div class="editZone">
             <div class="oldZone">
               <div class="editZoneTitle">舊照片</div>
+              <div class="oldMain">
+                <div class="input-group mb-3">
+                  <input
+                    class="form-control"
+                    v-model="activityTitle"
+                    readonly
+                  />
+                </div>
+
+                <div class="del">
+                  <button
+                    @click="delSidePic"
+                    type="button"
+                    id="delbtn"
+                    class="btn btn-warning"
+                    disabled
+                  >
+                    delete
+                  </button>
+                  <span>{{ delMessage }}</span>
+                </div>
+
+                <ul>
+                  <li v-for="d in imgList.length - 1">
+                    <input
+                      type="checkbox"
+                      :id="'myCheckbox' + d"
+                      :value="imgList[d].galleryId"
+                      v-model="delGalleryIdList"
+                      @change="checkDelCount"
+                    />
+                    <label :for="'myCheckbox' + d"
+                      ><img :src="imgList[d].galleryImgUrl" class="oldMainPic"
+                    /></label>
+                  </li>
+                </ul>
+              </div>
             </div>
             <div class="newZone">
               <div class="editZoneTitle">新照片</div>
+              <div class="newMain">
+                <div class="input-group mb-3">
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="normalImage"
+                    ref="normalImage"
+                    accept="image/*"
+                    multiple
+                    @change="sidePicSelected"
+                  />
+                </div>
+                <div class="del">
+                  <button
+                    @click="addSidePic"
+                    type="button"
+                    id="addbtn"
+                    class="btn btn-warning"
+                    disabled
+                  >
+                    add
+                  </button>
+                  <span>{{ addMessage }}</span>
+                </div>
+                <div
+                  v-for="(image, index) in images"
+                  :key="index"
+                  class="preview"
+                >
+                  <img :src="image" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -398,7 +464,11 @@ export default {
       },
 
       //side
-      ImgList: "",
+      imgList: "",
+      delMessage: "",
+      delGalleryIdList: [],
+      addMessage: "",
+      images: [],
     };
   },
   mounted() {
@@ -424,7 +494,7 @@ export default {
         this.activityStart = activityInfo.activityStart;
         this.activityEnd = activityInfo.activityEnd;
         this.mainImg = activityInfo.activityImgList[0];
-        this.ImgList = activityInfo.activityImgList;
+        this.imgList = activityInfo.activityImgList;
 
         this.activityCost = activityInfo.activityCost;
         this.activityDescription = activityInfo.activityDescription;
@@ -559,6 +629,78 @@ export default {
       this.isText = false;
       this.isInfo = false;
     },
+    sidePicSelected(e) {
+      const files = e.target.files;
+      const addbtn = document.getElementById("addbtn");
+      if (e.target.files.length < 1) {
+        addbtn.disabled = true;
+      } else {
+        addbtn.disabled = false;
+      }
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.images.push(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    addSidePic() {
+      if (this.$refs.normalImage.files.length > 0) {
+        const fd = new FormData();
+        fd.append("activityId", this.activityId);
+        Array.from(this.$refs.normalImage.files).forEach((file) => {
+          fd.append("addSidePicList", file);
+        });
+        axios
+          .post(
+            `${this.API_URL}/activity/api/official/updateManager/sidePic/add`,
+            fd
+          )
+          .then((response) => {
+            this.addMessage = "";
+            console.log("說明圖片新增成功!", response.data);
+          })
+          .then((response) => {
+            location.reload();
+          })
+          .catch((error) => {
+            this.addMessage = "新增失敗";
+            console.error("說明圖片新增失敗", error);
+          });
+      }
+    },
+    checkDelCount() {
+      console.log(this.delGalleryIdList);
+      const del = document.getElementById("delbtn");
+      if (this.delGalleryIdList.length < 1) {
+        del.disabled = true;
+      } else {
+        del.disabled = false;
+      }
+    },
+    delSidePic() {
+      const fd = new FormData();
+      fd.append("delGalleryIdList", this.delGalleryIdList);
+      fd.append("activityId", this.activityId);
+      axios
+        .post(
+          `${this.API_URL}/activity/api/official/updateManager/sidePic/delete`,
+          fd
+        )
+        .then((rs) => {
+          this.delMessage = "";
+          console.log(rs.data);
+        })
+        .then((rs) => {
+          location.reload();
+        })
+        .catch((error) => {
+          this.delMessage = "delete失敗";
+          console.error("delete失敗:", error.message);
+        });
+    },
     showInfoEditor() {
       this.isInfo = true;
       this.ismainPic = false;
@@ -642,7 +784,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style>
 @import url("https://fonts.googleapis.com/css?family=Heebo:400,700|Open+Sans:400,700");
 #title {
   color: #874a33;
@@ -675,6 +817,7 @@ export default {
   display: flex;
   border-radius: 5px;
   margin: 0 10px;
+  margin-bottom: 20px;
   background-color: white;
 }
 .infoEditZone {
@@ -687,6 +830,11 @@ export default {
 }
 .oldMain {
   justify-content: center;
+}
+.del {
+  text-align: center;
+  padding-bottom: 10px;
+  margin-top: 0;
 }
 .oldMainPic {
   display: flex;
@@ -708,9 +856,11 @@ export default {
   height: 150px;
   margin: 10px auto;
 }
+
 .preview {
   margin-top: 10px;
 }
+
 .picuploadbtn {
   display: flex;
   padding: 10px 0;
@@ -962,5 +1112,73 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+/* .ll */
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: inline;
+}
+
+li {
+  display: inline;
+}
+
+input[type="checkbox"][id^="myCheckbox"] {
+  display: none;
+}
+
+label {
+  border: 1px solid #fff;
+  padding: 10px;
+  display: block;
+  position: relative;
+  margin: 10px;
+  cursor: pointer;
+}
+
+label:before {
+  background-color: white;
+  color: white;
+  content: " ";
+  display: block;
+  border-radius: 50%;
+  border: 1px solid grey;
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  line-height: 28px;
+  transition-duration: 0.4s;
+  transform: scale(0);
+}
+
+label img {
+  max-width: 100px;
+  max-height: 100px;
+  width: auto;
+  height: auto;
+  transition-duration: 0.2s;
+  transform-origin: 50% 50%;
+}
+
+:checked + label {
+  border-color: #ddd;
+}
+
+:checked + label:before {
+  content: "✓";
+  background-color: grey;
+  transform: scale(1);
+}
+
+:checked + label img {
+  transform: scale(0.9);
+  /* box-shadow: 0 0 5px #333; */
+  z-index: -1;
 }
 </style>
