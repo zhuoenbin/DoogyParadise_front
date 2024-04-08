@@ -8,6 +8,13 @@
           class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
         >
           <li>
+            <img
+              style="width: 60px; margin-right: 20px"
+              src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1712320726/m0px1710quyf7khpk770.png"
+              alt="🐶"
+            />
+          </li>
+          <li>
             <router-link to="/" class="nav-link px-2 text-secondary"
               >首頁</router-link
             >
@@ -23,7 +30,9 @@
             >
           </li>
           <li>
-            <router-link to="/activity" class="nav-link px-2 text-white"
+            <router-link
+              to="/activity/holdingActs"
+              class="nav-link px-2 text-white"
               >寵活動</router-link
             >
           </li>

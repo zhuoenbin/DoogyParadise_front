@@ -100,10 +100,6 @@ const router = createRouter({
       component: () => import("@/views/activity/ActivityMainPage.vue"),
       children: [
         {
-          path: "create",
-          component: () => import("@/views/activity/CreateActivity.vue"),
-        },
-        {
           path: "all",
           component: () => import("@/views/activity/ActivityWall.vue"),
         },
@@ -163,6 +159,10 @@ const router = createRouter({
           component: () =>
             import("@/views/activity/MyPastActivitiesManager.vue"),
         },
+        {
+          path: "myFavoriteManager",
+          component: () => import("@/views/activity/MyFavoriteWall.vue"),
+        },
         // 動態綁定參數
         {
           path: "activityPage/:activityId",
@@ -218,9 +218,20 @@ const router = createRouter({
             import("@/views/employee/activity/OffiActsHoldingManager.vue"),
         },
         {
-          path: "act_Create",
+          path: "act_Creater",
           component: () =>
             import("@/views/employee/activity/OffiActsCreater.vue"),
+        },
+        {
+          path: "act_Creater/FormStyle",
+          component: () =>
+            import("@/views/employee/activity/CreateActivity.vue"),
+        },
+        {
+          path: "act_UpdateManager/:activityId",
+          name: "activityUpdater",
+          component: () =>
+            import("@/views/employee/activity/OffiActsUpdater.vue"),
         },
       ],
     },

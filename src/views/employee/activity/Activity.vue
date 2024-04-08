@@ -5,31 +5,51 @@
       <div class="sidebar-header">
         <h2>活動管理</h2>
       </div>
-      <div class="sidebar-buttons">
+      <button
+        class="sidebar-button custom-router-link"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseExample"
+      >
+        活動管理
+      </button>
+      <div class="collapse" id="collapseExample">
         <router-link to="/employee/activity/act_HoldingManager">
-          <button class="sidebar-button custom-router-link">現行活動區</button>
+          <button class="sidebar-button custom-router-link">現行活動</button>
         </router-link>
         <router-link to="/employee/activity/act_PastManager">
-          <button class="sidebar-button custom-router-link">過去活動區</button>
+          <button class="sidebar-button custom-router-link">過去活動</button>
         </router-link>
-        <button
-          class="sidebar-button custom-router-link"
-          data-bs-toggle="collapse"
-          data-bs-target="#collapseExample"
-        >
-          訂單管理
-        </button>
-        <div class="collapse" id="collapseExample">
-          <router-link to="/employee/room/conduct_page">
-            <button class="sidebar-button custom-router-link">進行中</button>
-          </router-link>
-          <router-link to="/employee/room/unstarted_page">
-            <button class="sidebar-button custom-router-link">未開始</button>
-          </router-link>
-          <router-link to="/employee/room/over_page">
-            <button class="sidebar-button custom-router-link">已結束</button>
-          </router-link>
-        </div>
+        <router-link to="/employee/activity/act_Creater">
+          <button class="sidebar-button custom-router-link">創建活動</button>
+        </router-link>
+      </div>
+      <button
+        class="sidebar-button custom-router-link"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapse2"
+      >
+        場地管理
+      </button>
+      <div class="collapse" id="collapse2">
+        <router-link to="/employee/activity/act_HoldingManager">
+          <button class="sidebar-button custom-router-link">場地資訊</button>
+        </router-link>
+        <router-link to="/employee/activity/act_PastManager">
+          <button class="sidebar-button custom-router-link">客戶租借</button>
+        </router-link>
+        <router-link to="/employee/activity/act_Creater">
+          <button class="sidebar-button custom-router-link">官方租借</button>
+        </router-link>
+      </div>
+
+      <div class="sidebar-buttons">
+        <router-link to="/employee/activity/act_HoldingManager">
+          <button class="sidebar-button custom-router-link">##</button>
+        </router-link>
+        <router-link to="/employee/activity/act_PastManager">
+          <button class="sidebar-button custom-router-link">##</button>
+        </router-link>
+
         <router-link to="/employee">
           <button class="sidebar-button custom-router-link">後臺管理</button>
         </router-link>

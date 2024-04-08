@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-10 mx-auto col-lg-3">
+  <div>
     <div id="title">
       <h5>
         <b>Activity Info 🐾</b>
@@ -126,32 +126,43 @@
     <hr />
     <div class="infoContainer">
       <div class="actInfo">
-        <div>
-          <h4><b>活動敘述 :</b></h4>
-          <p>{{ activityInfo.activityDescription }}</p>
+        <div class="infoHtml" v-if="activityInfo.activityProcess == null">
+          <div v-html="activityInfo.activityDescription"></div>
         </div>
-        <div>
-          <h4><b>活動流程 :</b></h4>
-          <p style="white-space: pre">{{ activityInfo.activityProcess }}</p>
+
+        <div v-if="activityInfo.activityProcess != null">
+          <div>
+            <h4><b>活動敘述 :</b></h4>
+            <p>{{ activityInfo.activityDescription }}</p>
+          </div>
+          <div v-if="activityInfo.activityProcess !== null">
+            <h4><b>活動流程 :</b></h4>
+            <p style="white-space: pre">{{ activityInfo.activityProcess }}</p>
+          </div>
+          <div
+            v-if="
+              activityInfo.activityCost == 0 || activityInfo.activity == null
+            "
+          >
+            <h4><b>參與費用 :</b></h4>
+            <p>免費參加</p>
+          </div>
+          <div
+            v-if="
+              activityInfo.activityCost > 0 || activityInfo.activity != null
+            "
+          >
+            <h4><b>參與費用 :</b></h4>
+            <p>{{ activityInfo.activityCost }}</p>
+            <h4><b>費用詳細: </b></h4>
+            <p>{{ activityInfo.activityCostDescription }}</p>
+          </div>
+          <div v-if="activityInfo.activityNotice !== null">
+            <h4><b>注意事項: </b></h4>
+            <p>{{ activityInfo.activityNotice }}</p>
+          </div>
         </div>
-        <div
-          v-if="activityInfo.activityCost == 0 || activityInfo.activity == null"
-        >
-          <h4><b>參與費用 :</b></h4>
-          <p>免費參加</p>
-        </div>
-        <div
-          v-if="activityInfo.activityCost > 0 || activityInfo.activity != null"
-        >
-          <h4><b>參與費用 :</b></h4>
-          <p>{{ activityInfo.activityCost }}</p>
-          <h4><b>費用詳細: </b></h4>
-          <p>{{ activityInfo.activityCostDescription }}</p>
-        </div>
-        <div>
-          <h4><b>注意事項: </b></h4>
-          <p>{{ activityInfo.activityNotice }}</p>
-        </div>
+
         <div class="blog-card">
           <div class="meta">
             <div
@@ -527,6 +538,12 @@ export default {
 
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+#title {
+  color: #502d20;
+  margin: 10px 20px;
+  padding: 5px 5px;
+  text-align: left;
+}
 .infoContainer {
   /* border: 3px dashed darkcyan; */
   background-color: rgb(218, 232, 198);
@@ -540,6 +557,9 @@ export default {
 .actInfo {
   margin: 10px;
   width: 50%;
+}
+.infoHtml {
+  margin: 15px;
 }
 .carouselContainer {
   width: 35%; /* 寬度 */

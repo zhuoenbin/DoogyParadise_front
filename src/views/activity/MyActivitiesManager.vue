@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-10 mx-auto col-lg-3">
+  <div>
     <div id="title">
       <h4>
         <b>管理我的報名</b
@@ -237,6 +237,7 @@
               data-bs-dismiss="modal"
               id="liveToastBtn"
               @click="joinActivity"
+              disabled
             >
               更新
             </button>
@@ -464,7 +465,7 @@ export default {
         setTimeout(function () {
           let loading = document.getElementById("loading");
           loading.style.display = "none";
-        }, 8000);
+        }, 2000);
         this.$router.push("/activity/myJoinedManager");
       }
     },
