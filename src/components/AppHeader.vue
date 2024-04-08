@@ -40,7 +40,7 @@
               >寵物旅館</router-link
             >
           </li>
-          <li v-if="role == 'ROLE_C1'">
+          <li v-if="role.startsWith('ROLE')">
             <router-link to="/employee" class="nav-link px-2 text-white"
               >員工後臺</router-link
             >
