@@ -50,9 +50,9 @@
                 </div>
                 <hr>
                 <h5>AI自動審核結果</h5>
-                <div>性暗示 : {{ this.report.sexuallyExplicit }}</div>
+                <div>情色露骨內容 : {{ this.report.sexuallyExplicit }}</div>
                 <div>仇恨言論 : {{ this.report.hateSpeech }}</div>
-                <div>騷擾 : {{ this.report.harassment }}</div>
+                <div>騷擾內容 : {{ this.report.harassment }}</div>
                 <div>危險內容 : {{ this.report.dangerousContent }}</div>
                 <strong :style="{ color: dangerScore >= 4 ? 'red' : 'inherit' }">分數 : {{ this.dangerScore
                     }}</strong><code>(越高則越危險)</code>
