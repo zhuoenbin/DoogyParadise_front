@@ -40,7 +40,7 @@
               >寵物旅館</router-link
             >
           </li>
-          <li>
+          <li v-if="role == 'ROLE_C1'">
             <router-link to="/employee" class="nav-link px-2 text-white"
               >員工後臺</router-link
             >
@@ -108,6 +108,10 @@ export default {
     },
     isloggedIn() {
       return useMemberStore().isLoggedIn;
+    },
+    role() {
+      // console.log(useMemberStore().memberRole);
+      return useMemberStore().memberRole;
     },
   },
 };

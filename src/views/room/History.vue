@@ -61,7 +61,7 @@
                     </h5>
                   </div>
                   <div class="modal-body">
-                    <div>訂購者: {{ reservation.user.lastName }}</div>
+                    <div>訂購者: {{ reservation.lastName }}</div>
                     <br />
                     <div>房號: {{ reservation.room.roomName }}</div>
                     <br />

@@ -10,8 +10,6 @@
           <th>寵物名</th>
           <th>費用</th>
           <th>訂房時間</th>
-          <!-- <th>取消時間</th>
-          <th>取消原因</th> -->
           <th>修改時段</th>
           <th>取消訂房</th>
         </tr>
@@ -94,8 +92,7 @@ onMounted(() => {
     .get("http://localhost:8080/room/allRoomReservationByUser")
     .then((response) => {
       // 日期排列順序反過來
-      const reversedData = response.data.reverse();
-      reservations.value = reversedData;
+      reservations.value = response.data.reverse();
     });
 });
 
@@ -109,8 +106,9 @@ const formatDate = (dateString) => {
 
 const filteredReservations = computed(() => {
   return reservations.value.filter((reservation) => {
-    if (reservation.cancelTime == null)
+    if (reservation.cancelTime == null) {
       return isEndDateAfterToday(reservation.endTime);
+    }
   });
 });
 
