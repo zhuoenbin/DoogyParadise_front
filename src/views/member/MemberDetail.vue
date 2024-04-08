@@ -5,11 +5,18 @@
         <main class="container mt-5">
             <div class="row featurette">
                 <div class="col-md-3">
-                    <img :src="memberImgPath" class="w-100" />
+
+                    <!-- 圖片預覽 -->
+                    <div v-if="imagePreviewUrl" class="mb-3">
+
+                        <img :src="imagePreviewUrl" class="img-fluid" alt="Image Preview" />
+                    </div>
+                    <img v-else :src="memberImgPath" class="w-100" />
                     <div v-if="editing" class="input-group mb-3">
                         <input type="file" class="form-control" id="mainImgUpload" ref="mainImgUpload" accept="image/*"
-                            placeholder="自定義文字" />
+                            placeholder="自定義文字" @change="previewImage" />
                     </div>
+
                 </div>
 
 
@@ -143,13 +150,15 @@ export default {
             confirmPassword: '',
             resetSuccess: false,
             googleFirstTime: false,
+            //圖片預覽
+            imagePreviewUrl: '',
         }
     },
     mounted() {
         const memberStore = useMemberStore();
         this.memberId = memberStore.memberId
 
-        if (memberStore.memberRole == "ROLE_M1") {
+        if (memberStore.memberRole.startsWith("ROLE")) {
             console.log("emp")
             this.$router.push("/");
         }
@@ -211,6 +220,7 @@ export default {
         },
         refreshPage() {
             this.editing = !this.editing;
+            this.imagePreviewUrl = '';
         },
         mainImgUpload() {
             if (this.memberId != null) {
@@ -262,7 +272,17 @@ export default {
                     console.error('失敗：', error);
                 });
 
-        }
+        },
+        previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    this.imagePreviewUrl = reader.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        },
     }
 
 }

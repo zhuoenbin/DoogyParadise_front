@@ -21,7 +21,7 @@
             訂房管理
           </button></router-link
         >
-        <router-link to="/employee/pm_page"
+        <router-link to="/"
           ><button class="sidebar-button custom-router-link">
             商品管理
           </button></router-link
@@ -30,9 +30,14 @@
             退貨處理
           </button></router-link
         >
-        <router-link to="/employee/act_page"
+        <router-link to="/employee/activity/act_HoldingManager"
           ><button class="sidebar-button custom-router-link">
             活動管理
+          </button></router-link
+        >
+        <router-link to="/employee/t_page"
+          ><button class="sidebar-button custom-router-link">
+            推文管理
           </button></router-link
         >
         <!-- 其他按鈕 -->

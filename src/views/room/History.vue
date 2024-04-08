@@ -1,46 +1,126 @@
 <template>
-  <h2>歷史訂房紀錄</h2>
-  <div
-    class="room-container"
-    v-for="(reservation, reservationId) in reservations"
-    :key="reservationId"
-  >
-    <div v-if="!isEndDateAfterToday(reservation.endTime)">
-      <div class="card card-body">
-        <span>
-          訂房時段: {{ formatDate(reservation.startTime) }} -
-          {{ formatDate(reservation.endTime) }}
-        </span>
-        <span> 訂房Id: {{ reservation.reservationId }} </span>
-        <span> 房間Id: {{ reservation.room.roomId }} </span>
-        <!-- <span> DogId: {{ reservation.dog.dogId }} </span> -->
-        <span> DogName: {{ reservation.dog.dogName }} </span>
-        <br />
-        <button
-          class="btn btn-primary"
-          @click="handleModifyReservation(reservation.reservationId, 'score')"
-          v-if="reservation.star == null"
+  <div>
+    <h2 class="page-title">歷史訂房紀錄</h2>
+    <table class="room-table">
+      <thead>
+        <tr>
+          <th>訂房時段</th>
+          <th>訂房Id</th>
+          <th>房間Id</th>
+          <th>Dog名稱</th>
+          <th>費用</th>
+          <th>訂房時間</th>
+          <th>評分</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(reservation, reservationId) in filteredReservations"
+          :key="reservationId"
         >
-          評分
-        </button>
-        <button
-          class="btn"
-          style="background-color: #85d38e"
-          v-if="reservation.star != null"
-        >
-          已評分
-        </button>
-      </div>
-    </div>
+          <td>
+            {{ formatDate(reservation.startTime) }} -
+            {{ formatDate(reservation.endTime) }}
+          </td>
+          <td>{{ reservation.reservationId }}</td>
+          <td>{{ reservation.room.roomId }}</td>
+          <td>{{ reservation.dog.dogName }}</td>
+          <td>{{ reservation.totalPrice }}</td>
+          <td>{{ formatDate(reservation.reservationTime) }}</td>
+          <td>
+            <button
+              class="btn btn-primary"
+              @click="
+                handleModifyReservation(reservation.reservationId, 'score')
+              "
+              v-if="reservation.star == null"
+            >
+              評分
+            </button>
+            <button
+              class="btn btn-end"
+              v-else
+              data-bs-toggle="modal"
+              :data-bs-target="'#exampleModal_' + reservation.reservationId"
+            >
+              已評分
+            </button>
+            <!-- modal -->
+            <div
+              class="modal fade"
+              :id="'exampleModal_' + reservation.reservationId"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                      訂房Id: {{ reservation.reservationId }}
+                    </h5>
+                  </div>
+                  <div class="modal-body">
+                    <div>訂購者: {{ reservation.lastName }}</div>
+                    <br />
+                    <div>房號: {{ reservation.room.roomName }}</div>
+                    <br />
+                    <div>寵物名稱: {{ reservation.dog.dogName }}</div>
+                    <br />
+                    <div>
+                      訂房時段: {{ formatDate(reservation.startTime) }} -
+                      {{ formatDate(reservation.endTime) }}
+                    </div>
+                    <br />
+                    <div>總金額: {{ reservation.totalPrice }}</div>
+                    <hr />
+                    <div v-if="reservation.star != null">
+                      <div>
+                        <span
+                          v-for="index in reservation.star"
+                          :key="index"
+                          class="star"
+                          >★</span
+                        >
+                        <span
+                          v-for="index in maxRating - reservation.star"
+                          :key="index"
+                          class="star"
+                          >☆</span
+                        >
+                      </div>
+                      <br />
+                      <div>
+                        評價說明:
+                        <span
+                          v-if="
+                            reservation.conments != '' &&
+                            reservation.conments != null
+                          "
+                          >{{ reservation.conments }}</span
+                        >
+                        <span v-else class="gray">無評價說明</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
+
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 const reservations = ref([]);
+const maxRating = 5; // 最大星數
 
 onMounted(() => {
   axios
@@ -48,6 +128,14 @@ onMounted(() => {
     .then((response) => {
       reservations.value = response.data;
     });
+});
+
+const filteredReservations = computed(() => {
+  return reservations.value.filter((reservation) => {
+    if (reservation.cancelTime == null) {
+      return isEndDateAfterToday(reservation.endTime);
+    }
+  });
 });
 
 const formatDate = (dateString) => {
@@ -62,7 +150,7 @@ const formatDate = (dateString) => {
 const isEndDateAfterToday = (endDate) => {
   const today = new Date();
   const end = new Date(endDate);
-  return end > today;
+  return end < today;
 };
 
 const handleModifyReservation = (reservationId, str) => {
@@ -72,19 +160,66 @@ const handleModifyReservation = (reservationId, str) => {
   });
 };
 </script>
+
 <style scoped>
-.card.card-body {
-  width: 40%;
-  margin: 2rem;
-  margin-left: 0;
-  padding: 1.5rem;
+.page-title {
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
-p button {
-  margin: 2rem 1rem 0 0;
+.room-table {
+  width: 95%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 2rem;
 }
 
-.card.card-body {
-  margin-top: 2rem;
+.room-table th,
+.room-table td {
+  /* border: 1px solid #c2bdbd; */
+  padding: 12px;
+  text-align: center;
+}
+
+.room-table th {
+  background-color: rgb(254, 241, 222);
+}
+
+.room-table tr:nth-child(even) {
+  background-color: rgb(255, 243, 223);
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-end {
+  background-color: #49c936;
+  color: aliceblue;
+}
+
+.btn-end:hover {
+  background-color: #35ac22;
+}
+
+.modal-body {
+  text-align: left;
+}
+
+.star-rating {
+  margin-bottom: 20px;
+}
+
+.star {
+  font-size: 24px;
+  color: gold;
+}
+
+.gray {
+  color: gray;
 }
 </style>

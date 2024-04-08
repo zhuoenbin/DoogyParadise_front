@@ -45,15 +45,33 @@
                             placeholder="What's happening?" rows="3"></textarea>
                         <small v-if="noText" class="text-danger">必須要有內容喔</small>
                     </div>
-                    <!-- 其他仿推特功能 -->
+
+                    <!-- 上傳圖片 -->
                     <div class="mb-3">
                         <label for="imageUpload" class="form-label">Upload Image:</label>
-                        <input type="file" class="form-control" id="imageUpload" ref="imageUpload" />
+                        <input type="file" class="form-control" id="imageUpload" ref="imageUpload"
+                            @change="previewImage" />
                     </div>
+                    <!-- 圖片預覽 -->
+                    <div v-if="imagePreviewUrl" class="mb-3">
+
+                        <img :src="imagePreviewUrl" class="img-fluid" alt="Image Preview" />
+                    </div>
+                    <!-- 上傳影片 -->
                     <!-- <div class="mb-3">
-                        <label for="tagFriends" class="form-label">Tag My Dogs:</label>
-                        <input type="text" class="form-control" id="tagFriends" placeholder="Tag dogs..." />
+                        <label for="videoUpload" class="form-label">Upload Video:</label>
+                        <input type="file" class="form-control" id="videoUpload" ref="videoUpload"
+                            @change="previewVideo" />
                     </div> -->
+                    <!-- 影片預覽 -->
+                    <!-- <div v-if="videoPreviewUrl" class="mb-3">
+                        <label>Video Preview:</label>
+                        <video controls class="img-fluid">
+                            <source :src="videoPreviewUrl" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div> -->
+
                     <div>選一下要tag的狗狗</div>
                     <div v-for="dog in myDogs" :key="dog.dogId">
                         <input type="checkbox" :id="'dogCheckbox' + dog.dogId" :value="dog.dogId"
@@ -90,6 +108,7 @@ export default {
             myDogs: [],
             selectedDogs: [],
             userId: useMemberStore().memberId,
+            imagePreviewUrl: '',
         };
     },
     mounted() {
@@ -109,7 +128,6 @@ export default {
             myModal.show();
         },
         reloadPage() {
-            // 调用 window.location.reload() 方法重新加载页面
             window.location.reload();
         },
         postTweet() {
@@ -127,22 +145,31 @@ export default {
             formData.append('dogList', this.selectedDogs);
 
             if (this.$refs.imageUpload.files.length > 0) {
-                formData.append('image', this.$refs.imageUpload.files[0]);
-                axios.post(`${this.API_URL}/tweet/postTweetWithPhoto`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
-                    .then(response => {
-                        console.log("發文成功:", response.data);
-                        // 清空推文内容
-                        this.postTweetContent = "";
-                        this.$refs.imageUpload.value = "";
-                        this.$router.go(0)
+                const file = this.$refs.imageUpload.files[0];
+
+                // 壓縮圖片
+                this.compressImage(file)
+                    .then(compressedFile => {
+                        formData.append('image', compressedFile);
+                        axios.post(`${this.API_URL}/tweet/postTweetWithPhoto`, formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        })
+                            .then(response => {
+                                console.log("發文成功:", response.data);
+                                // 清空推文内容
+                                this.postTweetContent = "";
+                                this.$refs.imageUpload.value = "";
+                                this.$router.go(0)
+                            })
+                            .catch(error => {
+                                console.error("發文失败:", error);
+                            });
                     })
                     .catch(error => {
-                        console.error("發文失败:", error);
-                    })
+                        console.error("圖片壓縮失敗:", error);
+                    });
             } else {
                 axios.post(`${this.API_URL}/tweet/postTweetOnlyText`, formData, {
                     headers: {
@@ -157,11 +184,69 @@ export default {
                     })
                     .catch(error => {
                         console.error("發文失败:", error);
-                    })
+                    });
             }
+        },
+        compressImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const maxSize = 1024;
+                        let width = img.width;
+                        let height = img.height;
 
+                        if (file.size > 3 * 1024 * 1024) {
+                            if (width > height) {
+                                if (width > maxSize) {
+                                    height *= maxSize / width;
+                                    width = maxSize;
+                                }
+                            } else {
+                                if (height > maxSize) {
+                                    width *= maxSize / height;
+                                    height = maxSize;
+                                }
+                            }
+                        }
 
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        canvas.toBlob((blob) => {
+                            const compressedFile = new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() });
+                            resolve(compressedFile);
+                        }, 'image/jpeg', 0.9);
+                    };
+                };
+                reader.onerror = (error) => reject(error);
+            });
+        },
+        previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    this.imagePreviewUrl = reader.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        },
+        previewVideo(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.videoPreviewUrl = URL.createObjectURL(file);
+            }
         }
+
+
     }
 
 }

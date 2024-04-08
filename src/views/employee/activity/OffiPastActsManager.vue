@@ -3,7 +3,11 @@
     <div id="title">
       <h4>
         <b>過去活動區</b
-        ><img src="../../assets/pastManager.png" alt="🐶" id="managerPic" />
+        ><img
+          src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1712297321/activityFolder/mr905ji1iaq9timwqvgx.png"
+          alt="🐶"
+          id="managerPic"
+        />
       </h4>
     </div>
 
@@ -72,15 +76,25 @@
                   :id="a.activityId"
                   @click="updatePrepare(a.activityId, a.activityTitle)"
                 >
-                  修改
+                  查看
                 </button>
               </th>
-              <td>
+              <td class="smallText">
                 {{ a.activityDate }} {{ this.timeFormat(a.activityStart) }} -
                 {{ this.timeFormat(a.activityEnd) }}
               </td>
-              <td>{{ a.activityTitle }}</td>
-              <td>{{ a.activityStatus }}</td>
+              <td class="smallText">
+                <router-link
+                  :to="{
+                    name: 'activityInfo',
+                    params: { activityId: a.activityId },
+                  }"
+                  ><button class="actTag btn smallText">
+                    {{ a.activityTitle }}
+                  </button>
+                </router-link>
+              </td>
+              <td class="smallText">{{ a.activityStatus }}</td>
               <td>
                 <div
                   class="accordion accordion-flush"
@@ -287,23 +301,23 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 #title {
-  color: #874a33;
+  color: #502d20;
   margin: auto 20px;
   padding: 20px 20px;
   text-align: center;
 }
 #managerPic {
-  height: 60px;
+  height: 70px;
 }
 .queryContainer {
-  background-color: #fcebeb;
+  background-color: #c0a6a0;
   padding: 1px;
 }
 .queryText {
   font-weight: 700;
-  color: rgb(49, 110, 117);
+  color: rgb(252, 252, 252);
 }
 .datePeriod {
   width: 30%;
@@ -338,5 +352,8 @@ td {
 }
 .dogNum {
   color: cadetblue;
+}
+.smallText {
+  font-size: 14px;
 }
 </style>
