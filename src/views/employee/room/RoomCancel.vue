@@ -1,24 +1,32 @@
 <template>
   <div class="container">
-    <h2 class="text-center">已結束</h2>
+    <h2 class="text-center">取消</h2>
 
     <!-- 添加查询功能 -->
     <div class="search-bar">
       <label for="searchType">選擇查詢方式：</label>
-      <select v-model="searchType" id="searchType">
+      <select v-model="searchType" id="searchType" @change="changeSearchType">
         <option value="all">全部資料</option>
         <option value="id">訂單ID</option>
         <option value="name">訂房用戶</option>
         <option value="roomName">房號</option>
         <option value="petName">寵物名稱</option>
         <option value="Date">訂房日期</option>
+        <option value="cancelDirection">取消原因</option>
+        <option value="cancelTime">取消時間</option>
       </select>
       <input
-        v-if="searchType != 'all' && searchType != 'Date'"
+        v-if="
+          searchType != 'all' &&
+          searchType != 'Date' &&
+          searchType != 'cancelDirection' &&
+          searchType != 'cancelTime'
+        "
         v-model="searchTerm"
         type="text"
         placeholder="輸入關鍵字"
       />
+      <!-- 選取訂單時間 -->
       <VueDatePicker
         class="date-picker"
         v-if="searchType == 'Date'"
@@ -26,7 +34,26 @@
         range
         :options="datepickerOptions"
         :enable-time-picker="false"
-        :max-date="new Date()"
+      />
+      <!-- 取消原因 -->
+      <select
+        v-if="searchType == 'cancelDirection'"
+        v-model="searchTerm"
+        id="searchTerm"
+      >
+        <option value="選錯房間">選錯房間</option>
+        <option value="行程取消">行程取消</option>
+        <option value="找到其他家更便宜的旅館">找到其他家更便宜的旅館</option>
+        <option value="其他">其他</option>
+      </select>
+      <!-- 取消時間 -->
+      <VueDatePicker
+        class="date-picker"
+        v-if="searchType == 'cancelTime'"
+        v-model="selectedDates"
+        :options="datepickerOptions"
+        :enable-time-picker="false"
+        max-Date="new Date()"
       />
     </div>
 
@@ -49,19 +76,27 @@
             </button>
           </th>
           <th>寵物名稱</th>
-          <th @click="sortByStartTime">
-            訂單時間
-            <button class="sort">
-              <template v-if="sortStartTimeDirection === 'asc'">▲</template>
+          <th v-if="searchType != 'Date'" @click="sortcancel">
+            取消原因<button
+              class="sort"
+              v-if="
+                searchType != 'cancelDirection' ||
+                searchTerm == '其他' ||
+                searchTerm == ''
+              "
+            >
+              <template v-if="sortCancelDirection === 'asc'">▲</template>
               <template v-else>▼</template>
             </button>
           </th>
-          <th @click="sortByTotalPrice">
-            總金額<button class="sort">
-              <template v-if="sortTotalPriceDirection === 'asc'">▲</template>
+          <th v-else>訂單時間</th>
+          <th v-if="searchType != 'Date'" @click="sortByCancelTime">
+            取消時間<button class="sort">
+              <template v-if="sortCancelTimeDirection === 'asc'">▲</template>
               <template v-else>▼</template>
             </button>
           </th>
+          <th v-else>總金額</th>
           <th></th>
         </tr>
       </thead>
@@ -74,11 +109,15 @@
           <td>{{ reservation.user.lastName }}</td>
           <td>{{ reservation.room.roomName }}</td>
           <td>{{ reservation.dog.dogName }}</td>
-          <td>
-            {{ formatDate(reservation.startTime) }} -
-            {{ formatDate(reservation.endTime) }}
+          <td v-if="searchType != 'Date'">{{ reservation.cancelDirection }}</td>
+          <td v-else>
+            {{ formatDate(reservation.startTime, 0) }} -
+            {{ formatDate(reservation.endTime, 0) }}
           </td>
-          <td>{{ reservation.totalPrice }}</td>
+          <td v-if="searchType != 'Date'">
+            {{ formatDate(reservation.cancelTime) }}
+          </td>
+          <td v-else>{{ reservation.totalPrice }}</td>
           <td>
             <a
               v-if="reservation.reservationId != undefined"
@@ -133,35 +172,12 @@
                     <br />
                     <div>總金額: {{ reservation.totalPrice }}</div>
                     <hr />
-                    <div v-if="reservation.star != null">
-                      <div>
-                        <span
-                          v-for="index in reservation.star"
-                          :key="index"
-                          class="star"
-                          >★</span
-                        >
-                        <span
-                          v-for="index in maxRating - reservation.star"
-                          :key="index"
-                          class="star"
-                          >☆</span
-                        >
-                      </div>
-                      <br />
-                      <div>
-                        評價說明:
-                        <span
-                          v-if="
-                            reservation.conments != '' &&
-                            reservation.conments != null
-                          "
-                          >{{ reservation.conments }}</span
-                        >
-                        <span v-else class="gray">無評價說明</span>
-                      </div>
+                    <div>取消原因: {{ reservation.cancelDirection }}</div>
+                    <br />
+                    <div>
+                      取消時間: {{ formatDate(reservation.cancelTime) }}
                     </div>
-                    <div v-else class="gray">未評分</div>
+                    <br />
                   </div>
                   <!-- <div class="modal-footer">
                     <button
@@ -177,9 +193,9 @@
             </div>
           </td>
         </tr>
-        <p class="record-count">
+        <div class="record-count" v-if="filteredReservations.length != 0">
           總共 {{ filteredReservations.length }} 筆記錄
-        </p>
+        </div>
       </tbody>
     </table>
   </div>
@@ -192,11 +208,13 @@ import VueDatePicker from "@vuepic/vue-datepicker";
 
 let reversedData = ref([]);
 let reservations = ref([]);
+let reservationTime = ref([]);
 let sortReservationIdDirection = ref("asc");
 let sortDirection = ref("asc");
 let sortStartTimeDirection = ref("asc");
-let sortTotalPriceDirection = ref("asc");
-const maxRating = 5; // 最大星數
+let sortCancelDirection = ref("asc");
+let sortCancelTimeDirection = ref("asc");
+// let sortTotalPriceDirection = ref("asc");
 
 const searchType = ref("all"); // 默认按照名字查询
 const searchTerm = ref(""); // 查询关键字
@@ -207,10 +225,17 @@ onMounted(() => {
   axios
     .get("http://localhost:8080/employee/roomReservation")
     .then((response) => {
-      reversedData = response.data;
-      reservations.value = reversedData.slice().reverse();
+      reversedData.value = response.data;
+      reservations.value = reversedData.value.slice().reverse();
     });
+  axios.get("http://localhost:8080/room/reservation").then((response) => {
+    reservationTime.value = response.data;
+  });
 });
+
+const changeSearchType = () => {
+  searchTerm.value = "";
+};
 
 // datepicker 設定
 const en = {
@@ -267,56 +292,63 @@ const datepickerOptions = {
   multipleDateSeparator: " - ",
 };
 
-const formatDate = (dateString) => {
+const formatDate = (dateString, number) => {
   const date = new Date(dateString);
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const day = date.getDate().toString().padStart(2, "0");
-  return `${year}/${month}/${day}`;
+  if (number == 1) {
+    return `${year}-${month}-${day}`;
+  } else {
+    return `${year}/${month}/${day}`;
+  }
 };
 
-// 查詢
 const filteredReservations = computed(() => {
   const currentDate = formatDate(new Date(), 1);
   const includeSearchTerm = (str) =>
     str.toLowerCase().includes(searchTerm.value.toLowerCase());
 
   return reservations.value.filter((reservation) => {
-    const isAfterToday = isEndDateAfterToday(reservation.endTime);
-    if (reservation.cancelTime == null) {
+    if (reservation.cancelTime != null) {
       switch (searchType.value) {
         case "name":
-          return includeSearchTerm(reservation.user.lastName) && !isAfterToday;
+          return includeSearchTerm(reservation.user.lastName);
         case "id":
-          return (
-            reservation.reservationId.toString().includes(searchTerm.value) &&
-            !isAfterToday
-          );
+          return reservation.reservationId
+            .toString()
+            .includes(searchTerm.value);
         case "roomName":
-          return (
-            reservation.room.roomName.toString().includes(searchTerm.value) &&
-            !isAfterToday
-          );
+          return reservation.room.roomName
+            .toString()
+            .includes(searchTerm.value);
         case "petName":
-          return includeSearchTerm(reservation.dog.dogName) && !isAfterToday;
+          return includeSearchTerm(reservation.dog.dogName);
         case "Date":
-          return (
-            RoomsDate(reservation.startTime, reservation.endTime) &&
-            !isAfterToday
-          );
+          return RoomsDate(reservation.startTime, reservation.endTime);
+        case "cancelDirection":
+          if (searchTerm.value == "其他") {
+            return !(
+              reservation.cancelDirection === "選錯房間" ||
+              reservation.cancelDirection === "行程取消" ||
+              reservation.cancelDirection === "找到其他家更便宜的旅館"
+            );
+          } else {
+            return includeSearchTerm(reservation.cancelDirection);
+          }
+        case "cancelTime":
+          if (selectedDates.value != null && selectedDates.value.length != 0) {
+            return (
+              formatDate(selectedDates.value) ==
+              formatDate(reservation.cancelTime, 0)
+            );
+          }
         default:
-          return !isAfterToday;
+          return true;
       }
     }
   });
 });
-
-// 定義檢查結束日期是否大於當前日期的方法
-const isEndDateAfterToday = (endDate) => {
-  const today = new Date();
-  const end = new Date(endDate);
-  return end > today;
-};
 
 const sortByReservationId = () => {
   sortReservationIdDirection.value =
@@ -358,26 +390,56 @@ const sortByRoomName = () => {
   });
 };
 
-const sortByStartTime = () => {
-  sortStartTimeDirection.value =
-    sortStartTimeDirection.value === "asc" ? "desc" : "asc";
+// const sortByTotalPrice = () => {
+//   sortTotalPriceDirection.value =
+//     sortTotalPriceDirection.value === "asc" ? "desc" : "asc";
+//   reservations.value.sort((a, b) => {
+//     if (sortTotalPriceDirection.value === "asc") {
+//       return a.totalPrice - b.totalPrice;
+//     } else {
+//       return b.totalPrice - a.totalPrice;
+//     }
+//   });
+// };
+
+// 取消原因
+const sortcancel = () => {
+  sortCancelDirection.value =
+    sortCancelDirection.value === "asc" ? "desc" : "asc";
   reservations.value.sort((a, b) => {
-    if (sortStartTimeDirection.value === "asc") {
-      return new Date(a.startTime) - new Date(b.startTime);
+    if (sortCancelDirection.value === "asc") {
+      if (
+        typeof a.cancelDirection === "string" &&
+        typeof b.cancelDirection === "string"
+      ) {
+        return a.cancelDirection.localeCompare(b.cancelDirection);
+      } else {
+        // 如果 cancelDirection 不是字串，則按照其在內存中的位置進行排序
+        return a.cancelDirection - b.cancelDirection;
+      }
     } else {
-      return new Date(b.startTime) - new Date(a.startTime);
+      if (
+        typeof a.cancelDirection === "string" &&
+        typeof b.cancelDirection === "string"
+      ) {
+        return b.cancelDirection.localeCompare(a.cancelDirection);
+      } else {
+        // 如果 cancelDirection 不是字串，則按照其在內存中的位置進行排序
+        return b.cancelDirection - a.cancelDirection;
+      }
     }
   });
 };
 
-const sortByTotalPrice = () => {
-  sortTotalPriceDirection.value =
-    sortTotalPriceDirection.value === "asc" ? "desc" : "asc";
+// 取消時間
+const sortByCancelTime = () => {
+  sortCancelTimeDirection.value =
+    sortCancelTimeDirection.value === "asc" ? "desc" : "asc";
   reservations.value.sort((a, b) => {
-    if (sortTotalPriceDirection.value === "asc") {
-      return a.totalPrice - b.totalPrice;
+    if (sortCancelTimeDirection.value === "asc") {
+      return new Date(a.cancelTime) - new Date(b.cancelTime);
     } else {
-      return b.totalPrice - a.totalPrice;
+      return new Date(b.cancelTime) - new Date(a.cancelTime);
     }
   });
 };
@@ -507,18 +569,5 @@ button.sort {
   to {
     transform: translateX(0);
   }
-}
-
-.star-rating {
-  margin-bottom: 20px;
-}
-
-.star {
-  font-size: 24px;
-  color: gold;
-}
-
-.gray {
-  color: gray;
 }
 </style>
