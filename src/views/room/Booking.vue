@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <div class="main">
-      <h2>訂房</h2>
-      <div class="top flex" v-if="dogs.length != 0 && role != 'ROLE_C1'">
+      <h2 class="page-title">訂房</h2>
+      <div class="top" v-if="dogs.length != 0 && role != 'ROLE_C1'">
         <span>請選擇要住宿的寵物:</span>
         <select v-model="selectedDog" @change="RoomsDate()" class="">
           <option v-for="(dog, dogId) in dogs" :key="dogId" :value="dog">
@@ -86,8 +86,9 @@
                           roomReservation.room.roomId == room.roomId &&
                           roomReservation.star != null
                         "
+                        class="space"
                       >
-                        <hr />
+                        <!-- <hr /> -->
                         用戶: {{ roomReservation.user.lastName }}
                         <br />
                         <!-- 用戶: {{ roomReservation.dog }}
@@ -109,8 +110,11 @@
                         >
                         <div class="jcsb">
                           <span
-                            v-if="roomReservation.conments != ''"
-                            style="white-space: pre-wrap; width: 250px"
+                            v-if="
+                              roomReservation.conments != '' &&
+                              roomReservation.conments != null
+                            "
+                            style="white-space: pre-wrap; width: 200px"
                           >
                             評分說明: {{ roomReservation.conments }}
                           </span>
@@ -327,7 +331,7 @@ const bookRoom = (room) => {
           }
         )
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           axios.post(
             `http://localhost:8080/room/email?roomReservationId=${response.data}`
           );
@@ -343,7 +347,9 @@ const bookRoom = (room) => {
       roomReservation();
       // 成功的話頁面跳轉到 o_page 並重新加載
       router.push({ name: "o_page" }).then(() => {
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 10); // 添加延遲，確保頁面跳轉完成後再刷新
       });
     } else if (formattedDates[1] == "1970-01-01") {
       alert("請選擇結束時間");
@@ -361,40 +367,44 @@ let noVacancies = [];
 // 判斷哪些房間不能選取
 const RoomsDate = () => {
   // console.log(selectedDates.value[0]);
+  if (selectedDates.value !== null) {
+    // 原始的 RoomsDate 邏輯
+    let arr = calculateDateRange(
+      selectedDates.value[0],
+      selectedDates.value[1]
+    );
 
-  // 原始的 RoomsDate 邏輯
-  let arr = calculateDateRange(selectedDates.value[0], selectedDates.value[1]);
+    // 清空 noVacancies 陣列
+    noVacancies = [];
 
-  // 清空 noVacancies 陣列
-  noVacancies = [];
-
-  arr.forEach((arr) => {
-    // 所有 Room
-    roomReservations.value.forEach((roomReservation) => {
-      filteredRooms.value.forEach((room) => {
-        // 所有訂房明細的 roomId 和訂房時間 List
-        reservations.value.forEach((reservation) => {
-          // 當訂房明細的 roomId 和 room.roomId 相同時
-          if (reservation[0] == room.roomId) {
-            // 訂房時間
-            // console.log(reservation);
-            for (let i = 0; i < reservation.length; i++) {
-              if (
-                reservation[i] == arr &&
-                roomReservation.reservationId == reservation[1] &&
-                roomReservation.cancelTime == null
-              ) {
-                // console.log(reservation[1]);
-                // console.log(`RoomId: ${reservation[0]}`);
-                // console.log(`重複日期: ${reservation[i]}`);
-                noVacancies.push(reservation[0]);
+    arr.forEach((arr) => {
+      // 所有 Room
+      roomReservations.value.forEach((roomReservation) => {
+        filteredRooms.value.forEach((room) => {
+          // 所有訂房明細的 roomId 和訂房時間 List
+          reservations.value.forEach((reservation) => {
+            // 當訂房明細的 roomId 和 room.roomId 相同時
+            if (reservation[0] == room.roomId) {
+              // 訂房時間
+              // console.log(reservation);
+              for (let i = 0; i < reservation.length; i++) {
+                if (
+                  reservation[i] == arr &&
+                  roomReservation.reservationId == reservation[1] &&
+                  roomReservation.cancelTime == null
+                ) {
+                  // console.log(reservation[1]);
+                  // console.log(`RoomId: ${reservation[0]}`);
+                  // console.log(`重複日期: ${reservation[i]}`);
+                  noVacancies.push(reservation[0]);
+                }
               }
             }
-          }
+          });
         });
       });
     });
-  });
+  }
 
   // 刪除 noVacancies 陣列中的重複值
   noVacancies = [...new Set(noVacancies)];
@@ -404,13 +414,14 @@ const RoomsDate = () => {
 </script>
 
 <style scoped>
+.page-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
 .sidebar {
   min-width: 82vw;
   min-height: 82vh;
-}
-
-.flex {
-  display: flex;
 }
 
 .main {
@@ -418,12 +429,12 @@ const RoomsDate = () => {
   margin-bottom: 2rem;
 }
 
-.top span {
-  margin: 1rem 0;
+.top {
+  display: flex;
 }
 
 select {
-  margin: 1rem;
+  margin: 0 1rem;
   width: 10%;
   font-size: 16px;
   border-radius: 4px;
@@ -432,13 +443,14 @@ select {
 
 .date-picker {
   width: 25%;
-  margin: 1rem;
+  margin: 0 1rem;
 }
 
 .room-container {
   margin-top: 20px;
   white-space: nowrap;
   display: inline-block;
+  justify-content: center;
   margin-right: 20px; /* 調整卡片之間的間距 */
 }
 
@@ -518,6 +530,11 @@ select {
 .modal-header,
 .modal-body {
   color: #000;
+  padding: 2rem;
+}
+
+.modal-body img {
+  max-width: 350px;
 }
 
 .jcsb {
@@ -537,5 +554,12 @@ select {
 .star {
   font-size: 24px;
   color: gold;
+}
+
+.space {
+  padding: 1rem;
+  margin: 1rem;
+  border-radius: 10px;
+  background-color: #dbd7ce;
 }
 </style>

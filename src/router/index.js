@@ -92,6 +92,10 @@ const router = createRouter({
           path: "u_page/:reservationId/:str",
           name: "u_page",
           component: () => import("@/views/room/UpdateFrom.vue"),
+        },{
+          path: "c_page",
+          name: "c_page",
+          component: () => import("@/views/room/Cancel.vue"),
         },
       ],
     },
@@ -197,7 +201,14 @@ const router = createRouter({
           path: "over_page",
           component: () => import("@/views/employee/room/RoomOver.vue"),
         },
+        ,
         {
+          path: "cancel_page",
+          component: () => import("@/views/employee/room/RoomCancel.vue"),
+        },{
+          path: "roomChart_page",
+          component: () => import("@/views/employee/room/RoomChart.vue"),
+        },{
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
         },

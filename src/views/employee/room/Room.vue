@@ -12,21 +12,49 @@
         <button
           class="sidebar-button custom-router-link"
           data-bs-toggle="collapse"
-          data-bs-target="#collapseExample"
+          href="#collapseExample"
+          role="button"
+          aria-expanded="false"
+          aria-controls="collapseExample"
         >
           訂單管理
         </button>
-        <div class="collapse" id="collapseExample">
-          <router-link to="/employee/room/conduct_page">
-            <button class="sidebar-button custom-router-link">進行中</button>
-          </router-link>
-          <router-link to="/employee/room/unstarted_page">
-            <button class="sidebar-button custom-router-link">未開始</button>
-          </router-link>
-          <router-link to="/employee/room/over_page">
-            <button class="sidebar-button custom-router-link">已結束</button>
-          </router-link>
+        <div
+          class="collapse"
+          id="collapseExample"
+          aria-expanded="false"
+          aria-controls="collapseExample"
+        >
+          <div class="card">
+            <button
+              class="sidebar-button custom-router-link"
+              @click="navigateToConductPage('conduct_page')"
+            >
+              進行中
+            </button>
+            <button
+              class="sidebar-button custom-router-link"
+              @click="navigateToConductPage('unstarted_page')"
+            >
+              未開始
+            </button>
+            <button
+              class="sidebar-button custom-router-link"
+              @click="navigateToConductPage('over_page')"
+            >
+              已結束
+            </button>
+            <button
+              class="sidebar-button custom-router-link"
+              @click="navigateToConductPage('cancel_page')"
+            >
+              取消
+            </button>
+          </div>
         </div>
+        <router-link to="/employee/room/roomChart_page">
+          <button class="sidebar-button custom-router-link">房間圖表</button>
+        </router-link>
         <router-link to="/employee">
           <button class="sidebar-button custom-router-link">後臺管理</button>
         </router-link>
@@ -41,7 +69,15 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const navigateToConductPage = (page) => {
+  router.push(`/employee/room/${page}`);
+};
+</script>
 
 <style scoped>
 .main {
@@ -51,6 +87,11 @@
 
 .main-container {
   display: flex;
+}
+
+.card {
+  background-color: #f0f0f0;
+  border: none;
 }
 
 .sidebar {

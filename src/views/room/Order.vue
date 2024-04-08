@@ -9,18 +9,27 @@
           <th>房間Id</th>
           <th>寵物名</th>
           <th>費用</th>
-          <th>取消時間</th>
-          <th>取消原因</th>
+          <th>訂房時間</th>
+          <!-- <th>取消時間</th>
+          <th>取消原因</th> -->
           <th>修改時段</th>
           <th>取消訂房</th>
         </tr>
       </thead>
       <tbody>
         <tr
-          v-for="(reservation, reservationId) in reservations"
+          v-for="(reservation, reservationId) in filteredReservations"
           :key="reservationId"
         >
           <td>
+            <span
+              class="icon"
+              v-if="
+                new Date(reservation.startTime) <= new Date() &&
+                new Date(reservation.endTime) > new Date()
+              "
+              ><i class="fa-solid fa-bookmark"></i
+            ></span>
             {{ formatDate(reservation.startTime) }} -
             {{ formatDate(reservation.endTime) }}
           </td>
@@ -28,14 +37,15 @@
           <td>{{ reservation.room.roomId }}</td>
           <td>{{ reservation.dog.dogName }}</td>
           <td>{{ reservation.totalPrice }}</td>
-          <td v-if="formatDate(reservation.cancelTime) != '1970/01/01'">
+          <td>{{ formatDate(reservation.reservationTime) }}</td>
+          <!-- <td v-if="formatDate(reservation.cancelTime) != '1970/01/01'">
             {{ formatDate(reservation.cancelTime) }}
           </td>
           <td v-else></td>
           <td v-if="formatDate(reservation.cancelTime) != '1970/01/01'">
             {{ reservation.cancelDirection }}
           </td>
-          <td v-else></td>
+          <td v-else></td> -->
           <td>
             <button
               v-if="
@@ -71,7 +81,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 
@@ -97,6 +107,13 @@ const formatDate = (dateString) => {
   return `${year}/${month}/${day}`;
 };
 
+const filteredReservations = computed(() => {
+  return reservations.value.filter((reservation) => {
+    if (reservation.cancelTime == null)
+      return isEndDateAfterToday(reservation.endTime);
+  });
+});
+
 // 定義檢查結束日期是否大於當前日期的方法
 const isEndDateAfterToday = (endDate) => {
   const today = new Date();
@@ -113,10 +130,16 @@ const isStartDateWithinThreeDays = (startDate) => {
 };
 
 const handleModifyReservation = (reservationId, str) => {
-  router.push({
-    name: "u_page",
-    params: { reservationId: reservationId, str: str },
-  });
+  router
+    .push({
+      name: "u_page",
+      params: { reservationId, str },
+    })
+    .then(() => {
+      setTimeout(() => {
+        window.location.reload();
+      }, 100); // 添加延遲，確保頁面跳轉完成後再刷新;
+    });
 };
 </script>
 
@@ -141,11 +164,11 @@ const handleModifyReservation = (reservationId, str) => {
 }
 
 .room-table th {
-  background-color: rgb(197, 195, 195);
+  background-color: rgb(254, 241, 222);
 }
 
 .room-table tr:nth-child(even) {
-  background-color: #e3e1e1;
+  background-color: rgb(255, 243, 223);
 }
 
 .btn {
@@ -157,20 +180,25 @@ const handleModifyReservation = (reservationId, str) => {
 }
 
 .btn-update {
-  background-color: #249527;
+  background-color: #49c936;
   color: #fff;
 }
 
 .btn-update:hover {
-  background-color: #145e18;
+  background-color: #63dc50;
 }
 
 .btn-cancel {
-  background-color: #c72519;
+  background-color: #dc362a;
   color: #fff;
 }
 
 .btn-cancel:hover {
-  background-color: #d6331d;
+  background-color: #e55c4a;
+}
+
+.icon {
+  margin-right: 0.5rem;
+  color: rgb(241, 189, 101);
 }
 </style>
