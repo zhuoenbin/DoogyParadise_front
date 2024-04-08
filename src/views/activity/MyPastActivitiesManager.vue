@@ -230,7 +230,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 #title {
   color: #874a33;
   margin: auto 20px;
