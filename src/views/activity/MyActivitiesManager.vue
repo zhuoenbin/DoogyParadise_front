@@ -472,7 +472,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 #title {
   margin: auto 20px;
   padding: 20px 20px;

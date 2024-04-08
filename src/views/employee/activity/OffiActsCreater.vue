@@ -417,7 +417,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 #title {
   color: #3f427f;
   margin: auto 20px;
