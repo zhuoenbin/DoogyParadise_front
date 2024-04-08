@@ -93,20 +93,45 @@
 
         <div class="utility-info">
             <ul class="utility-list">
-                <li><span class="licon icon-like"></span><a href="#">2</a></li>
+                <li><span class="licon icon-like" @click="showLikeList"></span>{{ tweetLikeNum }}</li>
                 <li><span class="licon icon-com"></span><a href="#">12</a></li>
                 <li><span class="licon icon-dat"></span>03 jun 2017</li>
                 <li><span class="licon icon-tag"></span><a href="#">Photos</a>, <a href="#">Nice</a></li>
             </ul>
+        </div>
+
+        <!--按讚名單的彈出式視窗 -->
+        <div ref="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">按讚的人~</h5>
+
+                    </div>
+
+                    <div class="modal-body" v-for="n in userLikeList">
+                        {{ n.lastName }}
+                    </div>
+                    <!-- <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="hideLikeList">
+                            Close
+                        </button>
+                    </div> -->
+                </div>
+            </div>
         </div>
         <div class="gradient-overlay"></div>
         <div class="color-overlay"></div>
     </div><!-- /.blog-card -->
 
 
+
+
+
 </template>
 
 <script>
+
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import axios from 'axios';
 import { useMemberStore } from '@/stores/memberStore';
@@ -317,7 +342,7 @@ export default {
                 });
         },
         showLikeList() {
-            const myModal = new bootstrap.Modal(this.$refs.myModal);
+            const myModal = new Modal(this.$refs.myModal);
             myModal.show()
             axios.get(`${this.API_URL}/tweet/getTweetLikesUser`, {
                 params: {
