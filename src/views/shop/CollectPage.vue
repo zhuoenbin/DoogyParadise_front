@@ -1,36 +1,6 @@
 <template>
-  <!-- <div class="app-container"> -->
   <main>
-    <div class="container mb-3">
-      <div class="row align-items-center text-center">
-        <div class="col-1">
-          <label for="inputPassword6" class="col-form-label">商品名稱</label>
-        </div>
-        <div class="col-4">
-          <input
-            type="text"
-            class="form-control"
-            v-model="name"
-            @keydown.enter="findProducts"
-          />
-          <!-- @keydown.enter="fetchProducts"按Enter也行 -->
-        </div>
-        <div class="col-1">
-          <button class="btn btn-primary" @click="findProducts()">查詢</button>
-        </div>
-        <div class="col-3">
-          <select
-            v-model="sortBy"
-            @change="sortCart"
-            id="sortSelect"
-            class="form-select"
-          >
-            <option value="價格低至高">價格低至高</option>
-            <option value="價格高至低">價格高至低</option>
-          </select>
-        </div>
-      </div>
-    </div>
+    <div class="custom-header">我的收藏</div>
     <hr />
     <div class="py-1 custom-bg-color">
       <!-- 上面這個是一個加顏色的區塊 -->
@@ -68,21 +38,14 @@
           <div class="col" v-for="p in products" :key="p.productId">
             <div class="card shadow-sm">
               <!--圖片處理-->
-              <!-- src="https://pets-zakka.com/wp-content/uploads/2022/05/deal-with-hot.jpg" -->
-              <router-link
-                :to="{ name: 'product', params: { productId: p.productId } }"
-              >
-                <img :src="p.imgPath[0]" class="w-100 fixed-size-img" />
-              </router-link>
+              <img :src="p.imgPath[0]" class="w-100 fixed-size-img" />
               <!--圖片處理-->
               <p class="card-text mt-2 px-3 text-truncate">
                 {{ p.productName }}
-                庫存:{{ p.stock }}
               </p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="m-3">價格:{{ p.unitPrice }}</div>
                 <!-- 彈出視窗 -->
-                <!-- :id="'exampleModal_' + p.productId"將模態的 id 設置為基於商品的 productId -->
                 <div
                   class="modal fade"
                   :id="'exampleModal_' + p.productId"
@@ -104,7 +67,7 @@
                         ></button>
                       </div>
                       <div class="modal-body">
-                        <p>商品:{{ p.productName }}</p>
+                        <h5>商品:{{ p.productName }}</h5>
                         <p>價格:{{ p.unitPrice }}</p>
                       </div>
                       <div class="modal-footer">
@@ -135,11 +98,9 @@
                     class="btn btn-sm btn-outline-secondary m-2"
                     data-bs-toggle="modal"
                     :data-bs-target="'#exampleModal_' + p.productId"
-                    :disabled="p.stock === 0"
                   >
                     <i class="fa-solid fa-cart-plus"></i>
                   </button>
-                  <!-- :data-bs-target="'#exampleModal_' + p.productId"設置目標模態的 id 為基於商品的 productId -->
                 </div>
                 <!-- 購物車按鈕 -->
               </div>
@@ -149,7 +110,6 @@
       </div>
     </div>
   </main>
-  <!-- </div> -->
 </template>
 <script>
 import axios from "axios";
@@ -157,15 +117,18 @@ import axios from "axios";
 export default {
   data() {
     return {
-      name: "", //關鍵字搜尋
-      sortBy: "價格低至高", // 添加 sortBy 變量來存儲排序方式
       currentPage: 0,
       totalPage: 0,
       products: [],
     };
   },
   mounted() {
-    this.findProducts();
+    axios.get(`${this.API_URL}/collection/${this.currentPage}`).then((rs) => {
+      this.currentPage = rs.data.number;
+      this.totalPage = rs.data.totalPages;
+      this.products = rs.data.content;
+      console.log(products);
+    });
   },
   computed: {
     showPageBar() {
@@ -186,64 +149,31 @@ export default {
       }
       this.currentPage = p - 1;
     },
+    //購物車點擊事件
     addToCart(productId) {
       axios
         .post(`http://localhost:8080/totalAddToCart/add/${productId}`)
         .then((response) => {
-          console.log("已成功加入購物車！"); // 處理後端回應
+          console.log("已成功加入購物車！");
         })
         .catch((error) => {
-          console.error("加入購物車時發生錯誤：", error); // 處理錯誤
+          console.error("加入購物車時發生錯誤：", error);
           window.location.href = "http://localhost:5173/login";
         });
     },
-    //商品陳列(有加搜尋功能的)
-    findProducts() {
-      axios
-        .get(
-          `${this.API_URL}/products-keyword/${this.currentPage}?keyword=${this.name}`
-        )
-        .then((rs) => {
-          // console.log(this.name);
-          console.log(rs.data); // 打印確認資料有傳送到
-          this.currentPage = rs.data.number;
-          this.totalPage = rs.data.totalPages;
-          this.products = rs.data.content;
-        });
-    },
-    // 排序
-    sortCart() {
-      if (this.sortBy === "價格低至高") {
-        this.products.sort((a, b) => a.unitPrice - b.unitPrice);
-      } else if (this.sortBy === "價格高至低") {
-        this.products.sort((a, b) => b.unitPrice - a.unitPrice);
-      }
-    },
   },
   watch: {
+    //綁定頁碼與商品頁面
     currentPage(newVal, oldVal) {
-      axios
-        .get(`${this.API_URL}/products-keyword/${newVal}?keyword=${this.name}`)
-        .then((rs) => {
-          this.totalPage = rs.data.totalPages;
-          this.products = rs.data.content;
-        });
+      axios.get(`${this.API_URL}/products/${newVal}`).then((rs) => {
+        this.totalPage = rs.data.totalPages;
+        this.products = rs.data.content;
+      });
     },
   },
 };
 </script>
 <style>
-.fixed-size-img {
-  height: 250px; /* 固定上下高度 */
-}
-/* 頁面底色 */
-/* #app {
-  background-color: #fff8d7; 
-} */
-/* 设置卡片的背景颜色 */
-.card.shadow-sm {
-  background-color: #ffd1a4;
-}
 /* 將活動頁面按鈕的顏色設置為與非活動按鈕相同 */
 .page-item.active .page-link {
   background-color: #fcfcfc; /* 將背景色設置為透明(這個重要) */
@@ -253,5 +183,12 @@ export default {
 .page-link {
   font-size: 18px; /* 調整字體大小 */
   color: #333; /* 調整字體顏色 */
+}
+.custom-header {
+  font-size: 36px; /* 調整標題文字大小 */
+  font-weight: bold; /* 設置粗體 */
+  text-align: left; /* 文字靠左對齊 */
+  color: #007bff; /* 設置文字顏色為藍色 */
+  margin-bottom: 20px; /* 底部間距 */
 }
 </style>

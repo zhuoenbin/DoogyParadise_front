@@ -170,7 +170,7 @@
                   class="btn btn-warning btn-block btn-lg"
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
-                  @click="sendCartToBackend()"
+                  @click="sendCartToBackend(totalCartPrice)"
                 >
                   下訂單
                 </button>
@@ -278,11 +278,15 @@ export default {
     //   }, 10000); // 10 秒延遲
     // },
     //傳送購物車的訂單到後端
-    sendCartToBackend() {
-      const backendEndpoint = "http://localhost:8080/order";
+    sendCartToBackend(totalCartPrice) {
+      //`http://localhost:8080/order/${totalCartPrice}`這個要用反引號
+      const backendEndpoint = `http://localhost:8080/order/${totalCartPrice}`;
       // 將 this.carts 資料轉換為 JSON 字串，this.carts本來是proxy格式
       const jsonData = JSON.stringify(this.carts);
-
+      // const jsonData = JSON.stringify({
+      //   carts: this.carts, // 將購物車資料加入到要傳送的 JSON 物件中
+      //   totalPrice: this.totalCartPrice, // 添加 totalCartPrice 到要傳送的 JSON 物件中
+      // });
       axios
         .post(backendEndpoint, jsonData, {
           headers: {
@@ -291,11 +295,12 @@ export default {
         })
         .then((response) => {
           console.log("購物車資料已成功發送到後端");
-          // console.log(jsonData);
+          console.log(jsonData);
         })
         .catch((error) => {
           console.error("發送購物車資料到後端時發生錯誤：", error);
           window.location.href = "http://localhost:5173/login";
+          console.log(jsonData);
         });
     },
   },

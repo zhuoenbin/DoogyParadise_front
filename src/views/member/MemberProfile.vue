@@ -10,7 +10,7 @@
           <button class="sidebar-button custom-router-link">個人資訊</button>
         </router-link>
 
-        <router-link to="">
+        <router-link to="/profile/order">
           <button class="sidebar-button custom-router-link">我的訂單</button>
         </router-link>
 
@@ -20,6 +20,10 @@
 
         <router-link to="/profile/addDog">
           <button class="sidebar-button custom-router-link">新增狗勾</button>
+        </router-link>
+
+        <router-link to="/profile/collection">
+          <button class="sidebar-button custom-router-link">我的收藏</button>
         </router-link>
       </div>
     </div>

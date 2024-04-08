@@ -46,6 +46,11 @@ const router = createRouter({
           name: "addDog",
           component: () => import("@/views/member/MemberAddDog.vue"),
         },
+        {
+          path: "collection",
+          name: "collection",
+          component: () => import("@/views/shop/CollectPage.vue"),
+        },
       ],
     },
     {
