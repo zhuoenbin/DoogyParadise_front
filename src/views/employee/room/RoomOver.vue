@@ -71,7 +71,7 @@
           :key="reservationId"
         >
           <td>{{ reservation.reservationId }}</td>
-          <td>{{ reservation.user.lastName }}</td>
+          <td>{{ reservation.lastName }}</td>
           <td>{{ reservation.room.roomName }}</td>
           <td>{{ reservation.dog.dogName }}</td>
           <td>
@@ -116,7 +116,7 @@
                     ></button>
                   </div>
                   <div class="modal-body">
-                    <div>訂購者: {{ reservation.user.lastName }}</div>
+                    <div>訂購者: {{ reservation.lastName }}</div>
                     <br />
                     <div>房號: {{ reservation.room.roomName }}</div>
                     <br />

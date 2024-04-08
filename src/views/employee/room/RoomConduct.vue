@@ -68,7 +68,7 @@
           :key="reservationId"
         >
           <td>{{ reservation.reservationId }}</td>
-          <td>{{ reservation.user.lastName }}</td>
+          <td>{{ reservation.lastName }}</td>
           <td>{{ reservation.room.roomName }}</td>
           <td>{{ reservation.dog.dogName }}</td>
           <td>
