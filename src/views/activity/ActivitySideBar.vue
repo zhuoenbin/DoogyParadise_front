@@ -23,15 +23,11 @@ export default {
             },
             {
               href: "/activity/pastActs",
-              title: "過去所有活動",
+              title: "過去活動",
             },
             {
               href: "/activity/all",
               title: "所有活動",
-            },
-            {
-              href: "/activity/create",
-              title: "舉辦活動",
             },
           ],
         },

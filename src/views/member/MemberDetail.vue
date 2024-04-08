@@ -5,11 +5,18 @@
         <main class="container mt-5">
             <div class="row featurette">
                 <div class="col-md-3">
-                    <img :src="memberImgPath" class="w-100" />
+
+                    <!-- 圖片預覽 -->
+                    <div v-if="imagePreviewUrl" class="mb-3">
+
+                        <img :src="imagePreviewUrl" class="img-fluid" alt="Image Preview" />
+                    </div>
+                    <img v-else :src="memberImgPath" class="w-100" />
                     <div v-if="editing" class="input-group mb-3">
                         <input type="file" class="form-control" id="mainImgUpload" ref="mainImgUpload" accept="image/*"
-                            placeholder="自定義文字" />
+                            placeholder="自定義文字" @change="previewImage" />
                     </div>
+
                 </div>
 
 
@@ -143,13 +150,15 @@ export default {
             confirmPassword: '',
             resetSuccess: false,
             googleFirstTime: false,
+            //圖片預覽
+            imagePreviewUrl: '',
         }
     },
     mounted() {
         const memberStore = useMemberStore();
         this.memberId = memberStore.memberId
 
-        if (memberStore.memberRole == "ROLE_M1") {
+        if (memberStore.memberRole.startsWith("ROLE")) {
             console.log("emp")
             this.$router.push("/");
         }
@@ -158,6 +167,7 @@ export default {
         }
 
         axios.get(`${this.API_URL}/getUserDetail`).then(re => {
+            console.log(re.data)
             const tmp = re.data;
             this.memberName = tmp.lastName;
             this.memberEmail = tmp.userEmail;
@@ -165,7 +175,11 @@ export default {
             this.memberViolationCount = tmp.userViolationCount;
             this.memberGender = tmp.userGender
             this.memberBirthday = tmp.birthDate
+        })
 
+        axios.get(`${this.API_URL}/account/checkPasswordIsEmpty`).then(re => {
+            console.log("checkPasswordIsEmpty: " + re.data)
+            this.googleFirstTime = re.data;
         })
     },
     watch: {
@@ -192,16 +206,21 @@ export default {
                 }
             }).then(response => {
                 if (response.status === 200) {
-                    console.log('change success');
+                    const memberStore = useMemberStore();
+                    memberStore.memberName = response.data.lastName;
+                    sessionStorage.setItem("loggedInMenber", JSON.stringify(response.data));
+                    window.location.reload();
                 } else {
                     console.error('change failed');
                 }
             })
+
             this.mainImgUpload();
 
         },
         refreshPage() {
             this.editing = !this.editing;
+            this.imagePreviewUrl = '';
         },
         mainImgUpload() {
             if (this.memberId != null) {
@@ -231,14 +250,6 @@ export default {
             })
         },
         showResetPasswordPage() {
-
-
-            axios.get(`${this.API_URL}/account/checkPasswordIsEmpty`).then(re => {
-                console.log("checkPasswordIsEmpty: " + re.data)
-                this.googleFirstTime = re.data;
-
-            })
-
             const resetPasswordPage = new bootstrap.Modal(this.$refs.ResetPasswordPage);
             resetPasswordPage.show()
         },
@@ -261,7 +272,17 @@ export default {
                     console.error('失敗：', error);
                 });
 
-        }
+        },
+        previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    this.imagePreviewUrl = reader.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        },
     }
 
 }

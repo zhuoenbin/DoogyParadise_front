@@ -1,10 +1,18 @@
 <template>
-  <main class="container col-xl-10 col-xxl-8 px-4 py-5">
-    <div class="row align-items-center g-lg-7 py-7">
-      <!-- <div class="col-lg-5 text-center text-lg-start">
-        <h1 @click="check" class="display-4 fw-bold lh-1 mb-3">辦活動!</h1>
-        <p class="col-lg-10 fs-4">由我開始的Doggy Paradise!</p>
-      </div> -->
+  <main class="">
+    <div class="">
+      <div id="title">
+        <h4>
+          <b>創建活動區</b
+          ><img
+            src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1712301343/activityFolder/uchxdgy1ccjnz0fd2lcm.png"
+            alt="🐶"
+            id="managerPic"
+          /><router-link to="/employee/activity/act_Creater">
+            <button class="btn btn-outline-secondary">點擊切換編輯模式</button>
+          </router-link>
+        </h4>
+      </div>
       <!-- 表單 -->
       <div class="col-lg-10 mx-auto col-lg-3">
         <form class="p-4 p-md-7 border rounded-3 bg-light">
@@ -402,11 +410,19 @@ export default {
             console.log(rs.data);
             console.log(activityStore.activityTitle);
             console.log(activityStore.activityId);
+          })
+          .then((rs) => {
             this.mainImgUpload();
+          })
+          .then((rs) => {
             if (this.$refs.normalImage.files.length > 0) {
               this.normalImgUpload();
+            } else {
+              console.log("no other image");
             }
-            this.$router.push("/");
+          })
+          .then((rs) => {
+            this.$router.push("/employee/activity/act_HoldingManager");
           })
           .catch((error) => {
             this.message = "創建失敗";
@@ -439,4 +455,14 @@ export default {
   },
 };
 </script>
-<style></style>
+<style scoped>
+#title {
+  color: #3f427f;
+  margin: auto 20px;
+  padding: 20px 20px;
+  text-align: center;
+}
+#managerPic {
+  height: 60px;
+}
+</style>

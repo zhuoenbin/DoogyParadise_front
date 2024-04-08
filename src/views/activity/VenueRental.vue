@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-8 mx-auto col-lg-3">
+  <div>
     <div id="title">
       <h4>
         <b>我要租借!</b
@@ -253,7 +253,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 #title {
   margin: auto 20px;
   padding: 20px 20px;

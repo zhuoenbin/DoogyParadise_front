@@ -1,8 +1,8 @@
 <template>
-  <div class="col-lg-10 mx-auto col-lg-3">
+  <div>
     <div id="title">
       <h5>
-        <b>所有活動</b>
+        <b>Holding activities ₊˚⊹♡</b>
       </h5>
     </div>
     <!-- 依分類 -->
@@ -125,7 +125,27 @@
           <!-- v-for -->
           <div class="col" v-for="a in activities" :key="a.activityId">
             <div class="card">
-              <img :src="`${a.galleryImgUrl}`" class="card-img-top" alt="..." />
+              <router-link
+                :to="{
+                  name: 'activityInfo',
+                  params: { activityId: a.activityId },
+                }"
+              >
+                <img :src="`${a.galleryImgUrl}`" class="card-img-top" alt="..."
+              /></router-link>
+              <div class="card-img-overlay" style="height: 50px" v-if="isUser">
+                <button class="likebtn" @click="toggleLike(a.activityId)">
+                  <i
+                    :class="{
+                      'fa-solid fa-heart': userLikedList.includes(a.activityId),
+                      'fa-regular fa-heart': !userLikedList.includes(
+                        a.activityId
+                      ),
+                    }"
+                    style="color: #ff0550"
+                  ></i>
+                </button>
+              </div>
 
               <div class="card-body">
                 <h5 class="card-title">
@@ -331,6 +351,7 @@ export default {
     return {
       chooseCat: 0,
       activities: [],
+      userLikedList: [],
       myDogsNotAttend: [],
       userId: "",
       chooseAct: "",
@@ -349,20 +370,30 @@ export default {
     };
   },
   mounted() {
-    axios.get(`${this.API_URL}/activity/api/allNowAct/1`).then((rs) => {
-      console.log(rs.data);
-      this.activities = rs.data.content;
-      this.totalPage = rs.data.totalPages;
-      this.currentPage = rs.data.number + 1;
-      console.log("現在是", this.currentPage);
-    });
-
     const memberStore = useMemberStore();
     console.log(memberStore.memberRole);
     if (!memberStore.memberRole.startsWith("Act")) {
       this.isJoinButtonVisible = false;
       this.isJoinButtonDisabled = true;
     }
+    if (memberStore.memberRole.startsWith("Act")) {
+      this.isUser = true;
+      this.userId = memberStore.memberId;
+    }
+    axios
+      .get(`${this.API_URL}/activity/api/allNowAct/1`)
+      .then((rs) => {
+        console.log(rs.data);
+        this.activities = rs.data.content;
+        this.totalPage = rs.data.totalPages;
+        this.currentPage = rs.data.number + 1;
+        console.log("現在是", this.currentPage);
+      })
+      .then((rs) => {
+        if (this.isUser) {
+          this.getLikedActs();
+        }
+      });
   },
   computed: {
     showPageBar() {
@@ -407,6 +438,48 @@ export default {
     },
   },
   methods: {
+    getLikedActs() {
+      axios
+        .get(`${this.API_URL}/activity/api/usersLiked/${this.userId}`)
+        .then((rs) => {
+          this.userLikedList = rs.data;
+          console.log(this.userLikedList);
+        });
+    },
+    toggleLike(activityId) {
+      const index = this.userLikedList.indexOf(activityId);
+      if (index === -1) {
+        this.userLikedList.push(activityId); //不在list就加進去
+        if (this.isUser) {
+          const fd = new FormData();
+          fd.append("userId", this.userId);
+          fd.append("activityId", activityId);
+          axios
+            .post(`${this.API_URL}/activity/api/userDo/like`, fd)
+            .then((response) => {
+              console.log("like成功", response.data);
+            })
+            .catch((error) => {
+              console.error("like失敗", error);
+            });
+        }
+      } else {
+        this.userLikedList.splice(index, 1);
+        if (this.isUser) {
+          const fd = new FormData();
+          fd.append("userId", this.userId);
+          fd.append("activityId", activityId);
+          axios
+            .post(`${this.API_URL}/activity/api/userDo/dislike`, fd)
+            .then((response) => {
+              console.log("dislike成功", response.data);
+            })
+            .catch((error) => {
+              console.error("dislike失敗", error);
+            });
+        }
+      }
+    },
     changeCategory() {
       console.log(this.chooseCat);
       if (this.chooseCat == 1) {
@@ -526,7 +599,7 @@ export default {
               this.chooseActTitle = "";
               // 在換成別的路徑 重新導向會無法即時更新
             })
-            .then(this.$router.push("/activity/allNowAct"))
+            .then(this.$router.push("/activity/holdingActs"))
             .catch((error) => {
               console.error("報名失敗", error);
               this.message = "報名失敗";
@@ -558,11 +631,21 @@ export default {
 
 <style>
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&display=swap");
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
+.likebtn {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
 .actCard {
   border-radius: 0.2rem;
 }
@@ -638,6 +721,7 @@ img {
 label.radio-card {
   cursor: pointer;
 }
+
 label.radio-card .card-content-wrapper {
   background: #fff;
   border-radius: 5px;
@@ -648,6 +732,7 @@ label.radio-card .card-content-wrapper {
   box-shadow: 0 2px 4px 0 rgba(219, 215, 215, 0.04);
   transition: 200ms linear;
 }
+
 label.radio-card .check-icon {
   width: 20px;
   height: 20px;
@@ -657,6 +742,7 @@ label.radio-card .check-icon {
   transition: 200ms linear;
   position: relative;
 }
+
 label.radio-card .check-icon:before {
   content: "";
   position: absolute;
@@ -669,14 +755,17 @@ label.radio-card .check-icon:before {
   transition: 200ms linear;
   opacity: 0;
 }
+
 label.radio-card input[type="radio"] {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
 }
+
 label.radio-card input[type="radio"]:checked + .card-content-wrapper {
   box-shadow: 0 2px 4px 0 rgba(219, 215, 215, 0.5), 0 0 0 2px #3057d5;
 }
+
 label.radio-card
   input[type="radio"]:checked
   + .card-content-wrapper
@@ -685,6 +774,7 @@ label.radio-card
   border-color: #3057d5;
   transform: scale(1.2);
 }
+
 label.radio-card
   input[type="radio"]:checked
   + .card-content-wrapper
@@ -692,13 +782,16 @@ label.radio-card
   transform: scale(1);
   opacity: 1;
 }
+
 label.radio-card input[type="radio"]:focus + .card-content-wrapper .check-icon {
   box-shadow: 0 0 0 4px rgba(48, 86, 213, 0.2);
   border-color: #3056d5;
 }
+
 label.radio-card .card-content img {
   margin-bottom: 5px;
 }
+
 label.radio-card .card-content h4 {
   font-size: 16px;
   letter-spacing: -0.24px;
@@ -706,12 +799,14 @@ label.radio-card .card-content h4 {
   color: #1f2949;
   margin-bottom: 3px;
 }
+
 #title {
   color: #874a33;
   margin: auto 20px;
   padding: 20px 20px;
   text-align: center;
 }
+
 .checkbox-wrapper-33 {
   --s-xsmall: 0.625em;
   --s-small: 1.2em;
@@ -741,9 +836,11 @@ label.radio-card .card-content h4 {
   align-items: center;
   justify-content: flex-start;
 }
+
 .checkbox-wrapper-33 .checkbox + .checkbox {
   margin-top: var(--s-small);
 }
+
 .checkbox-wrapper-33 .checkbox__symbol {
   display: inline-block;
   display: flex;
@@ -757,6 +854,7 @@ label.radio-card .card-content h4 {
     background-color var(--t-base);
   box-shadow: 0 0 0 0 var(--c-primary-10-percent-opacity);
 }
+
 .checkbox-wrapper-33 .checkbox__symbol:after {
   content: "";
   position: absolute;
@@ -770,6 +868,7 @@ label.radio-card .card-content h4 {
   transform: scale(1);
   transform-origin: 50% 50%;
 }
+
 .checkbox-wrapper-33 .checkbox .icon-checkbox {
   width: 1em;
   height: 1em;
@@ -783,18 +882,22 @@ label.radio-card .card-content h4 {
   color: var(--c-primary);
   display: inline-block;
 }
+
 .checkbox-wrapper-33 .checkbox .icon-checkbox path {
   transition: stroke-dashoffset var(--t-fast) var(--e-in);
   stroke-dasharray: 30px, 31px;
   stroke-dashoffset: 31px;
 }
+
 .checkbox-wrapper-33 .checkbox__textwrapper {
   margin: 0;
 }
+
 .checkbox-wrapper-33 .checkbox__trigger:checked + .checkbox__symbol:after {
   -webkit-animation: ripple-33 1.5s var(--e-out);
   animation: ripple-33 1.5s var(--e-out);
 }
+
 .checkbox-wrapper-33
   .checkbox__trigger:checked
   + .checkbox__symbol
@@ -803,6 +906,7 @@ label.radio-card .card-content h4 {
   transition: stroke-dashoffset var(--t-base) var(--e-out);
   stroke-dashoffset: 0px;
 }
+
 .checkbox-wrapper-33 .checkbox__trigger:focus + .checkbox__symbol {
   box-shadow: 0 0 0 0.25em var(--c-primary-20-percent-opacity);
 }
@@ -812,6 +916,7 @@ label.radio-card .card-content h4 {
     transform: scale(0);
     opacity: 1;
   }
+
   to {
     opacity: 0;
     transform: scale(20);
@@ -823,15 +928,18 @@ label.radio-card .card-content h4 {
     transform: scale(0);
     opacity: 1;
   }
+
   to {
     opacity: 0;
     transform: scale(20);
   }
 }
+
 .col-form-label {
   font-weight: bold;
   color: #36472aff;
 }
+
 h5 {
   font-weight: bolder;
   color: #874a33ff;

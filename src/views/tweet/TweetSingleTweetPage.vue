@@ -27,13 +27,13 @@ export default {
             name: ""
         }
     },
-    mounted() {
+    created() {
         const tweetStore = useTweetStore();
         this.tweets = tweetStore.tweets;
-        console.log("this.tweets" + this.tweets)
         this.name = tweetStore.user;
-
-        if (this.name.length === 0) {
+    },
+    mounted() {
+        if (this.name.length == 0) {
             this.$router.push("/tweetPage/tweetsMyWallPage");
 
         }
