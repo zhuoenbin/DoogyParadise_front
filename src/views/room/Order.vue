@@ -17,19 +17,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(reservation, reservationId) in filteredReservations"
-          :key="reservationId"
-        >
+        <tr v-for="(reservation, reservationId) in filteredReservations" :key="reservationId">
           <td>
-            <span
-              class="icon"
-              v-if="
-                new Date(reservation.startTime) <= new Date() &&
-                new Date(reservation.endTime) > new Date()
-              "
-              ><i class="fa-solid fa-bookmark"></i
-            ></span>
+            <span class="icon" v-if="
+              new Date(reservation.startTime) <= new Date() &&
+              new Date(reservation.endTime) > new Date()
+            "><i class="fa-solid fa-bookmark"></i></span>
             {{ formatDate(reservation.startTime) }} -
             {{ formatDate(reservation.endTime) }}
           </td>
@@ -47,30 +40,22 @@
           </td>
           <td v-else></td> -->
           <td>
-            <button
-              v-if="
-                !isStartDateWithinThreeDays(reservation.startTime) &&
-                formatDate(reservation.cancelTime) == '1970/01/01'
-              "
-              class="btn btn-update"
-              @click="
-                handleModifyReservation(reservation.reservationId, 'update')
-              "
-            >
+            <button v-if="
+              !isStartDateWithinThreeDays(reservation.startTime) &&
+              formatDate(reservation.cancelTime) == '1970/01/01'
+            " class="btn btn-update" @click="
+              handleModifyReservation(reservation.reservationId, 'update')
+              ">
               修改時段
             </button>
           </td>
           <td>
-            <button
-              v-if="
-                !isStartDateWithinThreeDays(reservation.startTime) &&
-                formatDate(reservation.cancelTime) == '1970/01/01'
-              "
-              class="btn btn-cancel"
-              @click="
-                handleModifyReservation(reservation.reservationId, 'cancel')
-              "
-            >
+            <button v-if="
+              !isStartDateWithinThreeDays(reservation.startTime) &&
+              formatDate(reservation.cancelTime) == '1970/01/01'
+            " class="btn btn-cancel" @click="
+              handleModifyReservation(reservation.reservationId, 'cancel')
+              ">
               取消訂房
             </button>
           </td>
@@ -94,8 +79,8 @@ onMounted(() => {
     .get("http://localhost:8080/room/allRoomReservationByUser")
     .then((response) => {
       // 日期排列順序反過來
-      const reversedData = response.data.reverse();
-      reservations.value = reversedData;
+      // reservations.value = Array.from(response.data).reverse();
+      console.log(response.data)
     });
 });
 
