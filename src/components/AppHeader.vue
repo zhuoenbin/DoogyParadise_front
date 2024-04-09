@@ -102,5 +102,6 @@ export default {
 
 .text-end {
   display: flex;
+  justify-content: end;
 }
 </style>
