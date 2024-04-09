@@ -63,7 +63,7 @@
           <tbody
             class="smallText"
             v-if="OfficialActList.length > 0"
-            v-for="a of sortedActivities"
+            v-for="(a, index) of sortedActivities"
             :key="a.activityId"
           >
             <tr>

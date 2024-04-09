@@ -66,7 +66,7 @@
                 v-model.lazy="activityTitle"
                 required
               />
-              <label>活動主題</label>
+              <label style="margin: 0">活動主題</label>
             </div>
             <div class="row g-2">
               <div class="col-md-4">
@@ -87,7 +87,7 @@
                       {{ v.venueName }}
                     </option>
                   </select>
-                  <label for="floatingSelect">場地選擇</label>
+                  <label style="margin: 0" for="floatingSelect">場地選擇</label>
                 </div>
               </div>
               <div class="col-md-3">
@@ -104,7 +104,7 @@
                       {{ n }}
                     </option>
                   </select>
-                  <label for="floatingSelect">預計狗數</label>
+                  <label style="margin: 0" for="floatingSelect">預計狗數</label>
                 </div>
               </div>
               <div class="col-md">
@@ -116,7 +116,7 @@
                     :min="new Date()"
                     v-model.lazy="activityClosingDate"
                     required
-                  /><label>報名截止日期:</label>
+                  /><label style="margin: 0">報名截止日期:</label>
                 </div>
               </div>
             </div>
@@ -132,7 +132,7 @@
                     v-model.lazy="activityDate"
                     required
                   />
-                  <label>活動日期:</label>
+                  <label style="margin: 0">活動日期:</label>
                 </div>
               </div>
               <div class="col-md">
@@ -146,7 +146,7 @@
                     max="22:00"
                     required
                     v-model.lazy="activityStart"
-                  /><label>開始時間:</label>
+                  /><label style="margin: 0">開始時間:</label>
                 </div>
               </div>
               <div class="col-md">
@@ -159,7 +159,7 @@
                     max="18:00"
                     v-model="activityEnd"
                     required
-                  /><label>結束時間:</label>
+                  /><label style="margin: 0">結束時間:</label>
                 </div>
               </div>
             </div>
@@ -368,24 +368,27 @@
                   type="text"
                   class="form-control"
                   v-model.lazy="activityDescription"
+                  style="height: 100px"
                 ></textarea>
-                <label>活動簡介</label>
+                <label style="margin: 0">活動簡介</label>
               </div>
               <div class="form-floating mb-3">
                 <textarea
                   type="text"
                   class="form-control"
                   v-model="activityProcess"
+                  style="height: 100px"
                 ></textarea>
-                <label>活動流程</label>
+                <label style="margin: 0">活動流程</label>
               </div>
               <div class="form-floating mb-3">
                 <textarea
                   type="text"
                   class="form-control"
                   v-model="activityNotice"
+                  style="height: 10px"
                 ></textarea>
-                <label>注意事項</label>
+                <label style="margin: 0">注意事項</label>
               </div>
               <div class="col-md">
                 <div class="form-floating mb-3" v-if="activityCost > 1">
@@ -394,7 +397,7 @@
                     class="form-control"
                     v-model.lazy="activityCostDescription"
                   />
-                  <label>費用敘述</label>
+                  <label style="margin: 0">費用敘述</label>
                 </div>
               </div>
               <div class="picuploadbtn">
