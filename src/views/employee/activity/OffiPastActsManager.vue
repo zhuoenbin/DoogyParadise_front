@@ -42,6 +42,12 @@
                   ></i>
                 </button>
               </th>
+              <th scope="col" class="titlecol">
+                <i
+                  class="fa-solid fa-heart-circle-plus"
+                  style="color: #ff8585"
+                ></i>
+              </th>
               <th scope="col" class="titlecol">活動名稱</th>
               <th scope="col">
                 活動狀態
@@ -83,13 +89,19 @@
                 {{ a.activityDate }} {{ this.timeFormat(a.activityStart) }} -
                 {{ this.timeFormat(a.activityEnd) }}
               </td>
+              <td class="smallText" style="text-align: center">
+                {{ a.likedTime }}
+              </td>
               <td class="smallText">
                 <router-link
                   :to="{
                     name: 'activityInfo',
                     params: { activityId: a.activityId },
                   }"
-                  ><button class="actTag btn smallText">
+                  ><button
+                    class="actTag btn smallText"
+                    style="max-width: 300px"
+                  >
                     {{ a.activityTitle }}
                   </button>
                 </router-link>

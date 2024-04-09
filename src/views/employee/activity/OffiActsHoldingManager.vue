@@ -42,6 +42,12 @@
                   ></i>
                 </button>
               </th>
+              <th scope="col" class="titlecol">
+                <i
+                  class="fa-solid fa-heart-circle-plus"
+                  style="color: #ff8585"
+                ></i>
+              </th>
               <th scope="col" class="titlecol">活動名稱</th>
               <th scope="col">
                 活動狀態
@@ -63,7 +69,7 @@
           <tbody
             class="smallText"
             v-if="OfficialActList.length > 0"
-            v-for="a of sortedActivities"
+            v-for="(a, index) of sortedActivities"
             :key="a.activityId"
           >
             <tr>
@@ -83,7 +89,10 @@
                 {{ a.activityDate }} {{ this.timeFormat(a.activityStart) }} -
                 {{ this.timeFormat(a.activityEnd) }}
               </td>
-              <td class="smallText">
+              <td class="smallText" style="text-align: center">
+                {{ a.likedTime }}
+              </td>
+              <td class="smallText" style="max-width: 300px">
                 <router-link
                   :to="{
                     name: 'activityInfo',

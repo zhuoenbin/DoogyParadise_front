@@ -145,6 +145,9 @@
                     style="color: #ff0550"
                   ></i>
                 </button>
+                <span style="color: beige; font-weight: 600; font-size: small"
+                  >&nbsp;{{ a.likedTime }}</span
+                >
               </div>
 
               <div class="card-body">
@@ -450,6 +453,7 @@ export default {
       const index = this.userLikedList.indexOf(activityId);
       if (index === -1) {
         this.userLikedList.push(activityId); //不在list就加進去
+        this.incrementLikedTime(activityId); ///////
         if (this.isUser) {
           const fd = new FormData();
           fd.append("userId", this.userId);
@@ -465,6 +469,7 @@ export default {
         }
       } else {
         this.userLikedList.splice(index, 1);
+        this.decrementLikedTime(activityId); ///////
         if (this.isUser) {
           const fd = new FormData();
           fd.append("userId", this.userId);
@@ -478,6 +483,20 @@ export default {
               console.error("dislike失敗", error);
             });
         }
+      }
+    },
+    incrementLikedTime(activityId) {
+      // 尋找到對應的 activity，並將 likedTime 屬性加 1
+      const activity = this.activities.find((a) => a.activityId === activityId);
+      if (activity) {
+        activity.likedTime++;
+      }
+    },
+    decrementLikedTime(activityId) {
+      // 尋找到對應的 activity，並將 likedTime 屬性減 1
+      const activity = this.activities.find((a) => a.activityId === activityId);
+      if (activity && activity.likedTime > 0) {
+        activity.likedTime--;
       }
     },
     changeCategory() {
