@@ -1,7 +1,7 @@
 <template>
     <div class="blog-card spring-fever" :style="{ height: cardHeight }">
         <!-- ...按紐們 -->
-        <div class="col-auto" style=" transition: all 0.5s;">
+        <div class="col-auto">
             <div class="dropdown">
                 <button class="btn btn-secondary" type="button" id="dropdownMenuButton1" aria-expanded="false">
                     ...
