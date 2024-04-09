@@ -30,18 +30,21 @@ export default {
 <template>
 
     <div class="tweet-container">
-        <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" />
+        <TweetItem2 v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet"></TweetItem2>
+        <!-- <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" /> -->
     </div>
 
 </template>
 
 <script>
 import TweetItem from '@/components/tweet/TweetCard.vue';
+import TweetItem2 from '@/components/tweet/TweetCard2.vue'
 import axios from 'axios';
 
 export default {
     components: {
         TweetItem,
+        TweetItem2
     },
     data() {
         return {

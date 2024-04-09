@@ -175,8 +175,8 @@
             <!-- 顯示留言數 -->
             <span v-if="this.numOfComment > 0" class="comment-count" style="margin-right: 10px;">
                 <button @click="getCommentsLink(tweet.tweetId)" type="button" class="btn btn-outline-dark">有{{
-                this.numOfComment
-            }}則留言
+                    this.numOfComment
+                    }}則留言
                 </button>
             </span>
 
@@ -328,6 +328,7 @@ export default {
         getImageUrl(imgPath) {
             if (imgPath.startsWith('http')) {
                 this.imgOnlinePath = imgPath;
+                console.log(this.imgOnlinePath)
                 this.imgOnline = true;
                 return;
             }

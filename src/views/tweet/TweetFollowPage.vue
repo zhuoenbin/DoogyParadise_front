@@ -1,7 +1,8 @@
 <template>
     <div class="tweet-container">
         <h3>我的追蹤</h3>
-        <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" />
+        <TweetItem2 v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet"></TweetItem2>
+        <!-- <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" /> -->
     </div>
     <!-- 追蹤名單 -->
     <div class="follow-list">
@@ -19,10 +20,12 @@ import TweetItem from '@/components/tweet/TweetCard.vue';
 import { useMemberStore } from '@/stores/memberStore';
 import { useTweetStore } from '@/stores/tweetStore';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import TweetItem2 from '@/components/tweet/TweetCard2.vue'
 
 export default {
     components: {
         TweetItem,
+        TweetItem2
     },
     data() {
         return {

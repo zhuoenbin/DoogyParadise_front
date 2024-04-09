@@ -1,67 +1,38 @@
 <template>
   <header class="p-3 color bg-dark">
     <div class="container">
-      <div
-        class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
-      >
-        <ul
-          class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
-        >
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           <li>
-            <img
-              style="width: 60px; margin-right: 20px"
-              src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1712320726/m0px1710quyf7khpk770.png"
-              alt="🐶"
-            />
+            <img style="width: 60px; margin-right: 20px"
+              src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1712320726/m0px1710quyf7khpk770.png" alt="🐶" />
           </li>
           <li>
-            <router-link to="/" class="nav-link px-2 text-secondary"
-              >首頁</router-link
-            >
+            <router-link to="/" class="nav-link px-2 text-secondary">首頁</router-link>
           </li>
           <li>
-            <router-link to="/shop/shopPage" class="nav-link px-2 text-white"
-              >商城</router-link
-            >
+            <router-link to="/shop/shopPage" class="nav-link px-2 text-white">商城</router-link>
           </li>
           <li>
-            <router-link to="/cart" class="nav-link px-2 text-white"
-              >購物車</router-link
-            >
+            <router-link to="/cart" class="nav-link px-2 text-white">購物車</router-link>
           </li>
           <li>
-            <router-link
-              to="/activity/holdingActs"
-              class="nav-link px-2 text-white"
-              >寵活動</router-link
-            >
+            <router-link to="/activity/holdingActs" class="nav-link px-2 text-white">寵活動</router-link>
           </li>
 
           <li>
-            <router-link
-              to="/tweetPage/tweetsWallPage"
-              class="nav-link px-2 text-white"
-              >動態牆</router-link
-            >
+            <router-link to="/tweetPage/tweetsWallPage" class="nav-link px-2 text-white">動態牆</router-link>
           </li>
           <li>
-            <router-link to="/room/b_page" class="nav-link px-2 text-white"
-              >寵物旅館</router-link
-            >
+            <router-link to="/room/b_page" class="nav-link px-2 text-white">寵物旅館</router-link>
           </li>
-          <li v-if="role == 'ROLE_C1'">
-            <router-link to="/employee" class="nav-link px-2 text-white"
-              >員工後臺</router-link
-            >
+          <li v-if="role && role.startsWith('ROLE')">
+            <router-link to="/employee" class="nav-link px-2 text-white">員工後臺</router-link>
           </li>
         </ul>
 
         <div class="text-end">
-          <router-link
-            v-if="!isloggedIn"
-            to="/login"
-            class="text-decoration-none"
-          >
+          <router-link v-if="!isloggedIn" to="/login" class="text-decoration-none">
             <button type="button" class="btn btn-outline-light me-2">
               登入
             </button>
@@ -71,8 +42,7 @@
             <router-link to="/profile" class="text-decoration-none">
               <button type="button" class="btn btn-warning">
                 {{ name }}
-              </button></router-link
-            >
+              </button></router-link>
             <img :src="photo" width="8%" class="mx-2" />
 
             <button @click="logout" type="button" class="btn btn-outline-light">
@@ -129,6 +99,7 @@ export default {
 * {
   margin: 0;
 }
+
 /* .color {
   background-color: #fff;
 } */

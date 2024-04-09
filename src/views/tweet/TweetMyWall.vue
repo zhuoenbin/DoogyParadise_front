@@ -5,7 +5,7 @@
         <button v-if="!noShowCommentButton" @click="noShowComment" class="btn btn-warning">不顯示回覆的推文</button>
         <button v-else @click="showComment" class="btn btn-warning">顯示包含回覆的推文</button>
         <hr>
-        <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" />
+        <!-- <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" /> -->
     </div>
 </template>
 <script>

@@ -209,12 +209,14 @@ export default {
                     const memberStore = useMemberStore();
                     memberStore.memberName = response.data.lastName;
                     sessionStorage.setItem("loggedInMenber", JSON.stringify(response.data));
-                    window.location.reload();
                 } else {
                     console.error('change failed');
                 }
             })
 
+            if (this.$refs.mainImgUpload.files.length == 0) {
+                window.location.reload();
+            }
             this.mainImgUpload();
 
         },
@@ -234,7 +236,9 @@ export default {
                             const memberStore = useMemberStore();
                             memberStore.memberPhoto = response.data;
                             this.memberImgPath = response.data;
+                            console.log("response.data" + response.data)
                             this.getUserDetail();
+                            window.location.reload();
                         })
                         .catch((error) => {
                             console.error("主題圖片新增失敗", error);
