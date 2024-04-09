@@ -100,7 +100,7 @@ export default {
   margin: 0;
 }
 
-/* .color {
-  background-color: #fff;
-} */
+.text-end {
+  display: flex;
+}
 </style>

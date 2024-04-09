@@ -6,27 +6,19 @@
         <ul class="nano-content">
           <li>
             <router-link to="/room/b_page">
-              <i class="fa-regular fa-calendar-days"></i
-              ><span>訂房</span></router-link
-            >
+              <i class="fa-regular fa-calendar-days"></i><span>訂房</span></router-link>
           </li>
           <li>
             <router-link to="/room/o_page">
-              <i class="fa-regular fa-clipboard"></i
-              ><span>預約訂房管理</span></router-link
-            >
+              <i class="fa-regular fa-clipboard"></i><span>預約訂房管理</span></router-link>
           </li>
           <li>
             <router-link to="/room/h_page">
-              <i class="fa-solid fa-clock-rotate-left"></i
-              ><span>歷史訂房紀錄</span></router-link
-            >
+              <i class="fa-solid fa-clock-rotate-left"></i><span>歷史訂房紀錄</span></router-link>
           </li>
           <li>
             <router-link to="/room/c_page">
-              <i class="fa-solid fa-rectangle-xmark"></i
-              ><span>取消訂房紀錄</span></router-link
-            >
+              <i class="fa-solid fa-rectangle-xmark"></i><span>取消訂房紀錄</span></router-link>
           </li>
         </ul>
       </div>
@@ -60,10 +52,12 @@ onMounted(() => {
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700");
 @import url("//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css");
+
 .main {
   width: 80vw;
   padding: 50px 0 0 50px;
-  margin: 0 auto; /* 水平置中 */
+  margin: 0 auto;
+  /* 水平置中 */
 }
 
 .main-container {
@@ -90,16 +84,20 @@ onMounted(() => {
   margin: -2px 0 0;
   padding: 0;
 }
+
 .sidebar #leftside-navigation ul li {
   list-style-type: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
-.sidebar #leftside-navigation ul li.active > a {
+
+.sidebar #leftside-navigation ul li.active>a {
   color: #6579eb;
 }
+
 .sidebar #leftside-navigation ul li.active ul {
   display: block;
 }
+
 .sidebar #leftside-navigation ul li a {
   color: #cacdd1;
   text-decoration: none;
@@ -113,23 +111,29 @@ onMounted(() => {
   -ms-transition: all 200ms ease-in;
   transition: all 200ms ease-in;
 }
+
 .sidebar #leftside-navigation ul li a:hover {
   color: #7990af;
 }
+
 span {
   display: inline-block;
   font-size: 14px;
 }
+
 i {
   width: 30px;
 }
+
 .sidebar #leftside-navigation ul li a i .fa-angle-left,
 .sidebar #leftside-navigation ul li a i .fa-angle-right {
   padding-top: 3px;
 }
+
 .sidebar #leftside-navigation ul ul {
   display: none;
 }
+
 .sidebar #leftside-navigation ul ul li {
   background: #23313f;
   margin-bottom: 0;
