@@ -1,7 +1,7 @@
 <template>
   <div class="main-container">
     <!-- sideBar -->
-    <div class="sidebar" v-if="memberId != '' && role != 'ROLE_C1'">
+    <div class="sidebar">
       <div id="leftside-navigation" class="nano">
         <ul class="nano-content">
           <li class="sortName">活動</li>
@@ -35,20 +35,20 @@
               ><span>租借場地</span></router-link
             >
           </li>
-          <li class="sortNameSec">我的空間</li>
-          <li>
+          <li class="sortNameSec" v-if="memberId != ''">我的空間</li>
+          <li v-if="memberId != ''">
             <router-link to="/activity/myJoinedManager">
               <i class="fa-solid fa-calendar-days"></i
               ><span>我的報名</span></router-link
             >
           </li>
-          <li>
+          <li v-if="memberId != ''">
             <router-link to="/activity/myPastJoinedManager">
               <i class="fa-solid fa-clock-rotate-left"></i
               ><span>過去參加</span></router-link
             >
           </li>
-          <li>
+          <li v-if="memberId != ''">
             <router-link to="/activity/myFavoriteManager">
               <i class="fa-solid fa-heart"></i
               ><span>我的收藏</span></router-link
