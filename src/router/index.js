@@ -186,6 +186,10 @@ const router = createRouter({
           path: "t_page",
           component: () => import("@/views/employee/TweetManage.vue"),
         },
+        {
+          path: "tweetChart",
+          component: () => import("@/views/employee/tweet/TweetChart.vue"),
+        }
       ],
     },
     {
