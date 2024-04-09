@@ -22,6 +22,12 @@
               <b>🗓️更新日期:</b
               >{{ this.dateFormat(activityInfo.activityUpdateDate) }}
             </p>
+            <p class="liked_txt">
+              <b
+                ><i class="fa-solid fa-heart fa-lg" style="color: #e85454"></i
+                >&nbsp;{{ activityInfo.likedTime }} liked!</b
+              >
+            </p>
             <p class="producat_des">
               <b>活動日期:&nbsp;</b>{{ activityInfo.activityDate }}
               {{ this.timeFormat(activityInfo.activityStart) }} ~
@@ -86,6 +92,7 @@
                   <button
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
+                    id="joinbtn"
                     v-if="
                       activityInfo.activityDogNumber -
                         activityInfo.currentDogNumber >
@@ -246,6 +253,7 @@
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
+    v-if="isUser"
   >
     <div class="modal-dialog">
       <div class="modal-content">
@@ -383,6 +391,7 @@ export default {
       ImgList: [],
       activityId: "",
       isCustomer: true,
+      isEmployee: false,
       myDogsNotAttend: [],
       userId: "",
       chooseAct: "",
@@ -393,18 +402,20 @@ export default {
       note: "",
       isUser: false,
       joinSuccess: false,
-      isJoinButtonVisible: true,
-      isJoinButtonDisabled: false,
       message: "",
     };
   },
   mounted() {
     const memberStore = useMemberStore();
     console.log(memberStore.memberRole);
-    if (!memberStore.memberRole.startsWith("Act")) {
+    if (memberStore.memberRole.startsWith("R")) {
       this.isCustomer = false;
-      this.isJoinButtonVisible = false;
-      this.isJoinButtonDisabled = true;
+      this.isUser = false;
+      this.isEmployee = true;
+    } else if (memberStore.memberRole.startsWith("Act")) {
+      this.isUser = true;
+      this.isCustomer = false;
+      this.userId = memberStore.memberId;
     }
     this.activityId = this.$route.params.activityId;
     axios
@@ -419,9 +430,17 @@ export default {
         console.log(this.mainImg);
         console.log("圖片長度", this.ImgList.length);
         console.log(this.ImgList);
+      })
+      .then((rs) => {
+        if (this.isEmployee) {
+          this.joinBtnDisabled();
+        }
       });
   },
   methods: {
+    joinBtnDisabled() {
+      document.getElementById("joinbtn").disabled = true;
+    },
     timeFormat(time) {
       if (time && time.length >= 3) {
         time = time.substring(0, time.length - 3);
@@ -453,8 +472,8 @@ export default {
       this.currentDogNumber = currentDogNumber;
       this.note = "";
       console.log("所選擇的活動id: ", this.chooseAct);
-      if (memberStore.memberRole.startsWith("Act")) {
-        this.isUser = true;
+      if (this.isUser) {
+        // this.isUser = true;
         this.userId = memberStore.memberId;
         console.log(this.userId);
         //直接給沒參加過的狗
@@ -474,7 +493,7 @@ export default {
           .catch((error) => {
             console.error("Error dogs:", error);
           });
-      } else if (memberStore.memberRole == null) {
+      } else if (this.isCustomer) {
         this.$router.push("/login");
       }
     },
@@ -915,6 +934,14 @@ export default {
   font-weight: 600;
   letter-spacing: 2px;
   font-size: 0.8rem;
+}
+.liked_txt {
+  color: #65576c;
+  text-transform: uppercase;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  font-size: 0.7rem;
+  margin: 0;
 }
 .producat_content {
   width: 150%;
