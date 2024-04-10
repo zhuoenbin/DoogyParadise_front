@@ -1,11 +1,37 @@
 <template>
     <div class="main-container">
+
         <!-- sideBar -->
         <div class="sidebar">
-            <div class="sidebar-header">
-                <h2>狀態欄</h2>
+            <div id="leftside-navigation" class="nano">
+                <ul class="nano-content">
+                    <li>
+                        <router-link to="/tweetPage/tweetsWallPage">
+                            <i class="fa-solid fa-vr-cardboard"></i><span>首頁</span></router-link>
+                    </li>
+                    <li>
+                        <router-link to="#" v-if="userId">
+                            <i class="fa-solid fa-dice-d20"></i><span @click="showModal">發文</span></router-link>
+                    </li>
+                    <li>
+                        <router-link to="/tweetPage/tweetsMyWallPage" v-if="userId">
+                            <i class="fa-solid fa-clock-rotate-left"></i><span>我的發文</span></router-link>
+                    </li>
+                    <li>
+                        <router-link to="/tweetPage/tweetsMyFollowPage" v-if="userId">
+                            <i class="fa-solid fa-heart"></i><span>我的追蹤</span></router-link>
+                    </li>
+                    <li>
+                        <router-link to="/tweetPage/tweetsMyNotificationPath" v-if="userId">
+                            <i class="fa-solid fa-scroll"></i><span>我的通知</span></router-link>
+                    </li>
+                </ul>
             </div>
-            <div class="sidebar-buttons">
+        </div>
+
+
+
+        <!-- <div class="sidebar-buttons">
                 <router-link to="/tweetPage/tweetsWallPage"><button class="sidebar-button custom-router-link">
                         首頁
                     </button>
@@ -25,8 +51,8 @@
                     <button v-if="userId" class="sidebar-button custom-router-link">我的通知</button>
                 </router-link>
 
-            </div>
-        </div>
+            </div> -->
+
 
         <router-view></router-view>
     </div>
@@ -262,37 +288,91 @@ export default {
     padding: 20px;
 }
 
-/* Sidebar 的外觀和佈局 */
-.sidebar {
-    background-color: #f0f0f0;
-    padding: 20px;
-}
 
-.sidebar-header h2 {
-    margin-bottom: 10px;
-}
-
-.sidebar-buttons {
-    display: flex;
-    flex-direction: column;
-}
-
-.sidebar-button {
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.sidebar-button:hover {
-    background-color: #e0e0e0;
-}
 
 /* sideBar 按鈕的寬度 */
 .custom-router-link {
     width: 100%;
     /* 設置寬度為父元素的 100% */
+}
+
+
+
+.sidebar {
+    padding: 20px;
+    height: 100vh;
+    width: 15vw;
+    background: #263747;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    position: sticky;
+    z-index: 100;
+    top: 0;
+}
+
+.sidebar #leftside-navigation ul,
+.sidebar #leftside-navigation ul ul {
+    margin: -2px 0 0;
+    padding: 0;
+}
+
+.sidebar #leftside-navigation ul li {
+    list-style-type: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar #leftside-navigation ul li.active>a {
+    color: #6579eb;
+}
+
+.sidebar #leftside-navigation ul li.active ul {
+    display: block;
+}
+
+.sidebar #leftside-navigation ul li a {
+    color: #cacdd1;
+    text-decoration: none;
+    display: block;
+    padding: 18px 0 18px 25px;
+    font-size: 12px;
+    outline: 0;
+    -webkit-transition: all 200ms ease-in;
+    -moz-transition: all 200ms ease-in;
+    -o-transition: all 200ms ease-in;
+    -ms-transition: all 200ms ease-in;
+    transition: all 200ms ease-in;
+}
+
+.sidebar #leftside-navigation ul li a:hover {
+    color: #7990af;
+}
+
+span {
+    display: inline-block;
+    font-size: 14px;
+}
+
+i {
+    width: 30px;
+}
+
+.sidebar #leftside-navigation ul li a i .fa-angle-left,
+.sidebar #leftside-navigation ul li a i .fa-angle-right {
+    padding-top: 3px;
+}
+
+.sidebar #leftside-navigation ul ul {
+    display: none;
+}
+
+.sidebar #leftside-navigation ul ul li {
+    background: #23313f;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    border-bottom: none;
 }
 </style>

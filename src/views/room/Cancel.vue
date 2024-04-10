@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="main">
     <h2 class="page-title">取消訂房紀錄</h2>
-    <table class="room-table">
+    <table class="table room-table">
       <thead>
         <tr>
           <th>訂房時段</th>
@@ -10,8 +10,8 @@
           <th>Dog名稱</th>
           <th>費用</th>
           <th>訂房時間</th>
-          <th>取消時間</th>
           <th>取消原因</th>
+          <th>取消時間</th>
         </tr>
       </thead>
       <tbody>
@@ -28,8 +28,8 @@
           <td>{{ reservation.dog.dogName }}</td>
           <td>{{ reservation.totalPrice }}</td>
           <td>{{ formatDate(reservation.reservationTime) }}</td>
-          <td>{{ formatDate(reservation.cancelTime) }}</td>
           <td>{{ reservation.cancelDirection }}</td>
+          <td>{{ formatDate(reservation.cancelTime) }}</td>
         </tr>
       </tbody>
     </table>
@@ -77,6 +77,10 @@ const handleModifyReservation = (reservationId, str) => {
 </script>
 
 <style scoped>
+.main {
+  margin: 2rem;
+}
+
 .page-title {
   font-size: 24px;
   margin-bottom: 20px;
@@ -89,20 +93,30 @@ const handleModifyReservation = (reservationId, str) => {
   margin-bottom: 2rem;
 }
 
-.room-table th,
+.room-table th {
+  background-color: rgb(255, 231, 137);
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+}
+
 .room-table td {
   /* border: 1px solid #c2bdbd; */
-  padding: 12px;
+  padding: 20px;
+}
+
+.room-table th,
+.room-table td {
   text-align: center;
 }
 
-.room-table th {
-  background-color: rgb(254, 241, 222);
+/* .room-table th {
+  background-color: rgb(255, 216, 157);
 }
 
 .room-table tr:nth-child(even) {
-  background-color: rgb(255, 243, 223);
-}
+  background-color: rgb(248, 248, 244);
+} */
 
 .btn {
   padding: 8px 16px;

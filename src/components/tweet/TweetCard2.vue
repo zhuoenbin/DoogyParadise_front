@@ -599,7 +599,7 @@ body {
     top: 10%;
     right: 0;
     left: 0;
-    margin: 0 auto;
+    margin: 4rem auto;
     overflow: hidden;
     border-radius: 10px;
     box-shadow: 0px 10px 20px -9px rgba(0, 0, 0, 0.5);

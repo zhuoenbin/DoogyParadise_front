@@ -68,10 +68,6 @@ const router = createRouter({
           path: "tweetsMyNotificationPath",
           component: () => import("@/views/tweet/TweetNotification.vue"),
         },
-        {
-          path: "card2",
-          component: () => import("@/components/tweet/TweetCard2.vue"),
-        },
       ],
     },
     {
@@ -188,6 +184,10 @@ const router = createRouter({
           path: "t_page",
           component: () => import("@/views/employee/TweetManage.vue"),
         },
+        {
+          path: "tweetChart",
+          component: () => import("@/views/employee/tweet/TweetChart.vue"),
+        },
       ],
     },
     {
@@ -209,6 +209,14 @@ const router = createRouter({
         {
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
+        },
+        {
+          path: "roomChart_page",
+          component: () => import("@/views/employee/room/RoomChart.vue"),
+        },
+        {
+          path: "cancel_page",
+          component: () => import("@/views/employee/room/RoomCancel.vue"),
         },
       ],
     },
