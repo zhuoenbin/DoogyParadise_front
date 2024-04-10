@@ -89,7 +89,7 @@
                         class="space"
                       >
                         <!-- <hr /> -->
-                        用戶: {{ roomReservation.user.lastName }}
+                        用戶: {{ roomReservation.lastName }}
                         <br />
                         <!-- 用戶: {{ roomReservation.dog }}
                         <br /> -->

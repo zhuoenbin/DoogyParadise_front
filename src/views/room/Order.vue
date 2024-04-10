@@ -10,7 +10,10 @@
           <th>寵物名</th>
           <th>費用</th>
           <th>訂房時間</th>
-          <th>修改時段</th>
+          <th>
+            修改時段
+            <span id="update"></span>
+          </th>
           <th>取消訂房</th>
         </tr>
       </thead>
@@ -113,16 +116,13 @@ const isStartDateWithinThreeDays = (startDate) => {
 };
 
 const handleModifyReservation = (reservationId, str) => {
-  router
-    .push({
+  document.getElementById("update").classList.add("loader");
+  setTimeout(() => {
+    router.push({
       name: "u_page",
       params: { reservationId, str },
-    })
-    .then(() => {
-      setTimeout(() => {
-        window.location.reload();
-      }, 100); // 添加延遲，確保頁面跳轉完成後再刷新;
     });
+  }, 1000); // 添加延遲，確保頁面跳轉完成後再刷新;
 };
 </script>
 
@@ -183,5 +183,23 @@ const handleModifyReservation = (reservationId, str) => {
 .icon {
   margin-right: 0.5rem;
   color: rgb(241, 189, 101);
+}
+
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
