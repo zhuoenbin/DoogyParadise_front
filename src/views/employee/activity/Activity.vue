@@ -37,7 +37,12 @@
 
     <!-- 本體 -->
     <div class="main">
-      <router-view></router-view>
+      <router-view>
+        <template v-slot="{ Component }">
+          <transition name="slide-left" mode="out-in">
+            <component :is="Component" />
+          </transition> </template
+      ></router-view>
     </div>
   </div>
 </template>
@@ -154,5 +159,22 @@ i {
   margin-left: 0;
   margin-right: 0;
   border-bottom: none;
+}
+/* .// */
+.slide-left-enter {
+  opacity: 0;
+  -webkit-transform: translate(30px, 0);
+  transform: translate(30px, 0);
+}
+.slide-left-enter-active {
+  transition: all 0.5s ease;
+}
+.slide-left-leave-to {
+  opacity: 0;
+  -webkit-transform: translate(-30px, 0);
+  transform: translate(-30px, 0);
+}
+.slide-left-leave-active {
+  transition: all 0.5s ease;
 }
 </style>
