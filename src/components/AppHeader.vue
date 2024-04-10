@@ -49,7 +49,7 @@
               >寵物旅館</router-link
             >
           </li>
-          <li v-if="role.startsWith('ROLE')">
+          <li v-if="role && role.startsWith('ROLE')">
             <router-link to="/employee" class="nav-link px-2 text-white"
               >員工後臺</router-link
             >
@@ -73,7 +73,13 @@
                 {{ name }}
               </button></router-link
             >
-            <img :src="photo" width="8%" class="mx-2" />
+            <img
+              :src="photo"
+              width="40px"
+              height="40px"
+              class="mx-2"
+              style="border-radius: 0.5rem; object-fit: cover"
+            />
 
             <button @click="logout" type="button" class="btn btn-outline-light">
               登出

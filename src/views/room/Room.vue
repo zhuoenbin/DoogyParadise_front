@@ -1,7 +1,10 @@
 <template>
   <div class="main-container">
     <!-- sideBar -->
-    <div class="sidebar" v-if="memberId != '' && role != 'ROLE_C1'">
+    <div
+      class="sidebar"
+      v-if="memberId != '' && role && !role.startsWith('ROLE')"
+    >
       <div id="leftside-navigation" class="nano">
         <ul class="nano-content">
           <li>
@@ -34,7 +37,12 @@
 
     <!-- 本體 -->
     <div class="main">
-      <router-view></router-view>
+      <router-view>
+        <template v-slot="{ Component }">
+          <transition name="slide-left" mode="out-in">
+            <component :is="Component" />
+          </transition> </template
+      ></router-view>
     </div>
   </div>
 </template>
@@ -62,7 +70,7 @@ onMounted(() => {
 @import url("//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css");
 .main {
   width: 80vw;
-  padding: 50px 0 0 50px;
+  /* padding-left: 50px; */
   margin: 0 auto; /* 水平置中 */
 }
 
@@ -136,5 +144,22 @@ i {
   margin-left: 0;
   margin-right: 0;
   border-bottom: none;
+}
+
+.slide-left-enter {
+  opacity: 0;
+  -webkit-transform: translate(-20px, 0);
+  transform: translate(-20px, 0);
+}
+.slide-left-enter-active {
+  transition: all 0.4s ease;
+}
+.slide-left-leave-to {
+  opacity: 0;
+  -webkit-transform: translate(20px, 0);
+  transform: translate(20px, 0);
+}
+.slide-left-leave-active {
+  transition: all 0.4s ease;
 }
 </style>
