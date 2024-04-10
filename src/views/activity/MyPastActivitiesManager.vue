@@ -54,10 +54,9 @@
               <th scope="row">
                 <button
                   :class="{
-                    'btn btn-outline-success me-md-2': myEndedList.includes(
-                      a.activityId
-                    ),
-                    'btn btn-warning me-md-2': !myEndedList.includes(
+                    'btn btn-outline-success me-md-2':
+                      userfinishedList.includes(a.activityId),
+                    'btn btn-warning me-md-2': !userfinishedList.includes(
                       a.activityId
                     ),
                   }"
@@ -158,6 +157,9 @@
               </div>
               <!-- 改成評論? -->
               <div>
+                <label for="" style="line-height: 20px; margin-bottom: 10px"
+                  ><b>想為我們的活動評論幾星呢!</b></label
+                >
                 <form id="starform">
                   <fieldset class="stars" @change="checkComplete">
                     <input
@@ -210,7 +212,7 @@
               </div>
               <div class="mb-2">
                 <label for="message-text" class="col-form-label"
-                  >想要寫點心得嗎~</label
+                  ><b>寫點心得吧!</b></label
                 >
                 <textarea
                   class="form-control"
@@ -317,6 +319,9 @@ export default {
         .then((response) => {
           console.log("comment成功", response.data);
         })
+        .then((rs) => {
+          this.updatePage();
+        })
         .catch((error) => {
           console.error("comment失敗", error);
         });
@@ -334,9 +339,21 @@ export default {
         .then((rs) => {
           console.log(" update comment成功", rs.data);
         })
+        .then((rs) => {
+          this.updatePage();
+        })
         .catch((error) => {
           console.error("update comment失敗", error);
         });
+    },
+    updatePage() {
+      let loading = document.getElementById("loading");
+      loading.style.display = "inline";
+      setTimeout(function () {
+        let loading = document.getElementById("loading");
+        loading.style.display = "none";
+      }, 3000);
+      window.location.reload();
     },
     getFinishedList() {
       axios
