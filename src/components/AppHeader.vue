@@ -43,7 +43,8 @@
               <button type="button" class="btn btn-warning">
                 {{ name }}
               </button></router-link>
-            <img :src="photo" width="8%" class="mx-2" />
+            <img :src="photo" width="40px" height="40px" class="mx-2"
+              style="border-radius: 0.5rem; object-fit: cover" />
 
             <button @click="logout" type="button" class="btn btn-outline-light">
               登出

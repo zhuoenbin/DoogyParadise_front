@@ -2,7 +2,10 @@
   <div id="app">
     <div class="main">
       <h2 class="page-title">訂房</h2>
-      <div class="top" v-if="dogs.length != 0 && role != 'ROLE_C1'">
+      <div
+        class="top"
+        v-if="dogs.length != 0 && (role == null || !role.startsWith('ROLE'))"
+      >
         <span>請選擇要住宿的寵物:</span>
         <select v-model="selectedDog" @change="RoomsDate()" class="">
           <option v-for="(dog, dogId) in dogs" :key="dogId" :value="dog">
@@ -46,11 +49,13 @@
                 @click="bookRoom(room)"
                 href="javascript: void(0)"
                 class="btn btn-primary"
-                v-if="dogs.length != 0 && role != 'ROLE_C1'"
+                v-if="
+                  dogs.length != 0 && (role == null || !role.startsWith('ROLE'))
+                "
                 >訂房<span></span><span></span><span></span><span></span
               ></a>
             </div>
-            <!-- Modal -->
+            <!-- Modal 房間評價 -->
             <div
               class="modal fade"
               :id="'exampleModal_' + room.roomId"
@@ -127,6 +132,46 @@
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+            <!-- Modal 訂房成功 -->
+            <div
+              class="modal"
+              tabindex="-1"
+              :id="'exampleModal01_' + room.roomId"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content modalbgc">
+                  <div class="success">
+                    <h2 class="modal-title">訂房成功</h2>
+                  </div>
+                  <div class="modal-body success">
+                    <svg width="400" height="400">
+                      <circle
+                        fill="none"
+                        stroke="#68E534"
+                        stroke-width="20"
+                        stroke-linecap="round"
+                        cx="200"
+                        cy="200"
+                        r="190"
+                        class="circle"
+                        transform="rotate(-90 200 200)"
+                      />
+
+                      <polyline
+                        fill="none"
+                        stroke="#68E534"
+                        stroke-width="24"
+                        points="88,214 173,284 304,138"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="tick"
+                      />
+                    </svg>
+                  </div>
+                  <!-- <p class="gray">已寄信至您的信箱</p> -->
                 </div>
               </div>
             </div>
@@ -318,6 +363,15 @@ const bookRoom = (room) => {
 
     // 新增訂房明細
     const roomReservation = () => {
+      const myModal = new bootstrap.Modal(
+        document.getElementById(`exampleModal01_${room.roomId}`)
+      );
+      myModal.show();
+
+      // 五秒後自動關閉 modal
+      setTimeout(() => {
+        myModal.hide();
+      }, 2600);
       axios
         .post(
           `http://localhost:8080/room/roomReservation?roomId=${room.roomId}&dogId=${selectedDog.value.dogId}`,
@@ -339,18 +393,12 @@ const bookRoom = (room) => {
     };
 
     if (formattedDates[1] != "1970-01-01") {
-      alert(
-        `訂房成功！ 寵物Name: ${selectedDog.value.dogName},
-        房間Id: ${room.roomId}, 訂房時間 ${formattedDates.join(" - ")},
-        已寄信至您的信箱`
-      );
       roomReservation();
-      // 成功的話頁面跳轉到 o_page 並重新加載
-      router.push({ name: "o_page" }).then(() => {
-        setTimeout(() => {
-          window.location.reload();
-        }, 10); // 添加延遲，確保頁面跳轉完成後再刷新
-      });
+
+      setTimeout(() => {
+        // 成功的話頁面跳轉到 o_page 並重新加載
+        router.push({ name: "o_page" });
+      }, 2700); // 添加延遲，確保頁面跳轉完成後再刷新
     } else if (formattedDates[1] == "1970-01-01") {
       alert("請選擇結束時間");
     }
@@ -426,15 +474,27 @@ const RoomsDate = () => {
 
 .main {
   min-height: 82vh;
-  margin-bottom: 2rem;
+  margin: 2rem 6rem;
 }
 
 .top {
   display: flex;
+  justify-content: space-around;
+  border-radius: 1rem;
+  background-color: #3e4452;
+  padding: 1rem;
+  color: aliceblue;
+  width: calc(60rem + 1.25rem); /* 0.625rem 等於 10px，因為 1rem = 16px */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.top span {
+  margin-top: 0.5rem;
 }
 
 select {
-  margin: 0 1rem;
   width: 10%;
   font-size: 16px;
   border-radius: 4px;
@@ -443,7 +503,6 @@ select {
 
 .date-picker {
   width: 25%;
-  margin: 0 1rem;
 }
 
 .room-container {
@@ -560,6 +619,100 @@ select {
   padding: 1rem;
   margin: 1rem;
   border-radius: 10px;
-  background-color: #dbd7ce;
+  background-color: #aeb3b7;
 }
+
+/* body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+} */
+
+svg {
+  /* 將 SVG 元素等比例縮小到 50% */
+  transform: scale(0.4);
+}
+
+svg .circle {
+  animation: circle 1s ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+svg .tick {
+  animation: tick 0.8s ease-out;
+  animation-fill-mode: forwards;
+  animation-delay: 0.93s;
+}
+
+h2 {
+  font-family: Helvetica;
+  font-size: 36px;
+  /* margin-top: 40px; */
+  color: #333;
+  /* opacity: 0; */
+}
+
+.circle {
+  stroke-dasharray: 1194;
+  /***
+    2∏R=2*3.14*190=1194
+    ***/
+
+  stroke-dashoffset: 1194;
+}
+
+.tick {
+  stroke-dasharray: 350;
+  stroke-dashoffset: 350;
+}
+
+@keyframes circle {
+  from {
+    stroke-dashoffset: 1194;
+  }
+  to {
+    stroke-dashoffset: 2388;
+  }
+}
+
+@keyframes tick {
+  from {
+    stroke-dashoffset: 350;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes title {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  margin: auto;
+}
+
+.success {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+}
+
+.success .modal-title {
+  color: #874a33;
+  margin-top: 2rem;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+/* .modalbgc {
+  background-color: rgba(225, 223, 223, 0.95);
+} */
 </style>
