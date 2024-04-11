@@ -74,31 +74,31 @@ export default {
 <style scoped>
 .follow-list {
     margin-top: 39px;
-    /* 设置顶部外边距 */
+
     border: 2px solid #ccc;
-    /* 添加边框 */
+
     padding: 20px;
-    /* 添加内边距 */
+
     border-radius: 6px;
-    /* 设置圆角 */
+
 }
 
 .follow-list h4 {
     color: #333;
-    /* 设置标题颜色 */
+
     font-size: 1.5em;
-    /* 设置标题字体大小 */
+
     margin-bottom: 20px;
-    /* 设置底部外边距 */
+
 }
 
 .modal-body {
     cursor: pointer;
-    /* 鼠标指针样式为手型 */
+
 }
 
 .modal-body:hover {
     background-color: #f0f0f0;
-    /* 鼠标悬停时背景颜色变化 */
+
 }
 </style>
