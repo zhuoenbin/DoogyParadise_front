@@ -378,7 +378,7 @@ export default {
           this.oldstarScore = rs.data.score;
           this.starScore = rs.data.score;
           this.isFirstTime = false;
-          console.log("以前給星: ", this.starScore);
+          console.log("以前給星: ", this.oldstarScore);
         })
         .catch((error) => {
           console.error("取評論錯誤: ", error);
