@@ -74,15 +74,29 @@
           >
             <tr>
               <th scope="row">
-                <button
-                  class="btn btn-outline-success me-md-1"
-                  type="button"
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  :id="a.activityId"
-                  @click="updatePrepare(a.activityId, a.activityTitle)"
+                <router-link
+                  :to="{
+                    name: 'activityComment',
+                    params: { activityId: a.activityId },
+                  }"
                 >
-                  查看
+                  <button
+                    class="btn btn-outline-warning me-md-1"
+                    type="button"
+                    v-if="a.commentedTime > 0"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    :id="a.activityId"
+                  >
+                    查看({{ a.commentedTime }}/{{ a.currentUserNumber }})
+                  </button></router-link
+                >
+                <button
+                  type="button"
+                  class="btn btn-light me-md-1"
+                  v-if="a.commentedTime < 1"
+                >
+                  暫無評論
                 </button>
               </th>
               <td class="smallText">

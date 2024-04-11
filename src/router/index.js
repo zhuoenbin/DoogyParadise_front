@@ -67,7 +67,7 @@ const router = createRouter({
         {
           path: "tweetsMyNotificationPath",
           component: () => import("@/views/tweet/TweetNotification.vue"),
-        }
+        },
       ],
     },
     {
@@ -92,7 +92,8 @@ const router = createRouter({
           path: "u_page/:reservationId/:str",
           name: "u_page",
           component: () => import("@/views/room/UpdateFrom.vue"),
-        },{
+        },
+        {
           path: "c_page",
           name: "c_page",
           component: () => import("@/views/room/Cancel.vue"),
@@ -215,13 +216,16 @@ const router = createRouter({
         {
           path: "over_page",
           component: () => import("@/views/employee/room/RoomOver.vue"),
-        },{
+        },
+        {
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
-        },{
+        },
+        {
           path: "roomChart_page",
           component: () => import("@/views/employee/room/RoomChart.vue"),
-        },{
+        },
+        {
           path: "cancel_page",
           component: () => import("@/views/employee/room/RoomCancel.vue"),
         },
@@ -256,6 +260,13 @@ const router = createRouter({
           name: "activityUpdater",
           component: () =>
             import("@/views/employee/activity/OffiActsUpdater.vue"),
+        },
+        // 動態綁定參數
+        {
+          path: "act_PastManager/comment/:activityId",
+          name: "activityComment",
+          component: () =>
+            import("@/views/employee/activity/OffiCommentChecker.vue"),
         },
       ],
     },

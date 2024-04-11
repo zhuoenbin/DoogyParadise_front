@@ -476,8 +476,8 @@ export default {
         setTimeout(function () {
           let loading = document.getElementById("loading");
           loading.style.display = "none";
-        }, 2000);
-        this.$router.push("/activity/myJoinedManager");
+        }, 3000);
+        window.location.reload();
       }
     },
   },
