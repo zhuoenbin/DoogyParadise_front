@@ -178,17 +178,28 @@ const router = createRouter({
     {
       path: "/employee",
       component: () => import("@/views/employee/Employee.vue"),
+    },
+    {
+      path: "/employee/tweet",
+      component: () => import("@/views/employee/TweetManage.vue"),
       children: [
-        {
-          path: "t_page",
-          component: () => import("@/views/employee/TweetManage.vue"),
-        },
         {
           path: "tweetChart",
           component: () => import("@/views/employee/tweet/TweetChart.vue"),
+        },
+        {
+          path: "t_page",
+          component: () => import("@/views/employee/tweet/TweetReport.vue"),
+        },{
+          path: "tweetOfficial",
+          component: () => import("@/views/employee/tweet/TweetOfficialTweet.vue"),
+        },{
+          path: "tweetOfficialPost",
+          component: () => import("@/components/tweet/TweetOfficalPost.vue"),
         }
-      ],
+      ]
     },
+
     {
       path: "/employee/room",
       component: () => import("@/views/employee/room/Room.vue"),
