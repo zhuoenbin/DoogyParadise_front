@@ -54,9 +54,9 @@ onMounted(() => {
 
 const filteredReservations = computed(() => {
   return reservations.value.filter((reservation) => {
-    if (reservation.cancelTime != null) {
-      return true;
-    }
+    // console.log(reservation.reservationId);
+    // console.log(reservation.cancelTime);
+    return reservation.cancelTime != null;
   });
 });
 

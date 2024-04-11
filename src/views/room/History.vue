@@ -186,9 +186,12 @@ const handleModifyReservation = (reservationId, str) => {
 
 .room-table th,
 .room-table td {
+  text-align: center;
+}
+
+.room-table td {
   /* border: 1px solid #c2bdbd; */
   padding: 20px 0;
-  text-align: center;
 }
 
 /* .room-table th {

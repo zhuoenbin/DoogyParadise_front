@@ -204,7 +204,8 @@ export default {
       // 五秒後自動關閉 modal
       setTimeout(() => {
         myModal.hide();
-      }, 2600);
+        this.$emit("update-success");
+      }, 3000);
       axios
         .post(
           `http://localhost:8080/dog/update?dogId=${this.dog.dogId}`,
@@ -238,9 +239,6 @@ export default {
                 "Content-Type": "multipart/form-data",
               },
             })
-            .then(() => {
-              location.reload(); // 重新整理頁面
-            })
             .catch((error) => {
               console.error("圖片新增失敗", error);
             });
@@ -268,8 +266,9 @@ export default {
 }
 
 .dog-image {
-  max-width: 200px;
-  height: auto; /* 讓高度自動調整以保持圖像比例 */
+  width: 250px;
+  height: 300px;
+  object-fit: cover;
   border-radius: 10px;
   margin-bottom: 10px;
 }
