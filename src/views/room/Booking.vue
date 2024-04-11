@@ -29,7 +29,7 @@
           class="room-container"
           v-if="!noVacancies.includes(`${room.roomId}`)"
         >
-          <div class="card" style="width: 30rem">
+          <div class="card">
             <img
               :src="room.roomImgPath"
               class="card-img-top"
@@ -71,7 +71,7 @@
                     </h5>
                   </div>
                   <div class="modal-body">
-                    <img :src="room.roomImgPath" />
+                    <img :src="room.roomImgPath" class="card-img-top" />
                     <br />
                     <span>房間說明:</span>
                     <br />
@@ -417,10 +417,9 @@ const RoomsDate = () => {
   // console.log(selectedDates.value[0]);
   if (selectedDates.value !== null) {
     // 原始的 RoomsDate 邏輯
-    let arr = calculateDateRange(
-      selectedDates.value[0],
-      selectedDates.value[1]
-    );
+    let endDate = new Date(selectedDates.value[1]);
+    endDate.setDate(endDate.getDate() - 1); // 減去一天
+    let arr = calculateDateRange(selectedDates.value[0], endDate);
 
     // 清空 noVacancies 陣列
     noVacancies = [];
@@ -442,7 +441,8 @@ const RoomsDate = () => {
                   roomReservation.cancelTime == null
                 ) {
                   // console.log(reservation[1]);
-                  // console.log(`RoomId: ${reservation[0]}`);
+                  console.log(`RoomId: ${reservation[0]}`);
+                  console.log(`RoomReservationId: ${reservation[1]}`);
                   // console.log(`重複日期: ${reservation[i]}`);
                   noVacancies.push(reservation[0]);
                 }
@@ -580,8 +580,9 @@ select {
 
 .card img {
   margin: 2rem;
-  max-width: 200px;
-  height: auto;
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
   border-radius: 4px;
   box-shadow: -10px 10px 10px rgb(36, 36, 37);
 }
@@ -593,7 +594,9 @@ select {
 }
 
 .modal-body img {
-  max-width: 350px;
+  width: 350px;
+  height: 300px;
+  object-fit: cover;
 }
 
 .jcsb {

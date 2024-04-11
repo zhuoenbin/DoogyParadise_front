@@ -1,5 +1,5 @@
 <template>
-  <div class="flex">
+  <div class="main flex">
     <form>
       <div class="mb-3">
         <label for="dogName" class="form-label">狗狗名稱</label>
@@ -165,6 +165,10 @@ export default {
 };
 </script>
 <style scoped>
+.main {
+  width: 100%;
+}
+
 .flex {
   margin: 0 auto; /* 將彈性容器水平置中 */
   display: flex;
@@ -173,9 +177,9 @@ export default {
 }
 
 form {
-  margin: 20px;
+  margin-top: 2rem;
   padding: 20px;
-  width: 100%;
+  width: 80%;
   border: 1px solid #ccc;
   border-radius: 10px;
   background-color: #f9f9f9; /* 添加背景色 */
@@ -228,8 +232,8 @@ input[type="file"].form-control {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width: 100%;
-  margin: 20px 300px; /* 增加上邊距以與其他元素保持間距 */
+  width: 80%;
+  margin: 2rem 0; /* 增加上邊距以與其他元素保持間距 */
 }
 
 .btn-primary:hover {

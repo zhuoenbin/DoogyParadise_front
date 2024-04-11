@@ -280,7 +280,7 @@ const bookRoom = (room) => {
     GOregister();
     // 成功的話頁面跳轉到 o_page 並重新加載
     router.push({ name: "o_page" }).then(() => {
-      window.location.reload();
+      // window.location.reload();
     });
   } else if (formattedDates.length == 0) {
     alert("請選擇時間");
@@ -336,8 +336,8 @@ const cancel = () => {
       { cancelTime: new Date(), cancelDirection: direction.value }
     );
     // 成功的話頁面跳轉到 o_page 並重新加載
-    router.push({ name: "o_page" }).then(() => {
-      window.location.reload();
+    router.push({ name: "c_page" }).then(() => {
+      // window.location.reload();
     });
   } else {
     alert("請選擇取消原因");
@@ -395,7 +395,7 @@ const score = (comments) => {
         }
         // 成功的話頁面跳轉到 h_page 並重新加載
         router.push({ name: "h_page" }).then(() => {
-          window.location.reload();
+          // window.location.reload();
         });
       })
       .catch((error) => {
