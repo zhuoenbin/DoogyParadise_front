@@ -15,7 +15,10 @@
       <tbody>
         <tr v-for="(o, index) in orders" :key="index">
           <td>{{ o.orderId }}</td>
-          <td>{{ o.orderDate }}</td>
+          {{
+            dateFormat(o.orderDate)
+          }}
+          <td>{{ date }}</td>
           {{
             paymentMethod(o.paymentMethod)
           }}
@@ -27,9 +30,9 @@
           }}
           <td>{{ payStatus }}</td>
           <td>
-            <router-link :to="'/profile/order/' + o.orderId + '/orderdetails'"
-              >查看詳細</router-link
-            >
+            <router-link :to="'/profile/order/' + o.orderId + '/orderdetails'">
+              <button type="button" class="btn btn-success">查看詳細</button>
+            </router-link>
           </td>
           <td>
             <button
@@ -39,6 +42,7 @@
               class="btn btn-primary"
               data-bs-toggle="modal"
               data-bs-target="#staticBackdrop"
+              @click="setOrderId(o.orderId)"
             >
               取消訂單
             </button>
@@ -79,7 +83,7 @@
               type="button"
               class="btn btn-primary"
               data-bs-dismiss="modal"
-              @click=""
+              @click="orderCancel"
             >
               <!--cancelOrder-->
               確定
@@ -93,14 +97,17 @@
 <script>
 import { useMemberStore } from "@/stores/memberStore";
 import axios from "axios";
+import { emptyProps } from "element-plus";
 export default {
   data() {
     return {
       memberId: "",
       memberName: "",
       orders: [],
+      date: "",
       payMethod: "",
       payStatus: "",
+      activeOrderId: "",
     };
   },
   mounted() {
@@ -114,6 +121,17 @@ export default {
     });
   },
   methods: {
+    dateFormat(date) {
+      let dateObj = new Date(date);
+      this.date = dateObj.toLocaleString("zh-TW", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+    },
     paymentMethod(value) {
       switch (true) {
         case value === 0:
@@ -142,6 +160,19 @@ export default {
           this.payStatus = "已取消，不須退款";
           break;
       }
+    },
+    setOrderId(value) {
+      this.activeOrderId = value;
+      console.log(this.activeOrderId);
+    },
+    orderCancel() {
+      const formData = new FormData();
+      formData.append("orderId", this.activeOrderId);
+      axios
+        .post(`${this.API_URL}/order/doOrderCancel`, formData)
+        .then((response) => {
+          location.reload();
+        });
     },
   },
 };
