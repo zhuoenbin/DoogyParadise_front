@@ -13,28 +13,15 @@
         <option value="petName">寵物名稱</option>
         <option value="Date">訂房日期</option>
       </select>
-      <input
-        v-if="
-          searchType != 'all' && searchType != 'Date' && searchType != 'size'
-        "
-        v-model="searchTerm"
-        type="text"
-        placeholder="輸入關鍵字"
-      />
-      <VueDatePicker
-        class="date-picker"
-        v-if="searchType == 'Date'"
-        v-model="selectedDates"
-        range
-        :options="datepickerOptions"
-        :enable-time-picker="false"
-        :max-date="new Date()"
-      />
+      <input v-if="
+        searchType != 'all' && searchType != 'Date' && searchType != 'size'
+      " v-model="searchTerm" type="text" placeholder="輸入關鍵字" />
+      <VueDatePicker class="date-picker" v-if="searchType == 'Date'" v-model="selectedDates" range
+        :options="datepickerOptions" :enable-time-picker="false" :max-date="new Date()" />
       <div class="button">
         <span>房型:</span>
-        <button class="btn" @click="changeRoom(1)">小型犬</button
-        ><button class="btn" @click="changeRoom(2)">中型犬</button
-        ><button class="btn" @click="changeRoom(3)">大型犬</button>
+        <button class="btn" @click="changeRoom(1)">小型犬</button><button class="btn"
+          @click="changeRoom(2)">中型犬</button><button class="btn" @click="changeRoom(3)">大型犬</button>
       </div>
     </div>
 
@@ -74,10 +61,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(reservation, reservationId) in filteredReservations"
-          :key="reservationId"
-        >
+        <tr v-for="(reservation, reservationId) in filteredReservations" :key="reservationId">
           <td>{{ reservation.reservationId }}</td>
           <td>{{ reservation.lastName }}</td>
           <td>{{ reservation.room.roomName }}</td>
@@ -88,13 +72,8 @@
           </td>
           <td>{{ reservation.totalPrice }}</td>
           <td>
-            <a
-              v-if="reservation.reservationId != undefined"
-              href="javascript: void(0)"
-              class="btn"
-              data-bs-toggle="modal"
-              :data-bs-target="'#exampleModal_' + reservation.reservationId"
-            >
+            <a v-if="reservation.reservationId != undefined" href="javascript: void(0)" class="btn"
+              data-bs-toggle="modal" :data-bs-target="'#exampleModal_' + reservation.reservationId">
               <span>詳情</span>
               <svg width="13px" height="10px" viewBox="0 0 13 10">
                 <path d="M1,5 L11,5"></path>
@@ -103,25 +82,15 @@
               </svg>
             </a>
             <!-- Modal -->
-            <div
-              class="modal left-to-right fade"
-              :id="'exampleModal_' + reservation.reservationId"
-              tabindex="-1"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true"
-            >
+            <div class="modal left-to-right fade" :id="'exampleModal_' + reservation.reservationId" tabindex="-1"
+              aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
                       訂單ID: {{ reservation.reservationId }}
                     </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
                     <div>訂購者: {{ reservation.lastName }}</div>
@@ -143,29 +112,16 @@
                     <hr />
                     <div v-if="reservation.star != null">
                       <div>
-                        <span
-                          v-for="index in reservation.star"
-                          :key="index"
-                          class="star"
-                          >★</span
-                        >
-                        <span
-                          v-for="index in maxRating - reservation.star"
-                          :key="index"
-                          class="star"
-                          >☆</span
-                        >
+                        <span v-for="index in reservation.star" :key="index" class="star">★</span>
+                        <span v-for="index in maxRating - reservation.star" :key="index" class="star">☆</span>
                       </div>
                       <br />
                       <div>
                         評價說明:
-                        <span
-                          v-if="
-                            reservation.conments != '' &&
-                            reservation.conments != null
-                          "
-                          >{{ reservation.conments }}</span
-                        >
+                        <span v-if="
+                          reservation.conments != '' &&
+                          reservation.conments != null
+                        ">{{ reservation.conments }}</span>
                         <span v-else class="gray">無評價說明</span>
                       </div>
                     </div>
@@ -185,11 +141,7 @@
             </div>
           </td>
         </tr>
-        <td
-          class="record-count"
-          colspan="7"
-          v-if="filteredReservations.length != 0"
-        >
+        <td class="record-count" colspan="7" v-if="filteredReservations.length != 0">
           總共 {{ filteredReservations.length }} 筆記錄
         </td>
         <td class="record-count" colspan="6" v-else>沒有紀錄</td>
@@ -488,6 +440,7 @@ button.sort {
   position: relative;
   z-index: 1;
 }
+
 .btn svg {
   position: relative;
   top: 0;
@@ -500,13 +453,16 @@ button.sort {
   transform: translateX(-5px);
   transition: all 0.3s ease;
 }
+
 .btn:hover:before {
   width: 100%;
   background: #ffab9d;
 }
+
 .btn:hover svg {
   transform: translateX(0);
 }
+
 .btn:hover {
   color: #e79283;
 }
@@ -519,6 +475,7 @@ button.sort {
   from {
     transform: translateX(-100%);
   }
+
   to {
     transform: translateX(0);
   }

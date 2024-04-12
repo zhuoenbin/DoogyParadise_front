@@ -67,7 +67,7 @@ const router = createRouter({
         {
           path: "tweetsMyNotificationPath",
           component: () => import("@/views/tweet/TweetNotification.vue"),
-        }
+        },
       ],
     },
     {
@@ -92,7 +92,8 @@ const router = createRouter({
           path: "u_page/:reservationId/:str",
           name: "u_page",
           component: () => import("@/views/room/UpdateFrom.vue"),
-        },{
+        },
+        {
           path: "c_page",
           name: "c_page",
           component: () => import("@/views/room/Cancel.vue"),
@@ -178,17 +179,28 @@ const router = createRouter({
     {
       path: "/employee",
       component: () => import("@/views/employee/Employee.vue"),
+    },
+    {
+      path: "/employee/tweet",
+      component: () => import("@/views/employee/TweetManage.vue"),
       children: [
-        {
-          path: "t_page",
-          component: () => import("@/views/employee/TweetManage.vue"),
-        },
         {
           path: "tweetChart",
           component: () => import("@/views/employee/tweet/TweetChart.vue"),
+        },
+        {
+          path: "t_page",
+          component: () => import("@/views/employee/tweet/TweetReport.vue"),
+        },{
+          path: "tweetOfficial",
+          component: () => import("@/views/employee/tweet/TweetOfficialTweet.vue"),
+        },{
+          path: "tweetOfficialPost",
+          component: () => import("@/components/tweet/TweetOfficalPost.vue"),
         }
-      ],
+      ]
     },
+
     {
       path: "/employee/room",
       component: () => import("@/views/employee/room/Room.vue"),
@@ -204,13 +216,16 @@ const router = createRouter({
         {
           path: "over_page",
           component: () => import("@/views/employee/room/RoomOver.vue"),
-        },{
+        },
+        {
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
-        },{
+        },
+        {
           path: "roomChart_page",
           component: () => import("@/views/employee/room/RoomChart.vue"),
-        },{
+        },
+        {
           path: "cancel_page",
           component: () => import("@/views/employee/room/RoomCancel.vue"),
         },
@@ -245,6 +260,13 @@ const router = createRouter({
           name: "activityUpdater",
           component: () =>
             import("@/views/employee/activity/OffiActsUpdater.vue"),
+        },
+        // 動態綁定參數
+        {
+          path: "act_PastManager/comment/:activityId",
+          name: "activityComment",
+          component: () =>
+            import("@/views/employee/activity/OffiCommentChecker.vue"),
         },
       ],
     },

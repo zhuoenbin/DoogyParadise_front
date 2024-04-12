@@ -3,18 +3,15 @@ import Chart from 'chart.js/auto';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 
-// 使用 ref 創建可响应式的 labels 和 datasets
 const labels = ref([]);
 const datasets = ref([]);
 
 onMounted(() => {
     axios.get(`http://localhost:8080/employee/getTweetData`).then(response => {
         const data = response.data.words;
-
         // 獲取鍵和值的數組
         labels.value = Object.keys(data);
         datasets.value = Object.values(data);
-
         // 初始化圖表
         const ctx = document.getElementById('heroChart');
         let chart = new Chart(ctx, {
@@ -54,7 +51,8 @@ onMounted(() => {
 
 <style scoped>
 .card-content-image {
-    width: 500px;
+    margin: 50px;
+    width: 600px;
     height: 400px;
     border: 1px solid blue;
 }

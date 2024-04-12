@@ -10,19 +10,20 @@
                             <i class="fa-solid fa-vr-cardboard"></i><span>首頁</span></router-link>
                     </li>
                     <li>
-                        <router-link to="#" v-if="userId">
+                        <router-link to="#" v-if="userId && userAouth.startsWith('Act')">
                             <i class="fa-solid fa-dice-d20"></i><span @click="showModal">發文</span></router-link>
                     </li>
                     <li>
-                        <router-link to="/tweetPage/tweetsMyWallPage" v-if="userId">
+                        <router-link to="/tweetPage/tweetsMyWallPage" v-if="userId && userAouth.startsWith('Act')">
                             <i class="fa-solid fa-clock-rotate-left"></i><span>我的發文</span></router-link>
                     </li>
                     <li>
-                        <router-link to="/tweetPage/tweetsMyFollowPage" v-if="userId">
+                        <router-link to="/tweetPage/tweetsMyFollowPage" v-if="userId && userAouth.startsWith('Act')">
                             <i class="fa-solid fa-heart"></i><span>我的追蹤</span></router-link>
                     </li>
                     <li>
-                        <router-link to="/tweetPage/tweetsMyNotificationPath" v-if="userId">
+                        <router-link to="/tweetPage/tweetsMyNotificationPath"
+                            v-if="userId && userAouth.startsWith('Act')">
                             <i class="fa-solid fa-scroll"></i><span>我的通知</span></router-link>
                     </li>
                 </ul>
@@ -134,6 +135,7 @@ export default {
             myDogs: [],
             selectedDogs: [],
             userId: useMemberStore().memberId,
+            userAouth: useMemberStore().memberRole,
             imagePreviewUrl: '',
         };
     },

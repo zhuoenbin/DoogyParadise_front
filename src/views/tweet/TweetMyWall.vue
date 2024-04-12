@@ -12,7 +12,7 @@
 
 import axios from 'axios';
 import TweetItem from '@/components/tweet/TweetCard.vue';
-import TweetItem2 from '@/components/tweet/TweetCard2.vue'
+import TweetItem2 from '@/components/tweet/TweetCard2.vue';
 import { useMemberStore } from '@/stores/memberStore';
 
 export default {

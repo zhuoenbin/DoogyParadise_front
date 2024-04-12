@@ -6,45 +6,28 @@
         <ul class="nano-content">
           <li>
             <router-link to="/">
-              <i class="fa-solid fa-house"></i
-              ><span>商城首頁</span></router-link
-            >
+              <i class="fa-solid fa-house"></i><span>商城首頁</span></router-link>
           </li>
           <li>
-            <router-link to="/"
-              ><i class="fa-solid fa-circle-exclamation"></i
-              ><span>檢舉管理</span></router-link
-            >
+            <router-link to="/"><i class="fa-solid fa-circle-exclamation"></i><span>檢舉管理</span></router-link>
           </li>
           <li>
-            <router-link to="/employee/room/u_page"
-              ><i class="fa-regular fa-calendar-days"></i
-              ><span>訂房管理</span></router-link
-            >
+            <router-link to="/employee/room/u_page"><i
+                class="fa-regular fa-calendar-days"></i><span>訂房管理</span></router-link>
           </li>
           <li>
-            <router-link to="/"
-              ><i class="fa-regular fa-calendar-days"></i
-              ><span>商品管理</span></router-link
-            >
+            <router-link to="/"><i class="fa-regular fa-calendar-days"></i><span>商品管理</span></router-link>
           </li>
           <li>
-            <router-link to="/"
-              ><i class="fa-regular fa-calendar-days"></i
-              ><span>退貨處理</span></router-link
-            >
+            <router-link to="/"><i class="fa-regular fa-calendar-days"></i><span>退貨處理</span></router-link>
           </li>
           <li>
-            <router-link to="/employee/activity/act_HoldingManager"
-              ><i class="fa-regular fa-calendar-days"></i
-              ><span>活動管理</span></router-link
-            >
+            <router-link to="/employee/activity/act_HoldingManager"><i
+                class="fa-regular fa-calendar-days"></i><span>活動管理</span></router-link>
           </li>
           <li>
-            <router-link to="/employee/t_page">
-              <i class="fa-regular fa-pen-to-square"></i
-              ><span>推文管理</span></router-link
-            >
+            <router-link to="/employee/tweet">
+              <i class="fa-regular fa-pen-to-square"></i><span>推文管理</span></router-link>
           </li>
         </ul>
       </div>
@@ -56,8 +39,8 @@
         <template v-slot="{ Component }">
           <transition name="slide-left" mode="out-in">
             <component :is="Component" />
-          </transition> </template
-      ></router-view>
+          </transition>
+        </template></router-view>
     </div>
   </div>
 </template>
@@ -83,10 +66,12 @@ onMounted(() => {
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700");
 @import url("//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css");
+
 .main {
   width: 80vw;
   /* padding-left: 50px; */
-  margin: 0 auto; /* 水平置中 */
+  margin: 0 auto;
+  /* 水平置中 */
 }
 
 .main-container {
@@ -113,16 +98,20 @@ onMounted(() => {
   margin: -2px 0 0;
   padding: 0;
 }
+
 .sidebar #leftside-navigation ul li {
   list-style-type: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
-.sidebar #leftside-navigation ul li.active > a {
+
+.sidebar #leftside-navigation ul li.active>a {
   color: #6579eb;
 }
+
 .sidebar #leftside-navigation ul li.active ul {
   display: block;
 }
+
 .sidebar #leftside-navigation ul li a {
   color: #cacdd1;
   text-decoration: none;
@@ -136,23 +125,29 @@ onMounted(() => {
   -ms-transition: all 200ms ease-in;
   transition: all 200ms ease-in;
 }
+
 .sidebar #leftside-navigation ul li a:hover {
   color: #7990af;
 }
+
 span {
   display: inline-block;
   font-size: 14px;
 }
+
 i {
   width: 30px;
 }
+
 .sidebar #leftside-navigation ul li a i .fa-angle-left,
 .sidebar #leftside-navigation ul li a i .fa-angle-right {
   padding-top: 3px;
 }
+
 .sidebar #leftside-navigation ul ul {
   display: none;
 }
+
 .sidebar #leftside-navigation ul ul li {
   background: #23313f;
   margin-bottom: 0;
@@ -166,14 +161,17 @@ i {
   -webkit-transform: translate(-20px, 0);
   transform: translate(-20px, 0);
 }
+
 .slide-left-enter-active {
   transition: all 0.4s ease;
 }
+
 .slide-left-leave-to {
   opacity: 0;
   -webkit-transform: translate(20px, 0);
   transform: translate(20px, 0);
 }
+
 .slide-left-leave-active {
   transition: all 0.4s ease;
 }

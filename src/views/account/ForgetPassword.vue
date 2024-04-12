@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main">
         <h3>忘記密碼頁</h3>
         <div v-if="!emailSent && !resetPassword">
             <div class="input-group">
@@ -131,6 +131,10 @@ export default {
 
 
 <style scoped>
+.main {
+    min-height: 82vh;
+}
+
 .input-group {
     margin-bottom: 10px;
 }

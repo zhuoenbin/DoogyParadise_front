@@ -67,10 +67,16 @@
         <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0 && imgOnline" class="tweet-galleries">
             <div class="d-flex justify-content-center">
                 <div class="gallery-item">
-                    <a :href="activityLink">
+
+                    <a v-if="tweet.tweetContent.startsWith('我的狗狗: ')" :href="roomLink">
                         <img :src="imgOnlinePath" style=" object-fit: cover" width="250" height="250"
                             alt="Gallery Image" class="gallery-image">
                     </a>
+                    <a v-else :href="activityLink">
+                        <img :src="imgOnlinePath" style=" object-fit: cover" width="250" height="250"
+                            alt="Gallery Image" class="gallery-image">
+                    </a>
+
                 </div>
             </div>
         </div>
@@ -236,6 +242,7 @@ export default {
             imgOnlinePath: "",
             imgOnline: false,
             activityLink: "http://localhost:5173/activity/all",
+            roomLink: "http://localhost:5173/room/b_page",
             cardHeight: '',
         }
     },
