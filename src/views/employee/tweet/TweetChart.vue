@@ -3,7 +3,6 @@ import Chart from 'chart.js/auto';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 
-// 使用 ref 創建可响应式的 labels 和 datasets
 const labels = ref([]);
 const datasets = ref([]);
 
