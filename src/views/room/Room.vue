@@ -1,24 +1,32 @@
 <template>
   <div class="main-container">
     <!-- sideBar -->
-    <div class="sidebar" v-if="memberId != '' && role && !role.startsWith('ROLE')">
+    <div class="sidebar">
       <div id="leftside-navigation" class="nano">
         <ul class="nano-content">
           <li>
             <router-link to="/room/b_page">
-              <i class="fa-regular fa-calendar-days"></i><span>訂房</span></router-link>
+              <i class="fa-regular fa-calendar-days"></i
+              ><span>訂房</span></router-link
+            >
           </li>
-          <li>
+          <li v-if="memberId != '' && role && !role.startsWith('ROLE')">
             <router-link to="/room/o_page">
-              <i class="fa-regular fa-clipboard"></i><span>預約訂房管理</span></router-link>
+              <i class="fa-regular fa-clipboard"></i
+              ><span>預約訂房管理</span></router-link
+            >
           </li>
-          <li>
+          <li v-if="memberId != '' && role && !role.startsWith('ROLE')">
             <router-link to="/room/h_page">
-              <i class="fa-solid fa-clock-rotate-left"></i><span>歷史訂房紀錄</span></router-link>
+              <i class="fa-solid fa-clock-rotate-left"></i
+              ><span>歷史訂房紀錄</span></router-link
+            >
           </li>
-          <li>
+          <li v-if="memberId != '' && role && !role.startsWith('ROLE')">
             <router-link to="/room/c_page">
-              <i class="fa-solid fa-rectangle-xmark"></i><span>取消訂房紀錄</span></router-link>
+              <i class="fa-solid fa-rectangle-xmark"></i
+              ><span>取消訂房紀錄</span></router-link
+            >
           </li>
         </ul>
       </div>
@@ -30,8 +38,8 @@
         <template v-slot="{ Component }">
           <transition name="slide-left" mode="out-in">
             <component :is="Component" />
-          </transition>
-        </template></router-view>
+          </transition> </template
+      ></router-view>
     </div>
   </div>
 </template>
@@ -95,7 +103,7 @@ onMounted(() => {
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.sidebar #leftside-navigation ul li.active>a {
+.sidebar #leftside-navigation ul li.active > a {
   color: #6579eb;
 }
 

@@ -6,6 +6,10 @@
 
     <div class="reservation-details">
       <div class="detail-item">
+        <span class="detail-label">訂房Id: </span>
+        <span>{{ reservation.reservationId }}</span>
+      </div>
+      <div class="detail-item">
         <span class="detail-label">訂房時段: </span>
         <span
           >{{ formatDate(reservation.startTime) }} -

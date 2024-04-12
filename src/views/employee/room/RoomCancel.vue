@@ -20,7 +20,8 @@
           searchType != 'all' &&
           searchType != 'Date' &&
           searchType != 'cancelDirection' &&
-          searchType != 'cancelTime'
+          searchType != 'cancelTime' &&
+          searchType != 'size'
         "
         v-model="searchTerm"
         type="text"
@@ -54,6 +55,12 @@
         :options="datepickerOptions"
         :enable-time-picker="false"
       />
+      <div class="button">
+        <span>房型:</span>
+        <button class="btn" @click="changeRoom(1)">小型犬</button
+        ><button class="btn" @click="changeRoom(2)">中型犬</button
+        ><button class="btn" @click="changeRoom(3)">大型犬</button>
+      </div>
     </div>
 
     <table class="table room-table mx-auto">
@@ -192,9 +199,14 @@
             </div>
           </td>
         </tr>
-        <div class="record-count" v-if="filteredReservations.length != 0">
+        <td
+          class="record-count"
+          colspan="7"
+          v-if="filteredReservations.length != 0"
+        >
           總共 {{ filteredReservations.length }} 筆記錄
-        </div>
+        </td>
+        <td class="record-count" colspan="6" v-else>沒有紀錄</td>
       </tbody>
     </table>
   </div>
@@ -303,6 +315,11 @@ const formatDate = (dateString, number) => {
   }
 };
 
+const changeRoom = (size) => {
+  searchType.value = "size";
+  searchTerm.value = size;
+};
+
 const filteredReservations = computed(() => {
   const currentDate = formatDate(new Date(), 1);
   const includeSearchTerm = (str) =>
@@ -342,6 +359,8 @@ const filteredReservations = computed(() => {
               formatDate(reservation.cancelTime, 0)
             );
           }
+        case "size":
+          return reservation.room.roomSize === searchTerm.value && isAfterToday;
         default:
           return true;
       }

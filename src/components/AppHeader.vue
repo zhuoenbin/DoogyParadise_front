@@ -69,7 +69,13 @@
 
           <template v-if="isloggedIn">
             <router-link to="/profile/detail" class="text-decoration-none">
-              <button type="button" class="btn btn-warning">
+              <button
+                type="button"
+                class="btn btn-success"
+                v-if="role && role.startsWith('ROLE')"
+              >
+                {{ name }}</button
+              ><button type="button" class="btn btn-warning" v-else>
                 {{ name }}
               </button></router-link
             >
@@ -79,7 +85,9 @@
               height="40px"
               class="mx-2"
               style="border-radius: 0.5rem; object-fit: cover"
+              v-if="role && !role.startsWith('ROLE')"
             />
+            <span v-else style="margin-right: 1rem"></span>
 
             <button @click="logout" type="button" class="btn btn-outline-light">
               登出

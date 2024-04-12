@@ -1,13 +1,15 @@
 <template>
   <div class="main">
-    <h2 class="page-title">取消訂房紀錄</h2>
+    <div class="flex">
+      <h2 class="page-title">取消訂房紀錄</h2>
+    </div>
     <table class="table room-table">
       <thead>
         <tr>
           <th>訂房時段</th>
           <th>訂房Id</th>
-          <th>房間Id</th>
-          <th>Dog名稱</th>
+          <th>房號</th>
+          <th>寵物名稱</th>
           <th>費用</th>
           <th>訂房時間</th>
           <th>取消原因</th>
@@ -15,6 +17,9 @@
         </tr>
       </thead>
       <tbody>
+        <tr v-if="filteredReservations.length === 0">
+          <td colspan="8">沒有取消紀錄</td>
+        </tr>
         <tr
           v-for="(reservation, reservationId) in filteredReservations"
           :key="reservationId"
@@ -24,7 +29,7 @@
             {{ formatDate(reservation.endTime) }}
           </td>
           <td>{{ reservation.reservationId }}</td>
-          <td>{{ reservation.room.roomId }}</td>
+          <td>{{ reservation.room.roomName }}</td>
           <td>{{ reservation.dog.dogName }}</td>
           <td>{{ reservation.totalPrice }}</td>
           <td>{{ formatDate(reservation.reservationTime) }}</td>
@@ -79,6 +84,13 @@ const handleModifyReservation = (reservationId, str) => {
 <style scoped>
 .main {
   margin: 2rem;
+}
+
+.flex {
+  width: 95%;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
 }
 
 .page-title {
