@@ -2,7 +2,7 @@
   <div class="container">
     <h2 class="text-center">已結束</h2>
 
-    <!-- 添加查询功能 -->
+    <!-- 添加查詢功能 -->
     <div class="search-bar">
       <label for="searchType">選擇查詢方式：</label>
       <select v-model="searchType" id="searchType">
@@ -14,7 +14,9 @@
         <option value="Date">訂房日期</option>
       </select>
       <input
-        v-if="searchType != 'all' && searchType != 'Date'"
+        v-if="
+          searchType != 'all' && searchType != 'Date' && searchType != 'size'
+        "
         v-model="searchTerm"
         type="text"
         placeholder="輸入關鍵字"
@@ -28,6 +30,12 @@
         :enable-time-picker="false"
         :max-date="new Date()"
       />
+      <div class="button">
+        <span>房型:</span>
+        <button class="btn" @click="changeRoom(1)">小型犬</button
+        ><button class="btn" @click="changeRoom(2)">中型犬</button
+        ><button class="btn" @click="changeRoom(3)">大型犬</button>
+      </div>
     </div>
 
     <table class="table room-table mx-auto">
@@ -177,9 +185,14 @@
             </div>
           </td>
         </tr>
-        <p class="record-count">
+        <td
+          class="record-count"
+          colspan="7"
+          v-if="filteredReservations.length != 0"
+        >
           總共 {{ filteredReservations.length }} 筆記錄
-        </p>
+        </td>
+        <td class="record-count" colspan="6" v-else>沒有紀錄</td>
       </tbody>
     </table>
   </div>
@@ -275,6 +288,11 @@ const formatDate = (dateString) => {
   return `${year}/${month}/${day}`;
 };
 
+const changeRoom = (size) => {
+  searchType.value = "size";
+  searchTerm.value = size;
+};
+
 // 查詢
 const filteredReservations = computed(() => {
   const currentDate = formatDate(new Date(), 1);
@@ -304,6 +322,8 @@ const filteredReservations = computed(() => {
             RoomsDate(reservation.startTime, reservation.endTime) &&
             !isAfterToday
           );
+        case "size":
+          return reservation.room.roomSize === searchTerm.value && isAfterToday;
         default:
           return !isAfterToday;
       }
@@ -385,11 +405,11 @@ const sortByTotalPrice = () => {
 const RoomsDate = (beginTime, endTime) => {
   const begin = new Date(beginTime);
   const endDate = new Date(endTime);
-  endDate.setDate(endDate.getDate() + 1);
+  // endDate.setDate(endDate.getDate() + 1);
   if (selectedDates.value !== null) {
     if (
       selectedDates.value.length === 2 &&
-      selectedDates.value[1] !== null && // 添加这行检查
+      selectedDates.value[1] !== null &&
       formatDate(selectedDates.value[1]) != "1970/01/01"
     ) {
       const start = new Date(selectedDates.value[0]);

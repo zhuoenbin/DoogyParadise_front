@@ -14,7 +14,9 @@
         <option value="Date">訂房日期</option>
       </select>
       <input
-        v-if="searchType != 'all' && searchType != 'Date'"
+        v-if="
+          searchType != 'all' && searchType != 'Date' && searchType != 'size'
+        "
         v-model="searchTerm"
         type="text"
         placeholder="輸入關鍵字"
@@ -28,6 +30,12 @@
         :enable-time-picker="false"
         :min-date="new Date()"
       />
+      <div class="button">
+        <span>房型:</span>
+        <button class="btn" @click="changeRoom(1)">小型犬</button
+        ><button class="btn" @click="changeRoom(2)">中型犬</button
+        ><button class="btn" @click="changeRoom(3)">大型犬</button>
+      </div>
     </div>
 
     <table class="table room-table mx-auto">
@@ -79,9 +87,14 @@
           </td>
           <td>{{ reservation.totalPrice }}</td>
         </tr>
-        <p class="record-count">
+        <td
+          class="record-count"
+          colspan="6"
+          v-if="filteredReservations.length != 0"
+        >
           總共 {{ filteredReservations.length }} 筆記錄
-        </p>
+        </td>
+        <td class="record-count" colspan="6" v-else>沒有紀錄</td>
       </tbody>
     </table>
   </div>
@@ -184,6 +197,11 @@ const formatDate = (dateString, number) => {
   }
 };
 
+const changeRoom = (size) => {
+  searchType.value = "size";
+  searchTerm.value = size;
+};
+
 const filteredReservations = computed(() => {
   const includeSearchTerm = (str) =>
     str.toLowerCase().includes(searchTerm.value.toLowerCase());
@@ -214,6 +232,8 @@ const filteredReservations = computed(() => {
             RoomsDate(reservation.startTime, reservation.endTime) &&
             isAfterToday
           );
+        case "size":
+          return reservation.room.roomSize === searchTerm.value && isAfterToday;
         default:
           return isAfterToday;
       }

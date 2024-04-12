@@ -178,6 +178,7 @@
           </div>
         </div>
       </span>
+      <div id="pay"></div>
     </div>
   </div>
 </template>
@@ -188,6 +189,7 @@ import axios from "axios";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import { useRouter } from "vue-router";
 import { useMemberStore } from "@/stores/memberStore";
+import { dataType } from "element-plus/es/components/table-v2/src/common";
 
 const router = useRouter();
 const rooms = ref([]);
@@ -210,11 +212,9 @@ onMounted(() => {
     reservations.value = response.data;
   });
   // 所有訂單 (評價)
-  axios
-    .get("http://localhost:8080/employee/roomReservation")
-    .then((response) => {
-      roomReservations.value = response.data;
-    });
+  axios.get("http://localhost:8080/employee/score").then((response) => {
+    roomReservations.value = response.data;
+  });
 
   const memberStore = useMemberStore();
   role.value = memberStore.memberRole;
@@ -228,11 +228,11 @@ onMounted(() => {
 const filteredRooms = computed(() => {
   if (!selectedDog.value) return rooms.value;
   return rooms.value.filter((room) => {
-    if (selectedDog.value.dogWeight <= 10 && room.roomSize === 1) {
+    if (selectedDog.value.dogWeight < 9 && room.roomSize === 1) {
       return true;
     } else if (
-      selectedDog.value.dogWeight > 10 &&
-      selectedDog.value.dogWeight <= 25 &&
+      selectedDog.value.dogWeight >= 9 &&
+      selectedDog.value.dogWeight <= 22 &&
       room.roomSize === 2
     ) {
       return true;
@@ -363,15 +363,27 @@ const bookRoom = (room) => {
 
     // 新增訂房明細
     const roomReservation = () => {
-      const myModal = new bootstrap.Modal(
-        document.getElementById(`exampleModal01_${room.roomId}`)
-      );
-      myModal.show();
+      axios
+        .post(
+          `http://localhost:8080/ecpayCheckout?price=${
+            (dateRange.length - 1) * room.roomPrice
+          }&url=room/o_page`
+        )
+        .then((response) => {
+          // console.log(response.data);
+          const pay = document.getElementById("pay");
+          pay.innerHTML = response.data;
+          document.getElementById("allPayAPIForm").submit();
+        });
+      // const myModal = new bootstrap.Modal(
+      //   document.getElementById(`exampleModal01_${room.roomId}`)
+      // );
+      // myModal.show();
 
-      // 五秒後自動關閉 modal
-      setTimeout(() => {
-        myModal.hide();
-      }, 2600);
+      // // 五秒後自動關閉 modal
+      // setTimeout(() => {
+      //   myModal.hide();
+      // }, 2600);
       axios
         .post(
           `http://localhost:8080/room/roomReservation?roomId=${room.roomId}&dogId=${selectedDog.value.dogId}`,
@@ -395,10 +407,10 @@ const bookRoom = (room) => {
     if (formattedDates[1] != "1970-01-01") {
       roomReservation();
 
-      setTimeout(() => {
-        // 成功的話頁面跳轉到 o_page 並重新加載
-        router.push({ name: "o_page" });
-      }, 2700); // 添加延遲，確保頁面跳轉完成後再刷新
+      // setTimeout(() => {
+      //   // 成功的話頁面跳轉到 o_page 並重新加載
+      //   router.push({ name: "o_page" });
+      // }, 2700); // 添加延遲，確保頁面跳轉完成後再刷新
     } else if (formattedDates[1] == "1970-01-01") {
       alert("請選擇結束時間");
     }
@@ -414,6 +426,7 @@ let noVacancies = [];
 
 // 判斷哪些房間不能選取
 const RoomsDate = () => {
+  noVacancies = [];
   // console.log(selectedDates.value[0]);
   if (selectedDates.value !== null) {
     // 原始的 RoomsDate 邏輯
@@ -441,8 +454,8 @@ const RoomsDate = () => {
                   roomReservation.cancelTime == null
                 ) {
                   // console.log(reservation[1]);
-                  console.log(`RoomId: ${reservation[0]}`);
-                  console.log(`RoomReservationId: ${reservation[1]}`);
+                  // console.log(`RoomId: ${reservation[0]}`);
+                  // console.log(`RoomReservationId: ${reservation[1]}`);
                   // console.log(`重複日期: ${reservation[i]}`);
                   noVacancies.push(reservation[0]);
                 }
@@ -619,10 +632,11 @@ select {
 }
 
 .space {
-  padding: 1rem;
-  margin: 1rem;
+  padding: 1.5rem;
+  margin: 0.5rem;
   border-radius: 10px;
-  background-color: #aeb3b7;
+  border: 1px solid rgb(137, 137, 137);
+  background-color: #ffffff;
 }
 
 /* body {

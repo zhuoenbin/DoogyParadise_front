@@ -5,7 +5,11 @@
       :src="dog.dogImgPathCloud"
       class="dog-image"
     />
-    <p v-else>找不到圖</p>
+    <img
+      v-else
+      class="dog-image"
+      src="https://res.cloudinary.com/dxz9qtntt/image/upload/f_auto,q_auto/v1/dogFolder/o88brizbheeecrszxhec"
+    />
     <!-- <img
       src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1711549113/accountFolder/yxq2tfhvpw8jtj1o8ifi.jpg"
       class="dog-image"
@@ -174,6 +178,7 @@ import axios from "axios";
 import { useMemberStore } from "@/stores/memberStore";
 
 export default {
+  emits: ["updateSuccess"],
   props: {
     dog: {
       type: Object,
@@ -205,7 +210,7 @@ export default {
       setTimeout(() => {
         myModal.hide();
         this.$emit("update-success");
-      }, 3000);
+      }, 2600);
       axios
         .post(
           `http://localhost:8080/dog/update?dogId=${this.dog.dogId}`,
