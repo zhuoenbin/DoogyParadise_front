@@ -68,7 +68,6 @@
                   class="form-control"
                   type="date"
                   name="activityDate"
-                  value="2024-04-26"
                   :min="new Date()"
                   v-model.lazy="activityDate"
                   required
@@ -173,6 +172,15 @@
               </div>
             </div>
           </div>
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              v-model.lazy="activityCostDescription"
+              required
+            />
+            <label>費用敘述 (若無費用則留空)</label>
+          </div>
           <div class="input-group mb-3">
             <input
               type="file"
@@ -258,6 +266,7 @@ export default {
       activityEnd: "",
       activityTitle: "",
       activityCost: null,
+      activityCostDescription: null,
       activityClosingDate: "",
       contactInfo: "",
       contactMail: "",
@@ -277,7 +286,6 @@ export default {
       .then((rs) => rs.json())
       .then((venueObj) => {
         this.venues = Object.values(venueObj);
-        // let venues = JSON.parse(JSON.stringify(venueObj));
         console.log(this.venues);
       });
 
@@ -384,7 +392,7 @@ export default {
             activityClosingDate: new Date(this.activityClosingDate),
             activityDogNumber: this.dogNumber,
             activityCost: this.activityCost,
-            // activityCostDescription: this.activityCostDescription,
+            activityCostDescription: this.activityCostDescription,
             contactInfo: this.contactInfo,
             contactMail: this.contactMail,
             contactPhone: this.contactPhone,
@@ -408,7 +416,7 @@ export default {
           })
           .catch((error) => {
             this.message = "創建失敗";
-            console.error("发生错误:", error.message);
+            console.error("發生错误:", error.message);
           });
       } else {
         this.message = "你沒有資格";

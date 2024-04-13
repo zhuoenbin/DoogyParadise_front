@@ -169,7 +169,7 @@
             >
           </div>
 
-          <!-- <div class="row g-2">
+          <div class="row g-2">
             <div class="col-md-2">
               <div class="form-floating mb-3">
                 <input
@@ -191,7 +191,7 @@
                 <label>費用敘述</label>
               </div>
             </div>
-          </div> -->
+          </div>
 
           <div class="row g-3">
             <div class="col-md">
