@@ -1,10 +1,24 @@
 <template>
   <div>
-    <div id="title">
-      <h4>
-        <b>管理我的報名</b
-        ><img src="../../assets/managerPic.png" alt="🐶" id="managerPic" />
-      </h4>
+    <div id="titlemanager">
+      <table>
+        <tbody>
+          <tr>
+            <td style="vertical-align: middle">
+              <p class="titleh4" style="color: brown">
+                <b>管理我的報名</b>
+              </p>
+            </td>
+            <td style="vertical-align: middle">
+              <img
+                src="../../assets/managerPic.png"
+                alt="🐶"
+                id="managerPicc"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
       <div class="checkbox-wrapper-10 status">
@@ -545,16 +559,23 @@ export default {
 };
 </script>
 <style scoped>
-#title {
+#titlemanager {
   margin: auto 20px;
   padding: 20px 20px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+}
+.titleh4 {
+  font-weight: 700;
+  font-size: 20px;
 }
 .status {
   color: #2990aa;
 }
-#managerPic {
+#managerPicc {
   height: 75px;
+  margin: 0;
 }
 /* loading icon */
 #loading {

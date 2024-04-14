@@ -259,6 +259,32 @@
             >
               {{ message }}
             </div>
+            <div
+              class="checkbox-wrapper-33"
+              v-if="this.myDogsNotAttend.length > 0"
+            >
+              <label class="checkbox">
+                <p class="checkbox__textwrapper">發布貼文&nbsp;</p>
+                <input
+                  class="checkbox__trigger visuallyhidden"
+                  type="checkbox"
+                  v-model="isPostTweet"
+                />
+                <span class="checkbox__symbol">
+                  <svg
+                    aria-hidden="true"
+                    class="icon-checkbox"
+                    width="28px"
+                    height="28px"
+                    viewBox="0 0 28 28"
+                    version="1"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M4 14l8 7L24 7"></path>
+                  </svg>
+                </span>
+              </label>
+            </div>
             <button
               type="button"
               class="btn btn-secondary"
@@ -309,6 +335,7 @@ export default {
       currentPage: 1,
       totalPage: 0,
       message: "",
+      isPostTweet: "",
       isJoinButtonVisible: true,
       isJoinButtonDisabled: false,
     };
@@ -470,6 +497,7 @@ export default {
         submitButton.disabled = false;
         this.message = "";
         this.payCost = this.chooseActCost * this.chooseDogs.length;
+        console.log(this.isPostTweet);
       }
     },
     timeFormat(time) {
@@ -550,10 +578,16 @@ export default {
             .then((response) => {
               console.log("報名成功", response.data);
               this.chooseDogs = [];
-              this.chooseAct = "";
               this.chooseActTitle = "";
             })
             .then((rs) => {
+              if (this.isPostTweet) {
+                this.doTweet();
+              }
+              console.log("tweet check");
+            })
+            .then((rs) => {
+              this.chooseAct = "";
               if (this.payCost > 0) {
                 this.goEcPay();
               } else {
@@ -570,6 +604,18 @@ export default {
       } else {
         this.message = "你應該看不到才對?";
       }
+    },
+    doTweet() {
+      axios
+        .post(
+          `${this.API_URL}/tweet/postTweetForActivityShare?userId=${this.userId}&activityId=${this.chooseAct}`
+        )
+        .then((rs) => {
+          console.log("tweet success");
+        })
+        .catch((error) => {
+          console.log("tweet error", error);
+        });
     },
     goEcPay() {
       axios

@@ -29,12 +29,12 @@
               ><span>認識場地</span></router-link
             >
           </li>
-          <li>
+          <!-- <li>
             <router-link to="/activity/venueRental">
               <i class="fa-regular fa-clipboard"></i
               ><span>租借場地</span></router-link
             >
-          </li>
+          </li> -->
           <li class="sortNameSec" v-if="memberId != ''">我的空間</li>
           <li v-if="memberId != ''">
             <router-link to="/activity/myJoinedManager">
