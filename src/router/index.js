@@ -148,10 +148,6 @@ const router = createRouter({
           component: () => import("@/views/activity/VenuesIntro.vue"),
         },
         {
-          path: "myVenuesRental",
-          component: () => import("@/views/activity/MyVenueRental.vue"),
-        },
-        {
           path: "venueRental",
           component: () => import("@/views/activity/VenueRental.vue"),
         },
@@ -191,14 +187,17 @@ const router = createRouter({
         {
           path: "t_page",
           component: () => import("@/views/employee/tweet/TweetReport.vue"),
-        },{
+        },
+        {
           path: "tweetOfficial",
-          component: () => import("@/views/employee/tweet/TweetOfficialTweet.vue"),
-        },{
+          component: () =>
+            import("@/views/employee/tweet/TweetOfficialTweet.vue"),
+        },
+        {
           path: "tweetOfficialPost",
           component: () => import("@/components/tweet/TweetOfficalPost.vue"),
-        }
-      ]
+        },
+      ],
     },
 
     {

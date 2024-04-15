@@ -1,10 +1,24 @@
 <template>
   <div>
     <div id="title">
-      <h4>
-        <b>過去參加活動紀錄</b
-        ><img src="../../assets/pastManager.png" alt="🐶" id="managerPic" />
-      </h4>
+      <table>
+        <tbody>
+          <tr>
+            <td style="vertical-align: middle">
+              <p class="titleh4">
+                <b>過去參加活動紀錄</b>
+              </p>
+            </td>
+            <td style="vertical-align: middle">
+              <img
+                src="../../assets/pastManager.png"
+                alt="🐶"
+                id="managerPic"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <!-- 主要內容 -->
@@ -444,6 +458,13 @@ export default {
   color: #874a33;
   margin: auto 20px;
   padding: 20px 20px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+.titleh4 {
+  font-weight: 700;
+  font-size: 20px;
   text-align: center;
 }
 .actTag {

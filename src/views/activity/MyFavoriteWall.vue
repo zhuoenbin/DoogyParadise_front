@@ -1,14 +1,24 @@
 <template>
   <div class="wall">
     <div id="title">
-      <h4>
-        <b>我的收藏</b
-        ><img
-          src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1712386226/vxnuv2o0jurjvimcw5oi.png"
-          alt="🐶"
-          id="managerPic"
-        />
-      </h4>
+      <table>
+        <tbody>
+          <tr>
+            <td style="vertical-align: middle">
+              <p class="titleh4">
+                <b>我的收藏</b>
+              </p>
+            </td>
+            <td style="vertical-align: middle">
+              <img
+                src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1712386226/vxnuv2o0jurjvimcw5oi.png"
+                alt="🐶"
+                id="managerPic"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div id="sumCat" v-if="activities.length > 0" class="summary">
       <h6 class="sunText">
@@ -174,9 +184,17 @@ export default {
   margin: auto 20px;
   padding: 20px 20px;
   text-align: center;
+  justify-content: center;
+  display: flex;
+}
+.titleh4 {
+  font-weight: 700;
+  font-size: 20px;
+  color: #c4445a;
 }
 #managerPic {
   height: 80px;
+  padding-left: 10px;
 }
 .sunText {
   text-align: center;

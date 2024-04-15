@@ -84,6 +84,8 @@
                   <br />
                   <b>活動場地:&nbsp;</b>{{ a.venueName }}
                   <br />
+                  <b>活動費用:&nbsp;</b>{{ a.activityCost }} 元/每🐶
+                  <br />
                   <b>現在報名狀況:&nbsp;</b>毛孩:{{ a.currentDogNumber }}/{{
                     a.activityDogNumber
                   }}&nbsp;&nbsp;(共{{ a.currentUserNumber }}位飼主 )
@@ -112,7 +114,8 @@
                             a.activityId,
                             a.activityTitle,
                             a.activityDogNumber,
-                            a.currentDogNumber
+                            a.currentDogNumber,
+                            a.activityCost
                           )
                         "
                       >
@@ -194,7 +197,10 @@
               <!-- 檢查用 -->
               <!-- <div>Checked names: {{ chooseDogs }}</div> -->
               <div>
-                <label for="" class="col-form-label"> 要參與的狗狗~ </label>
+                <label for="" class="col-form-label">
+                  要參與的狗狗~ 💡:每位毛孩參與費用:
+                  {{ chooseActCost }} 元</label
+                >
                 <div v-for="d in myDogsNotAttend" :key="d.dogId" class="mb-2">
                   <div class="checkbox-wrapper-33">
                     <label class="checkbox">
@@ -234,6 +240,16 @@
                   v-model="note"
                 ></textarea>
               </div>
+              <div class="mb-2" v-if="chooseActCost > 0">
+                <label for="message-text" class="col-form-label">💰小計</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="message-text"
+                  readonly
+                  v-model="payCost"
+                />
+              </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -242,6 +258,32 @@
               v-if="this.myDogsNotAttend.length > 0"
             >
               {{ message }}
+            </div>
+            <div
+              class="checkbox-wrapper-33"
+              v-if="this.myDogsNotAttend.length > 0"
+            >
+              <label class="checkbox">
+                <p class="checkbox__textwrapper">發布貼文&nbsp;</p>
+                <input
+                  class="checkbox__trigger visuallyhidden"
+                  type="checkbox"
+                  v-model="isPostTweet"
+                />
+                <span class="checkbox__symbol">
+                  <svg
+                    aria-hidden="true"
+                    class="icon-checkbox"
+                    width="28px"
+                    height="28px"
+                    viewBox="0 0 28 28"
+                    version="1"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M4 14l8 7L24 7"></path>
+                  </svg>
+                </span>
+              </label>
             </div>
             <button
               type="button"
@@ -264,6 +306,7 @@
         </div>
       </div>
     </div>
+    <div id="pay"></div>
   </div>
 </template>
 <script>
@@ -281,15 +324,18 @@ export default {
       userId: "",
       chooseAct: "",
       chooseActTitle: "",
+      chooseActCost: null,
       activityDogNumber: null,
       currentDogNumber: null,
       chooseDogs: [],
+      payCost: null,
       note: "",
       isUser: false,
       joinSuccess: false,
       currentPage: 1,
       totalPage: 0,
       message: "",
+      isPostTweet: "",
       isJoinButtonVisible: true,
       isJoinButtonDisabled: false,
     };
@@ -437,6 +483,7 @@ export default {
         let submitButton = document.getElementById("liveToastBtn");
         submitButton.disabled = true;
         this.message = "請選擇要參與的狗狗!";
+        this.payCost = 0;
       } else if (
         this.chooseDogs.length + this.currentDogNumber >
         this.activityDogNumber
@@ -444,16 +491,15 @@ export default {
         let submitButton = document.getElementById("liveToastBtn");
         submitButton.disabled = true;
         this.message = "很抱歉😥已超過🐶數上限!";
+        this.payCost = "⚠️";
       } else {
         let submitButton = document.getElementById("liveToastBtn");
         submitButton.disabled = false;
         this.message = "";
+        this.payCost = this.chooseActCost * this.chooseDogs.length;
+        console.log(this.isPostTweet);
       }
     },
-    showSuccess() {
-      window.alert("報名成功!!");
-    },
-
     timeFormat(time) {
       time = time.substring(0, time.length - 3);
       return time;
@@ -473,7 +519,13 @@ export default {
 
       return formattedDate;
     },
-    joinPrepare(activityId, activityName, activityDogNumber, currentDogNumber) {
+    joinPrepare(
+      activityId,
+      activityName,
+      activityDogNumber,
+      currentDogNumber,
+      activityCost
+    ) {
       const memberStore = useMemberStore();
       console.log(memberStore.memberRole);
 
@@ -481,6 +533,7 @@ export default {
       this.chooseActTitle = activityName;
       this.activityDogNumber = activityDogNumber;
       this.currentDogNumber = currentDogNumber;
+      this.chooseActCost = activityCost;
       this.note = "";
       console.log("所選擇的活動id: ", this.chooseAct);
       if (memberStore.memberRole.startsWith("Act")) {
@@ -525,11 +578,22 @@ export default {
             .then((response) => {
               console.log("報名成功", response.data);
               this.chooseDogs = [];
-              this.chooseAct = "";
               this.chooseActTitle = "";
-              // 在換成別的路徑 重新導向會無法即時更新
             })
-            .then(this.$router.push("/activity/all"))
+            .then((rs) => {
+              if (this.isPostTweet) {
+                this.doTweet();
+              }
+              console.log("tweet check");
+            })
+            .then((rs) => {
+              this.chooseAct = "";
+              if (this.payCost > 0) {
+                this.goEcPay();
+              } else {
+                this.$router.push("/activity/myJoinedManager");
+              }
+            })
             .catch((error) => {
               console.error("報名失敗", error);
               this.message = "報名失敗";
@@ -540,6 +604,30 @@ export default {
       } else {
         this.message = "你應該看不到才對?";
       }
+    },
+    doTweet() {
+      axios
+        .post(
+          `${this.API_URL}/tweet/postTweetForActivityShare?userId=${this.userId}&activityId=${this.chooseAct}`
+        )
+        .then((rs) => {
+          console.log("tweet success");
+        })
+        .catch((error) => {
+          console.log("tweet error", error);
+        });
+    },
+    goEcPay() {
+      axios
+        .post(
+          `http://localhost:8080/ecpayCheckout?price=${this.payCost}&url=activity/myJoinedManager`
+        )
+        .then((response) => {
+          // console.log(response.data);
+          const pay = document.getElementById("pay");
+          pay.innerHTML = response.data;
+          document.getElementById("allPayAPIForm").submit();
+        });
     },
     showToast() {
       const toastTrigger = document.getElementById("liveToastBtn");
@@ -555,8 +643,6 @@ export default {
     },
   },
 };
-//bug 報名完後應該要不能再報
-//活動過期要換掉
 </script>
 
 <style>
