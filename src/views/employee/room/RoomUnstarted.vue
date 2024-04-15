@@ -14,7 +14,9 @@
         <option value="Date">訂房日期</option>
       </select>
       <input
-        v-if="searchType != 'all' && searchType != 'Date'"
+        v-if="
+          searchType != 'all' && searchType != 'Date' && searchType != 'size'
+        "
         v-model="searchTerm"
         type="text"
         placeholder="輸入關鍵字"
@@ -28,9 +30,15 @@
         :enable-time-picker="false"
         :min-date="new Date()"
       />
+      <div class="button">
+        <span>房型:</span>
+        <button class="btn" @click="changeRoom(1)">小型犬</button
+        ><button class="btn" @click="changeRoom(2)">中型犬</button
+        ><button class="btn" @click="changeRoom(3)">大型犬</button>
+      </div>
     </div>
 
-    <table class="room-table mx-auto">
+    <table class="table room-table mx-auto">
       <thead>
         <tr>
           <th @click="sortByReservationId">
@@ -79,9 +87,14 @@
           </td>
           <td>{{ reservation.totalPrice }}</td>
         </tr>
-        <p class="record-count">
+        <td
+          class="record-count"
+          colspan="6"
+          v-if="filteredReservations.length != 0"
+        >
           總共 {{ filteredReservations.length }} 筆記錄
-        </p>
+        </td>
+        <td class="record-count" colspan="6" v-else>沒有紀錄</td>
       </tbody>
     </table>
   </div>
@@ -184,6 +197,11 @@ const formatDate = (dateString, number) => {
   }
 };
 
+const changeRoom = (size) => {
+  searchType.value = "size";
+  searchTerm.value = size;
+};
+
 const filteredReservations = computed(() => {
   const includeSearchTerm = (str) =>
     str.toLowerCase().includes(searchTerm.value.toLowerCase());
@@ -196,7 +214,7 @@ const filteredReservations = computed(() => {
     if (reservation.cancelTime == null) {
       switch (searchType.value) {
         case "name":
-          return includeSearchTerm(reservation.user.lastName) && isAfterToday;
+          return includeSearchTerm(reservation.lastName) && isAfterToday;
         case "id":
           return (
             reservation.reservationId.toString().includes(searchTerm.value) &&
@@ -214,6 +232,8 @@ const filteredReservations = computed(() => {
             RoomsDate(reservation.startTime, reservation.endTime) &&
             isAfterToday
           );
+        case "size":
+          return reservation.room.roomSize === searchTerm.value && isAfterToday;
         default:
           return isAfterToday;
       }
@@ -320,36 +340,31 @@ const RoomsDate = (beginTime, endTime) => {
 
 <style scoped>
 .container {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+  width: 90%;
+  margin: 2rem auto;
 }
+
 .room-table {
-  width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  border-spacing: 0;
+  margin-bottom: 2rem;
 }
 
-th {
-  border: none;
-  padding: 8px;
-  text-align: left;
-  background-color: rgb(254, 241, 222);
+.room-table th {
+  background-color: rgb(255, 231, 137);
+  padding: 1rem;
+  position: sticky;
+  top: 0;
 }
 
-.room-table tr:nth-child(even) {
-  background-color: rgb(255, 243, 223);
-  /* color: rgb(255, 255, 255); */
-}
-
-td {
-  /* border-bottom: 1px solid #dfd1a9; */
-  padding: 8px;
-  text-align: left;
-}
-
-.text-center {
+.room-table th,
+.room-table td {
   text-align: center;
+}
+
+.room-table td {
+  /* border: 1px solid #c2bdbd; */
+  padding: 0.5rem 0;
 }
 
 .search-bar {

@@ -1,19 +1,24 @@
 <template>
-  <div>
-    <h2 class="page-title">歷史訂房紀錄</h2>
-    <table class="room-table">
+  <div class="main">
+    <div class="flex">
+      <h2 class="page-title">歷史訂房紀錄</h2>
+    </div>
+    <table class="table room-table">
       <thead>
         <tr>
           <th>訂房時段</th>
           <th>訂房Id</th>
-          <th>房間Id</th>
-          <th>Dog名稱</th>
+          <th>房號</th>
+          <th>寵物名稱</th>
           <th>費用</th>
           <th>訂房時間</th>
           <th>評分</th>
         </tr>
       </thead>
       <tbody>
+        <tr v-if="filteredReservations.length === 0">
+          <td colspan="7">沒有歷史紀錄</td>
+        </tr>
         <tr
           v-for="(reservation, reservationId) in filteredReservations"
           :key="reservationId"
@@ -23,7 +28,7 @@
             {{ formatDate(reservation.endTime) }}
           </td>
           <td>{{ reservation.reservationId }}</td>
-          <td>{{ reservation.room.roomId }}</td>
+          <td>{{ reservation.room.roomName }}</td>
           <td>{{ reservation.dog.dogName }}</td>
           <td>{{ reservation.totalPrice }}</td>
           <td>{{ formatDate(reservation.reservationTime) }}</td>
@@ -61,8 +66,6 @@
                     </h5>
                   </div>
                   <div class="modal-body">
-                    <div>訂購者: {{ reservation.lastName }}</div>
-                    <br />
                     <div>房號: {{ reservation.room.roomName }}</div>
                     <br />
                     <div>寵物名稱: {{ reservation.dog.dogName }}</div>
@@ -162,6 +165,17 @@ const handleModifyReservation = (reservationId, str) => {
 </script>
 
 <style scoped>
+.main {
+  margin: 2rem;
+}
+
+.flex {
+  width: 95%;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
 .page-title {
   font-size: 24px;
   margin-bottom: 20px;
@@ -174,36 +188,58 @@ const handleModifyReservation = (reservationId, str) => {
   margin-bottom: 2rem;
 }
 
+.room-table th {
+  background-color: rgb(255, 231, 137);
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+}
+
 .room-table th,
 .room-table td {
-  /* border: 1px solid #c2bdbd; */
-  padding: 12px;
   text-align: center;
 }
 
-.room-table th {
-  background-color: rgb(254, 241, 222);
+.room-table td {
+  /* border: 1px solid #c2bdbd; */
+  padding: 20px 0;
+}
+
+/* .room-table th {
+  background-color: rgb(255, 216, 157);
 }
 
 .room-table tr:nth-child(even) {
-  background-color: rgb(255, 243, 223);
-}
+  background-color: rgb(248, 248, 244);
+} */
 
 .btn {
   padding: 8px 16px;
-  border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  background-color: transparent;
+  transition: all 0.5s;
+}
+
+.btn-primary {
+  border: 1px solid #331d81;
+  color: #331d81;
+  padding: 0.5rem 1.5rem;
+}
+
+.btn-primary:hover {
+  background-color: #3f17c2;
+  color: aliceblue;
 }
 
 .btn-end {
-  background-color: #49c936;
-  color: aliceblue;
+  border: 1px solid #49c936;
+  color: #49c936;
 }
 
 .btn-end:hover {
   background-color: #35ac22;
+  color: aliceblue;
 }
 
 .modal-body {

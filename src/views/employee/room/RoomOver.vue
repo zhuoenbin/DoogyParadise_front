@@ -2,7 +2,7 @@
   <div class="container">
     <h2 class="text-center">已結束</h2>
 
-    <!-- 添加查询功能 -->
+    <!-- 添加查詢功能 -->
     <div class="search-bar">
       <label for="searchType">選擇查詢方式：</label>
       <select v-model="searchType" id="searchType">
@@ -13,24 +13,19 @@
         <option value="petName">寵物名稱</option>
         <option value="Date">訂房日期</option>
       </select>
-      <input
-        v-if="searchType != 'all' && searchType != 'Date'"
-        v-model="searchTerm"
-        type="text"
-        placeholder="輸入關鍵字"
-      />
-      <VueDatePicker
-        class="date-picker"
-        v-if="searchType == 'Date'"
-        v-model="selectedDates"
-        range
-        :options="datepickerOptions"
-        :enable-time-picker="false"
-        :max-date="new Date()"
-      />
+      <input v-if="
+        searchType != 'all' && searchType != 'Date' && searchType != 'size'
+      " v-model="searchTerm" type="text" placeholder="輸入關鍵字" />
+      <VueDatePicker class="date-picker" v-if="searchType == 'Date'" v-model="selectedDates" range
+        :options="datepickerOptions" :enable-time-picker="false" :max-date="new Date()" />
+      <div class="button">
+        <span>房型:</span>
+        <button class="btn" @click="changeRoom(1)">小型犬</button><button class="btn"
+          @click="changeRoom(2)">中型犬</button><button class="btn" @click="changeRoom(3)">大型犬</button>
+      </div>
     </div>
 
-    <table class="room-table mx-auto">
+    <table class="table room-table mx-auto">
       <thead>
         <tr>
           <th @click="sortByReservationId">
@@ -66,10 +61,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(reservation, reservationId) in filteredReservations"
-          :key="reservationId"
-        >
+        <tr v-for="(reservation, reservationId) in filteredReservations" :key="reservationId">
           <td>{{ reservation.reservationId }}</td>
           <td>{{ reservation.lastName }}</td>
           <td>{{ reservation.room.roomName }}</td>
@@ -80,13 +72,8 @@
           </td>
           <td>{{ reservation.totalPrice }}</td>
           <td>
-            <a
-              v-if="reservation.reservationId != undefined"
-              href="javascript: void(0)"
-              class="btn"
-              data-bs-toggle="modal"
-              :data-bs-target="'#exampleModal_' + reservation.reservationId"
-            >
+            <a v-if="reservation.reservationId != undefined" href="javascript: void(0)" class="btn"
+              data-bs-toggle="modal" :data-bs-target="'#exampleModal_' + reservation.reservationId">
               <span>詳情</span>
               <svg width="13px" height="10px" viewBox="0 0 13 10">
                 <path d="M1,5 L11,5"></path>
@@ -95,25 +82,15 @@
               </svg>
             </a>
             <!-- Modal -->
-            <div
-              class="modal left-to-right fade"
-              :id="'exampleModal_' + reservation.reservationId"
-              tabindex="-1"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true"
-            >
+            <div class="modal left-to-right fade" :id="'exampleModal_' + reservation.reservationId" tabindex="-1"
+              aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
                       訂單ID: {{ reservation.reservationId }}
                     </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
                     <div>訂購者: {{ reservation.lastName }}</div>
@@ -135,29 +112,16 @@
                     <hr />
                     <div v-if="reservation.star != null">
                       <div>
-                        <span
-                          v-for="index in reservation.star"
-                          :key="index"
-                          class="star"
-                          >★</span
-                        >
-                        <span
-                          v-for="index in maxRating - reservation.star"
-                          :key="index"
-                          class="star"
-                          >☆</span
-                        >
+                        <span v-for="index in reservation.star" :key="index" class="star">★</span>
+                        <span v-for="index in maxRating - reservation.star" :key="index" class="star">☆</span>
                       </div>
                       <br />
                       <div>
                         評價說明:
-                        <span
-                          v-if="
-                            reservation.conments != '' &&
-                            reservation.conments != null
-                          "
-                          >{{ reservation.conments }}</span
-                        >
+                        <span v-if="
+                          reservation.conments != '' &&
+                          reservation.conments != null
+                        ">{{ reservation.conments }}</span>
                         <span v-else class="gray">無評價說明</span>
                       </div>
                     </div>
@@ -177,9 +141,10 @@
             </div>
           </td>
         </tr>
-        <p class="record-count">
+        <td class="record-count" colspan="7" v-if="filteredReservations.length != 0">
           總共 {{ filteredReservations.length }} 筆記錄
-        </p>
+        </td>
+        <td class="record-count" colspan="6" v-else>沒有紀錄</td>
       </tbody>
     </table>
   </div>
@@ -275,6 +240,11 @@ const formatDate = (dateString) => {
   return `${year}/${month}/${day}`;
 };
 
+const changeRoom = (size) => {
+  searchType.value = "size";
+  searchTerm.value = size;
+};
+
 // 查詢
 const filteredReservations = computed(() => {
   const currentDate = formatDate(new Date(), 1);
@@ -286,7 +256,7 @@ const filteredReservations = computed(() => {
     if (reservation.cancelTime == null) {
       switch (searchType.value) {
         case "name":
-          return includeSearchTerm(reservation.user.lastName) && !isAfterToday;
+          return includeSearchTerm(reservation.lastName) && !isAfterToday;
         case "id":
           return (
             reservation.reservationId.toString().includes(searchTerm.value) &&
@@ -304,6 +274,8 @@ const filteredReservations = computed(() => {
             RoomsDate(reservation.startTime, reservation.endTime) &&
             !isAfterToday
           );
+        case "size":
+          return reservation.room.roomSize === searchTerm.value && isAfterToday;
         default:
           return !isAfterToday;
       }
@@ -385,11 +357,11 @@ const sortByTotalPrice = () => {
 const RoomsDate = (beginTime, endTime) => {
   const begin = new Date(beginTime);
   const endDate = new Date(endTime);
-  endDate.setDate(endDate.getDate() + 1);
+  // endDate.setDate(endDate.getDate() + 1);
   if (selectedDates.value !== null) {
     if (
       selectedDates.value.length === 2 &&
-      selectedDates.value[1] !== null && // 添加这行检查
+      selectedDates.value[1] !== null &&
       formatDate(selectedDates.value[1]) != "1970/01/01"
     ) {
       const start = new Date(selectedDates.value[0]);
@@ -409,36 +381,31 @@ const RoomsDate = (beginTime, endTime) => {
 
 <style scoped>
 .container {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+  width: 90%;
+  margin: 2rem auto;
 }
+
 .room-table {
-  width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  border-spacing: 0;
+  margin-bottom: 2rem;
 }
 
-th {
-  border: none;
-  padding: 8px;
-  text-align: left;
-  background-color: rgb(254, 241, 222);
+.room-table th {
+  background-color: rgb(255, 231, 137);
+  padding: 1rem;
+  position: sticky;
+  top: 0;
 }
 
-.room-table tr:nth-child(even) {
-  background-color: rgb(255, 243, 223);
-  /* color: rgb(255, 255, 255); */
-}
-
-td {
-  /* border-bottom: 1px solid #dfd1a9; */
-  padding: 8px;
-  text-align: left;
-}
-
-.text-center {
+.room-table th,
+.room-table td {
   text-align: center;
+}
+
+.room-table td {
+  /* border: 1px solid #c2bdbd; */
+  padding: 0.5rem 0;
 }
 
 .search-bar {
@@ -473,6 +440,7 @@ button.sort {
   position: relative;
   z-index: 1;
 }
+
 .btn svg {
   position: relative;
   top: 0;
@@ -485,13 +453,16 @@ button.sort {
   transform: translateX(-5px);
   transition: all 0.3s ease;
 }
+
 .btn:hover:before {
   width: 100%;
   background: #ffab9d;
 }
+
 .btn:hover svg {
   transform: translateX(0);
 }
+
 .btn:hover {
   color: #e79283;
 }
@@ -504,6 +475,7 @@ button.sort {
   from {
     transform: translateX(-100%);
   }
+
   to {
     transform: translateX(0);
   }

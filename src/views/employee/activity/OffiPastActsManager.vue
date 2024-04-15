@@ -42,6 +42,12 @@
                   ></i>
                 </button>
               </th>
+              <th scope="col" class="titlecol">
+                <i
+                  class="fa-solid fa-heart-circle-plus"
+                  style="color: #ff8585"
+                ></i>
+              </th>
               <th scope="col" class="titlecol">活動名稱</th>
               <th scope="col">
                 活動狀態
@@ -68,20 +74,37 @@
           >
             <tr>
               <th scope="row">
-                <button
-                  class="btn btn-outline-success me-md-1"
-                  type="button"
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  :id="a.activityId"
-                  @click="updatePrepare(a.activityId, a.activityTitle)"
+                <router-link
+                  :to="{
+                    name: 'activityComment',
+                    params: { activityId: a.activityId },
+                  }"
                 >
-                  查看
+                  <button
+                    class="btn btn-outline-warning me-md-1"
+                    type="button"
+                    v-if="a.commentedTime > 0"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    :id="a.activityId"
+                  >
+                    查看({{ a.commentedTime }}/{{ a.currentUserNumber }})
+                  </button></router-link
+                >
+                <button
+                  type="button"
+                  class="btn btn-light me-md-1"
+                  v-if="a.commentedTime < 1"
+                >
+                  暫無評論
                 </button>
               </th>
               <td class="smallText">
                 {{ a.activityDate }} {{ this.timeFormat(a.activityStart) }} -
                 {{ this.timeFormat(a.activityEnd) }}
+              </td>
+              <td class="smallText" style="text-align: center">
+                {{ a.likedTime }}
               </td>
               <td class="smallText">
                 <router-link
@@ -89,7 +112,10 @@
                     name: 'activityInfo',
                     params: { activityId: a.activityId },
                   }"
-                  ><button class="actTag btn smallText">
+                  ><button
+                    class="actTag btn smallText"
+                    style="max-width: 300px"
+                  >
                     {{ a.activityTitle }}
                   </button>
                 </router-link>

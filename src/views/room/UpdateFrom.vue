@@ -6,6 +6,10 @@
 
     <div class="reservation-details">
       <div class="detail-item">
+        <span class="detail-label">訂房Id: </span>
+        <span>{{ reservation.reservationId }}</span>
+      </div>
+      <div class="detail-item">
         <span class="detail-label">訂房時段: </span>
         <span
           >{{ formatDate(reservation.startTime) }} -
@@ -20,8 +24,12 @@
         <span class="detail-label">寵物名: </span>
         <span>{{ reservation.dog ? reservation.dog.dogName : "N/A" }}</span>
       </div>
-      <div class="detail-item">
+      <div class="detail-item" v-if="str !== 'update'">
         <span class="detail-label">費用: </span>
+        <span>{{ reservation.totalPrice }}</span>
+      </div>
+      <div class="detail-item" v-if="str === 'update'">
+        <span class="detail-label">原先費用: </span>
         <span>{{ reservation.totalPrice }}</span>
       </div>
     </div>
@@ -113,7 +121,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, defineProps, defineEmits, computed } from "vue";
+import { ref, onMounted, defineProps, defineEmits, computed, watch } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
@@ -130,12 +138,15 @@ const reservation = ref([]);
 // reservationTime 傳過來的物件 List
 const reservations = ref([]);
 // 取消原因
-const direction = ref(null);
+const direction = ref("");
 const cancelReason = ref("");
 // 評分說明
 const comments = ref("");
 // 禁用日期
 const date = ref(new Date());
+// 取得 checkbox 元素
+const checkbox = ref(null);
+const checkboxValue = ref(null);
 
 onMounted(() => {
   axios
@@ -148,6 +159,16 @@ onMounted(() => {
   axios.get("http://localhost:8080/room/reservation").then((response) => {
     reservations.value = response.data;
   });
+  const checkbox = document.querySelector(".checkbox__trigger");
+  if (checkbox) {
+    checkbox.addEventListener("change", function () {
+      if (checkbox.checked) {
+        checkboxValue.value = 1;
+      } else {
+        checkboxValue.value = 0;
+      }
+    });
+  }
 });
 
 const formatDate = (dateString) => {
@@ -260,15 +281,10 @@ const bookRoom = (room) => {
     formattedDates[1] != "1970-01-01" &&
     formattedDates.length != 0
   ) {
-    alert(
-      `修改成功！訂房Id: ${reservationId}, 訂房時間 ${formattedDates.join(
-        " - "
-      )}`
-    );
     GOregister();
     // 成功的話頁面跳轉到 o_page 並重新加載
     router.push({ name: "o_page" }).then(() => {
-      window.location.reload();
+      // window.location.reload();
     });
   } else if (formattedDates.length == 0) {
     alert("請選擇時間");
@@ -324,8 +340,8 @@ const cancel = () => {
       { cancelTime: new Date(), cancelDirection: direction.value }
     );
     // 成功的話頁面跳轉到 o_page 並重新加載
-    router.push({ name: "o_page" }).then(() => {
-      window.location.reload();
+    router.push({ name: "c_page" }).then(() => {
+      // window.location.reload();
     });
   } else {
     alert("請選擇取消原因");
@@ -355,28 +371,41 @@ const currentRating = ref(props.value);
 const rate = (rating) => {
   currentRating.value = rating;
   emit("update:value", rating); // 使用 emit 函数
-  console.log(`星星數: ${currentRating.value}`);
+  // console.log(`星星數: ${currentRating.value}`);
 };
 
 const hover = (rating) => {
   currentRating.value = rating;
-  console.log(`星星數: ${currentRating.value}`);
+  // console.log(`星星數: ${currentRating.value}`);
 };
 
 const score = (comments) => {
   if (currentRating.value != 0) {
-    axios.post(
-      `http://localhost:8080/room/score?roomReservationId=${reservationId}`,
-      {
-        star: currentRating.value,
-        conments: comments,
-        conmentsTime: new Date(),
-      }
-    );
-    // 成功的話頁面跳轉到 h_page 並重新加載
-    router.push({ name: "h_page" }).then(() => {
-      window.location.reload();
-    });
+    axios
+      .post(
+        `http://localhost:8080/room/score?roomReservationId=${reservationId}`,
+        {
+          star: currentRating.value,
+          conments: comments,
+          conmentsTime: new Date(),
+        }
+      )
+      // 先修改完訂房明細再發推文
+      .then(() => {
+        if (checkboxValue.value == 1) {
+          axios.post(
+            `http://localhost:8080/tweet/postTweetForRoomShare?reservationId=${reservationId}`
+          );
+        }
+        // 成功的話頁面跳轉到 h_page 並重新加載
+        router.push({ name: "h_page" }).then(() => {
+          // window.location.reload();
+        });
+      })
+      .catch((error) => {
+        // 請求失敗時的錯誤處理
+        console.error("評分請求失敗:", error);
+      });
   } else {
     alert("請給星");
   }
@@ -386,7 +415,7 @@ const score = (comments) => {
 <style scoped>
 .reservation-form {
   width: 60%;
-  margin: 0 auto;
+  margin: 4rem auto;
   padding: 40px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -437,8 +466,8 @@ h2 {
 /* 分享 */
 .checkbox-wrapper-33 {
   display: flex;
-  align-items: center; /* 垂直置中 */
-  justify-content: space-between; /* 水平靠右 */
+  align-items: center;
+  justify-content: space-between;
   --s-xsmall: 0.625em;
   --s-small: 1.2em;
   --border-width: 1px;
@@ -473,7 +502,7 @@ h2 {
 }
 
 .checkbox-wrapper-33 .btn-primary {
-  margin-left: 10px; /* 加一些左側間距 */
+  margin-left: 10px;
 }
 
 .checkbox-wrapper-33 .checkbox + .checkbox {

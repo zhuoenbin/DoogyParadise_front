@@ -1,6 +1,11 @@
 <template>
   <div class="dogcard">
-    <DogItem v-for="dog in dogs" :key="dog.dogId" :dog="dog" />
+    <DogItem
+      v-for="dog in dogs"
+      :key="dog.dogId"
+      :dog="dog"
+      @update-success="reloadData"
+    />
   </div>
 </template>
 <script>
@@ -26,7 +31,13 @@ export default {
       this.dogs = re.data;
     });
   },
-  methods: {},
+  methods: {
+    reloadData() {
+      axios.get(`${this.API_URL}/dog/getDogs/${this.memberId}`).then((re) => {
+        this.dogs = re.data;
+      });
+    },
+  },
 };
 </script>
 <style scoped>

@@ -35,7 +35,7 @@
                     {{ t.activityTypeName }}
                   </option>
                 </select>
-                <label for="floatingSelect">活動類型</label>
+                <label for="floatingSelect" style="margin: 0">活動類型</label>
               </div>
             </div>
             <div class="col-md">
@@ -56,7 +56,7 @@
                     {{ v.venueName }}
                   </option>
                 </select>
-                <label for="floatingSelect">場地選擇</label>
+                <label for="floatingSelect" style="margin: 0">場地選擇</label>
               </div>
             </div>
           </div>
@@ -73,7 +73,7 @@
                   max="2026-04-26"
                   v-model.lazy="activityDate"
                 />
-                <label>活動日期:</label>
+                <label style="margin: 0">活動日期:</label>
               </div>
             </div>
             <div class="col-md">
@@ -86,7 +86,7 @@
                   min="10:00"
                   max="18:00"
                   v-model.lazy="activityStart"
-                /><label>開始時間:</label>
+                /><label style="margin: 0">開始時間:</label>
               </div>
             </div>
             <div class="col-md">
@@ -99,7 +99,7 @@
                   min="10:00"
                   max="18:00"
                   v-model="activityEnd"
-                /><label>結束時間:</label>
+                /><label style="margin: 0">結束時間:</label>
               </div>
             </div>
           </div>
@@ -110,7 +110,7 @@
               class="form-control"
               v-model.lazy="activityTitle"
             />
-            <label>活動主題</label>
+            <label style="margin: 0">活動主題</label>
           </div>
           <div class="input-group mb-3">
             <input
@@ -120,7 +120,10 @@
               ref="mainImgUpload"
               accept="image/*"
             />
-            <label class="input-group-text" for="inputGroupFile02"
+            <label
+              style="margin: 0"
+              class="input-group-text"
+              for="inputGroupFile02"
               >主題圖片上傳</label
             >
           </div>
@@ -131,7 +134,7 @@
               class="form-control"
               v-model.lazy="activityDescription"
             ></textarea>
-            <label>活動簡介</label>
+            <label style="margin: 0">活動簡介</label>
           </div>
           <div class="form-floating mb-3">
             <textarea
@@ -139,7 +142,7 @@
               class="form-control"
               v-model="activityProcess"
             ></textarea>
-            <label>活動流程</label>
+            <label style="margin: 0">活動流程</label>
           </div>
           <div class="form-floating mb-3">
             <textarea
@@ -147,7 +150,7 @@
               class="form-control"
               v-model="activityNotice"
             ></textarea>
-            <label>注意事項</label>
+            <label style="margin: 0">注意事項</label>
           </div>
           <div class="input-group mb-3">
             <input
@@ -158,7 +161,10 @@
               accept="image/*"
               multiple
             />
-            <label class="input-group-text" for="inputGroupFile02"
+            <label
+              style="margin: 0"
+              class="input-group-text"
+              for="inputGroupFile02"
               >其他說明圖片上傳</label
             >
           </div>
@@ -199,7 +205,7 @@
                   max="2026-04-30T00:00"
                   v-model="activityClosingDate"
                   required
-                /><label>報名截止時間:</label>
+                /><label style="margin: 0">報名截止時間:</label>
               </div>
             </div>
             <div class="col-md">
@@ -221,7 +227,7 @@
                     {{ n }}
                   </option>
                 </select>
-                <label for="floatingSelect">預計狗數</label>
+                <label style="margin: 0" for="floatingSelect">預計狗數</label>
               </div>
             </div>
           </div>
@@ -229,7 +235,7 @@
             <div class="col-md">
               <div class="form-floating mb-3">
                 <input type="text" class="form-control" v-model="contactMail" />
-                <label>連絡信箱</label>
+                <label style="margin: 0">連絡信箱</label>
               </div>
             </div>
             <div class="col-md">
@@ -239,7 +245,7 @@
                   class="form-control"
                   v-model="contactPhone"
                 />
-                <label>連絡電話</label>
+                <label style="margin: 0">連絡電話</label>
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 <template>
-    <div class="blog-card spring-fever">
+    <div class="blog-card spring-fever" :style="{ height: cardHeight }">
         <!-- ...按紐們 -->
         <div class="col-auto">
             <div class="dropdown">
@@ -18,66 +18,31 @@
 
                 </ul>
             </div>
+        </div>
 
-            <!--檢舉的彈出式視窗 -->
-            <div ref="ReportPostPage" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3>檢舉頁面</h3>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3 form-check">
-                                <div>
-                                    <label>
-                                        <input type="checkbox" value="不可愛" v-model="reportPost" /> 不可愛
-                                    </label>
-                                </div>
-                                <div>
-                                    <label>
-                                        <input type="checkbox" value="太恐怖" v-model="reportPost" /> 太恐怖
-                                    </label>
-                                </div>
-                                <div>
-                                    <label>
-                                        <input type="checkbox" value="政治不正確" v-model="reportPost" /> 政治不正確
-                                    </label>
-                                </div>
-                                <div>
-                                    <label>
-                                        <input type="checkbox" value="我不爽" v-model="reportPost" /> 我不爽
-                                    </label>
-                                </div>
-
-                            </div>
-                            <div class="mb-3">
-                                <label for="reportReason" class="form-label">其他意見</label>
-                                <textarea class="form-control" id="reportReason" rows="3"
-                                    v-model="reportPostText"></textarea>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" @click="submitReport" data-bs-dismiss="modal" aria-label="Close"
-                                    class="btn btn-primary">送出</button>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="title-content">
+            <h3><span @click="goOthersPage(this.tweetUserName, tweet.tweetId)">{{ this.tweetUserName }}</span></h3>
+            <!-- 使用的的狗狗們 -->
+            <div>
+                <span v-if="userDogs.length > 0">我的狗勾們 :&nbsp;</span>
+                <span v-for="(dog, index) in userDogs" :key="dog.dogId">
+                    {{ dog.dogName }}
+                    <template v-if="index < userDogs.length - 1">、</template>
+                </span>
             </div>
 
 
 
-        </div>
-        <div class="title-content">
-            <h3><span @click="goOthersPage(this.tweetUserName, tweet.tweetId)">{{ this.tweetUserName }}</span></h3>
-            <div class="intro"> <a href="#">Inspiration</a> </div>
+
+            <hr v-if="tweet.preNode == 0">
+            <div class="intro"> <a href="#">推文內容</a> </div>
+
         </div>
         <div class="card-info">
             <!-- 推文內容 -->
             <div v-if="!this.editTweetContent">
-                <div class="tweet-content">{{ tweet.tweetContent }}</div>
+                <div class="tweet-content"><strong>{{ tweet.tweetContent }}</strong></div>
+                <span>發文時間: {{ formatPostDate(tweet.postDate) }}</span>
             </div>
             <div v-else>
                 <textarea v-model="this.editTweetContentTmp" class="form-control"></textarea>
@@ -90,44 +55,152 @@
             <!-- <a href="#">Read Article<span class="licon icon-arr icon-black"></span></a> -->
         </div>
 
-
-        <div class="utility-info">
-            <ul class="utility-list">
-                <li><span class="licon icon-like" @click="showLikeList"></span>{{ tweetLikeNum }}</li>
-                <li><span class="licon icon-com"></span><a href="#">12</a></li>
-                <li><span class="licon icon-dat"></span>03 jun 2017</li>
-                <li><span class="licon icon-tag"></span><a href="#">Photos</a>, <a href="#">Nice</a></li>
-            </ul>
-        </div>
-
-        <!--按讚名單的彈出式視窗 -->
-        <div ref="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">按讚的人~</h5>
-
-                    </div>
-
-                    <div class="modal-body" v-for="n in userLikeList">
-                        {{ n.lastName }}
-                    </div>
-                    <!-- <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="hideLikeList">
-                            Close
-                        </button>
-                    </div> -->
+        <!-- 推文圖片 -->
+        <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0 && !imgOnline" class="tweet-galleries">
+            <div class="d-flex justify-content-center">
+                <div v-for="(gallery, index) in tweet.tweetGalleries" :key="index" class="gallery-item">
+                    <img style=" object-fit: cover" width="250" height="250" :src="getImageUrl(gallery.imgPath)"
+                        alt="Gallery Image" class="gallery-image">
                 </div>
             </div>
         </div>
-        <div class="gradient-overlay"></div>
-        <div class="color-overlay"></div>
-    </div><!-- /.blog-card -->
+        <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0 && imgOnline" class="tweet-galleries">
+            <div class="d-flex justify-content-center">
+                <div class="gallery-item">
+
+                    <a v-if="tweet.tweetContent.startsWith('我的狗狗: ')" :href="roomLink">
+                        <img :src="imgOnlinePath" style=" object-fit: cover" width="250" height="250"
+                            alt="Gallery Image" class="gallery-image">
+                    </a>
+                    <a v-else :href="activityLink">
+                        <img :src="imgOnlinePath" style=" object-fit: cover" width="250" height="250"
+                            alt="Gallery Image" class="gallery-image">
+                    </a>
+
+                </div>
+            </div>
+        </div>
 
 
+        <div class="utility-info">
+            <ul class="utility-list">
+                <li v-if="tweetLikeNum !== 0" @click="showLikeList">
+                    <h6><strong><span @click="showLikeList">獲得了{{ tweetLikeNum
+                                }}個骨頭</span></strong></h6>
+                </li>
+
+                <!-- 按讚按钮 -->
+                <span v-if="tweet.preNode == 0 && userId">
+                    <button v-if="!this.liked" @click="likeTweet" class="btn btn-outline-light custom-btn">🦴</button>
+                    <button v-else @click="unlikeTweet" class="btn btn-outline-light custom-btn">💩</button>
+                </span>
+
+                <!-- <li><span class="licon icon-com"></span><a href="#">{{ this.numOfComment }}</a></li> -->
+                <!-- 顯示留言數 -->
+                <!-- <li><span v-if="this.numOfComment > 0" class="licon icon-com" style="margin-right: 10px;">{{
+                        this.numOfComment }}</span></li> -->
+                <!-- 顯示留言數 -->
+                <span v-if="this.numOfComment > 0" class="comment-count" style="margin-right: 10px;">
+                    <button @click="getCommentsLink(tweet.tweetId)" type="button" class="btn btn-outline-warning">有{{
+                        this.numOfComment
+                    }}則留言
+                    </button>
+                </span>
+                <!-- 回覆推文的地方 -->
+                <span v-if="tweet.preNode == 0 && userId">
+                    <input type="text" v-model="replyContent" placeholder="在此輸入回覆內容"
+                        style="height: 0px; padding-top: 16px; padding-bottom: 18px;">
+                    <span>
+                        <button @click="postReply" class="btn btn-success">回覆</button>
+                    </span>
+                </span>
+                <hr>
 
 
+                <!-- 子留言，內容 -->
+                <div v-if="showComments" class="comment-section">
 
+                    <div v-for="comment in tweetComments" :key="comment.id" class="comment-item">{{ comment.userName
+                        }} : {{ comment.tweetContent }}</div>
+                    <div>{{ currentReply }}</div>
+                </div>
+
+            </ul>
+        </div>
+
+
+    </div>
+
+    <div class="gradient-overlay"></div>
+    <div class="color-overlay"></div>
+    <!-- /.blog-card -->
+
+
+    <!--按讚名單的彈出式視窗 -->
+    <div ref="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">按讚的人~</h5>
+
+                </div>
+
+                <div class="modal-body" v-for="n in userLikeList">
+                    {{ n.lastName }}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--檢舉的彈出式視窗 -->
+    <div ref="ReportPostPage" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>檢舉頁面</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 form-check">
+                        <div>
+                            <label>
+                                <input type="checkbox" value="不可愛" v-model="reportPost" /> 不可愛
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" value="太恐怖" v-model="reportPost" /> 太恐怖
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" value="政治不正確" v-model="reportPost" /> 政治不正確
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" value="我不爽" v-model="reportPost" /> 我不爽
+                            </label>
+                        </div>
+
+                    </div>
+                    <div class="mb-3">
+                        <label for="reportReason" class="form-label">其他意見</label>
+                        <textarea class="form-control" id="reportReason" rows="3" v-model="reportPostText"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" @click="submitReport" data-bs-dismiss="modal" aria-label="Close"
+                            class="btn btn-primary">送出</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <hr>
 </template>
 
 <script>
@@ -169,6 +242,8 @@ export default {
             imgOnlinePath: "",
             imgOnline: false,
             activityLink: "http://localhost:5173/activity/all",
+            roomLink: "http://localhost:5173/room/b_page",
+            cardHeight: '',
         }
     },
     props: {
@@ -244,6 +319,12 @@ export default {
                 this.thisTweetUserId = re.data;
             })
         }
+
+        if (this.tweet.tweetGalleries.length > 0) {
+            this.cardHeight = '700px'
+        } else {
+            this.cardHeight = '300px'
+        }
     },
     watch: {
         editTweetContent(newValue, oldValue) {
@@ -258,6 +339,7 @@ export default {
         getImageUrl(imgPath) {
             if (imgPath.startsWith('http')) {
                 this.imgOnlinePath = imgPath;
+                console.log(this.imgOnlinePath)
                 this.imgOnline = true;
                 return;
             }
@@ -269,14 +351,22 @@ export default {
                 axios.get(`${this.API_URL}/tweet/getComments/${this.tweet.tweetId}`)
                     .then(response => {
                         this.tweetComments = response.data
+                        this.expandCard();
                     })
                     .catch(error => {
                         console.error('Error fetching number of comments:', error);
                     });
                 this.showComments = !this.showComments
+
             } else {
                 this.currentReply = "";
                 this.showComments = !this.showComments
+                if (this.tweet.tweetGalleries.length > 0) {
+                    this.cardHeight = '700px'
+                } else {
+                    this.cardHeight = '300px'
+                    console.log("NOIMG")
+                }
             }
         },
         goOthersPage(name, id) {
@@ -342,7 +432,7 @@ export default {
                 });
         },
         showLikeList() {
-            const myModal = new Modal(this.$refs.myModal);
+            const myModal = new bootstrap.Modal(this.$refs.myModal);
             myModal.show()
             axios.get(`${this.API_URL}/tweet/getTweetLikesUser`, {
                 params: {
@@ -483,7 +573,11 @@ export default {
                 .catch(error => {
                     console.error("Error submitting report:", error.message);
                 });
-        }
+        }, expandCard() {
+            const numComments = this.tweetComments.length;
+            const expandedHeight = 700 + (numComments * 50);
+            this.cardHeight = `${expandedHeight}px`;
+        },
 
     }
 };
@@ -503,24 +597,26 @@ body {
 }
  */
 .blog-card {
-    max-width: 550px;
+    max-width: 600px;
     width: 100%;
-    height: 500px;
+    height: 700px;
     /* position: absolute; */
     font-family: 'Droid Serif', serif;
     color: #fff;
-    top: 20%;
+    top: 10%;
     right: 0;
     left: 0;
-    margin: 0 auto;
+    margin: 4rem auto;
     overflow: hidden;
-    border-radius: 0px;
+    border-radius: 10px;
     box-shadow: 0px 10px 20px -9px rgba(0, 0, 0, 0.5);
     text-align: center;
     transition: all 0.4s;
-    background: url(https://unsplash.it/600/800?image=1061) center no-repeat;
+    background: rgba(0, 0, 0, 0.5) url(https://unsplash.it/600/800?image=1061) center no-repeat;
+    /* opacity: 0.5; */
     background-size: 100%;
 }
+
 
 .blog-card a {
     color: hsl(0, 0%, 0%);
@@ -563,12 +659,12 @@ body {
 }
 
 .blog-card:hover .title-content {
-    margin-top: 70px
+    margin-top: 0px
 }
 
 .title-content {
     text-align: center;
-    margin: 170px 0 0 0;
+    margin: 80px 0 0 0;
     /* position: absolute; */
     z-index: 20;
     width: 100%;
@@ -1024,8 +1120,14 @@ h3:after {
 }
 
 .gallery-image {
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 400px;
+    /* 指定圖片的最大寬度 */
+    max-height: 400px;
+
+    /* 指定圖片的最大高度
+    /* 如果需要指定固定的寬度和高度，可以使用 width 和 height 屬性 */
+    /* width: 300px;
+    height: 300px; */
 }
 
 
@@ -1070,15 +1172,31 @@ h3:after {
 .dropdown {
     position: relative;
     display: inline-block;
+
 }
 
 .dropdown-menu {
     display: none;
     position: absolute;
     z-index: 1;
+
 }
 
 .dropdown:hover .dropdown-menu {
     display: block;
+}
+
+.custom-btn {
+    border: none;
+    /* 移除按鈕的邊框 */
+}
+
+.blog-card .dropdown {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.blog-card .dropdown-menu {
+    right: 0;
 }
 </style>

@@ -30,7 +30,7 @@
 
     <div class="py-1 bg-light">
       <div class="container">
-        <table class="table table-striped">
+        <table class="table">
           <thead>
             <tr>
               <th scope="col">管理</th>
@@ -55,6 +55,7 @@
             </tr>
           </thead>
           <tbody
+            class="smallText"
             v-if="myJoinedList.length > 0"
             v-for="a of myJoinedList"
             :key="a.userJoinedId"
@@ -86,7 +87,17 @@
                 {{ a.activityDate }} {{ this.timeFormat(a.activityStart) }} ~
                 {{ this.timeFormat(a.activityEnd) }}
               </td>
-              <td>{{ a.activityTitle }}</td>
+              <td>
+                <router-link
+                  :to="{
+                    name: 'activityInfo',
+                    params: { activityId: a.activityId },
+                  }"
+                  ><button class="actTag btn smallText">
+                    {{ a.activityTitle }}
+                  </button>
+                </router-link>
+              </td>
               <td>{{ a.activityStatus }}</td>
               <td>
                 <span v-for="d of a.dogList">{{ d }}&nbsp;</span>
@@ -465,8 +476,8 @@ export default {
         setTimeout(function () {
           let loading = document.getElementById("loading");
           loading.style.display = "none";
-        }, 2000);
-        this.$router.push("/activity/myJoinedManager");
+        }, 3000);
+        window.location.reload();
       }
     },
   },
@@ -488,7 +499,21 @@ export default {
 #loading {
   display: none;
 }
-
+.smallText,
+td {
+  font-size: 15px;
+}
+.actTag {
+  background-color: white;
+  border-radius: 20px;
+  border: none;
+  /* transition: background-color 0.3s ease; */
+}
+th,
+td {
+  /* text-align: center; 水平居中 */
+  vertical-align: middle; /* 垂直居中 */
+}
 .checkbox-wrapper-33 {
   --s-xsmall: 0.625em;
   --s-small: 1.2em;

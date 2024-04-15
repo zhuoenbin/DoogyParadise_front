@@ -49,7 +49,7 @@
               >寵物旅館</router-link
             >
           </li>
-          <li v-if="role == 'ROLE_C1'">
+          <li v-if="role && role.startsWith('ROLE')">
             <router-link to="/employee" class="nav-link px-2 text-white"
               >員工後臺</router-link
             >
@@ -68,12 +68,26 @@
           </router-link>
 
           <template v-if="isloggedIn">
-            <router-link to="/profile" class="text-decoration-none">
-              <button type="button" class="btn btn-warning">
+            <router-link to="/profile/detail" class="text-decoration-none">
+              <button
+                type="button"
+                class="btn btn-success"
+                v-if="role && role.startsWith('ROLE')"
+              >
+                {{ name }}</button
+              ><button type="button" class="btn btn-warning" v-else>
                 {{ name }}
               </button></router-link
             >
-            <img :src="photo" width="8%" class="mx-2" />
+            <img
+              :src="photo"
+              width="40px"
+              height="40px"
+              class="mx-2"
+              style="border-radius: 0.5rem; object-fit: cover"
+              v-if="role && !role.startsWith('ROLE')"
+            />
+            <span v-else style="margin-right: 1rem"></span>
 
             <button @click="logout" type="button" class="btn btn-outline-light">
               登出
@@ -130,7 +144,9 @@ export default {
 * {
   margin: 0;
 }
-/* .color {
-  background-color: #fff;
-} */
+
+.text-end {
+  display: flex;
+  justify-content: end;
+}
 </style>

@@ -1,13 +1,18 @@
 <template>
-  <h2 class="page-title">預約訂房管理</h2>
-  <div class="table-container">
-    <table class="room-table">
+  <div class="main">
+    <div class="flex">
+      <h2 class="page-title">預約訂房管理</h2>
+      <!-- <button class="btn" data-hover="click me!">
+        <div>Button</div>
+      </button> -->
+    </div>
+    <table class="table room-table">
       <thead>
         <tr>
           <th>訂房時段</th>
           <th>訂房Id</th>
-          <th>房間Id</th>
-          <th>寵物名</th>
+          <th>房號</th>
+          <th>寵物名稱</th>
           <th>費用</th>
           <th>訂房時間</th>
           <th>修改時段</th>
@@ -15,17 +20,27 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(reservation, reservationId) in filteredReservations" :key="reservationId">
+        <tr v-if="filteredReservations.length === 0">
+          <td colspan="8">沒有預約紀錄</td>
+        </tr>
+        <tr
+          v-for="(reservation, reservationId) in filteredReservations"
+          :key="reservationId"
+        >
           <td>
-            <span class="icon" v-if="
-              new Date(reservation.startTime) <= new Date() &&
-              new Date(reservation.endTime) > new Date()
-            "><i class="fa-solid fa-bookmark"></i></span>
+            <span
+              class="icon"
+              v-if="
+                new Date(reservation.startTime) <= new Date() &&
+                new Date(reservation.endTime) > new Date()
+              "
+              ><i class="fa-solid fa-bookmark"></i
+            ></span>
             {{ formatDate(reservation.startTime) }} -
             {{ formatDate(reservation.endTime) }}
           </td>
           <td>{{ reservation.reservationId }}</td>
-          <td>{{ reservation.room.roomId }}</td>
+          <td>{{ reservation.room.roomName }}</td>
           <td>{{ reservation.dog.dogName }}</td>
           <td>{{ reservation.totalPrice }}</td>
           <td>{{ formatDate(reservation.reservationTime) }}</td>
@@ -38,22 +53,30 @@
           </td>
           <td v-else></td> -->
           <td>
-            <button v-if="
-              !isStartDateWithinThreeDays(reservation.startTime) &&
-              formatDate(reservation.cancelTime) == '1970/01/01'
-            " class="btn btn-update" @click="
-              handleModifyReservation(reservation.reservationId, 'update')
-              ">
+            <button
+              v-if="
+                !isStartDateWithinThreeDays(reservation.startTime) &&
+                formatDate(reservation.cancelTime) == '1970/01/01'
+              "
+              class="btn btn-update"
+              @click="
+                handleModifyReservation(reservation.reservationId, 'update')
+              "
+            >
               修改時段
             </button>
           </td>
           <td>
-            <button v-if="
-              !isStartDateWithinThreeDays(reservation.startTime) &&
-              formatDate(reservation.cancelTime) == '1970/01/01'
-            " class="btn btn-cancel" @click="
-              handleModifyReservation(reservation.reservationId, 'cancel')
-              ">
+            <button
+              v-if="
+                !isStartDateWithinThreeDays(reservation.startTime) &&
+                formatDate(reservation.cancelTime) == '1970/01/01'
+              "
+              class="btn btn-cancel"
+              @click="
+                handleModifyReservation(reservation.reservationId, 'cancel')
+              "
+            >
               取消訂房
             </button>
           </td>
@@ -113,20 +136,27 @@ const isStartDateWithinThreeDays = (startDate) => {
 };
 
 const handleModifyReservation = (reservationId, str) => {
-  router
-    .push({
+  setTimeout(() => {
+    router.push({
       name: "u_page",
       params: { reservationId, str },
-    })
-    .then(() => {
-      setTimeout(() => {
-        window.location.reload();
-      }, 100); // 添加延遲，確保頁面跳轉完成後再刷新;
     });
+  }, 500); // 添加延遲，確保頁面跳轉完成後再刷新;
 };
 </script>
 
 <style scoped>
+.main {
+  margin: 2rem;
+}
+
+.flex {
+  width: 95%;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
 .page-title {
   font-size: 24px;
   margin-bottom: 20px;
@@ -139,45 +169,57 @@ const handleModifyReservation = (reservationId, str) => {
   margin-bottom: 2rem;
 }
 
+.room-table th {
+  background-color: rgb(255, 231, 137);
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+}
+
 .room-table th,
 .room-table td {
-  /* border: 1px solid #c2bdbd; */
-  padding: 12px;
   text-align: center;
 }
 
-.room-table th {
-  background-color: rgb(254, 241, 222);
+.room-table td {
+  /* border: 1px solid #c2bdbd; */
+  padding: 20px 0;
+}
+
+/* .room-table th {
+  background-color: rgb(255, 216, 157);
 }
 
 .room-table tr:nth-child(even) {
-  background-color: rgb(255, 243, 223);
-}
+  background-color: rgb(248, 248, 244);
+} */
 
 .btn {
   padding: 8px 16px;
-  border: none;
+  background-color: transparent;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.5s;
 }
 
 .btn-update {
-  background-color: #49c936;
-  color: #fff;
+  border: 1px solid #49c936;
+  color: #49c936;
 }
 
 .btn-update:hover {
+  color: #fff;
   background-color: #63dc50;
 }
 
 .btn-cancel {
-  background-color: #dc362a;
-  color: #fff;
+  border: 1px solid #dc362a;
+  color: #dc362a;
 }
 
 .btn-cancel:hover {
   background-color: #e55c4a;
+  color: #fff;
 }
 
 .icon {

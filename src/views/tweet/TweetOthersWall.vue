@@ -8,7 +8,8 @@
             </span>
         </div>
         <hr>
-        <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" />
+        <!-- <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" /> -->
+        <TweetItem2 v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet"></TweetItem2>
     </div>
 </template>
 <script>
@@ -16,10 +17,12 @@ import axios from 'axios';
 import TweetItem from '@/components/tweet/TweetCard.vue';
 import { useTweetStore } from '@/stores/tweetStore';
 import { useMemberStore } from '@/stores/memberStore';
+import TweetItem2 from '@/components/tweet/TweetCard2.vue'
 
 export default {
     components: {
         TweetItem,
+        TweetItem2
     },
     data() {
         return {

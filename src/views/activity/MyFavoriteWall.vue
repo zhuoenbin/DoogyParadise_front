@@ -1,57 +1,59 @@
 <template>
-  <div id="title">
-    <h4>
-      <b>我的收藏</b
-      ><img
-        src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1712386226/vxnuv2o0jurjvimcw5oi.png"
-        alt="🐶"
-        id="managerPic"
-      />
-    </h4>
-  </div>
-  <div id="sumCat" v-if="activities.length > 0">
-    <h6>
-      總共收藏了 {{ activities.length }} 項活動 ฅ՞•ﻌ•՞ฅ ( 寵保健：　{{
-        careCount
-      }}　／寵試吃：{{ eatCount }}　／寵跑跳：{{ runCount }} )
-    </h6>
-  </div>
-  <link
-    href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
-    rel="stylesheet"
-  />
-
-  <section class="hero-section">
-    <div class="card-grid" v-if="activities.length > 0">
-      <a class="card" href="#" v-for="a of activities" :key="a.activityId">
-        <router-link
-          :to="{
-            name: 'activityInfo',
-            params: { activityId: a.activityId },
-          }"
-        >
-          <div
-            class="card__background"
-            :style="{ 'background-image': 'url(' + a.galleryImgUrl + ')' }"
-          ></div
-        ></router-link>
-
-        <div class="card__content">
-          <p class="card__category">{{ a.activityTypeName }}</p>
-          <h6 class="card__heading">{{ a.activityTitle }}</h6>
-          <button class="likebtn" @click="toggleLike(a.activityId)">
-            <i
-              :class="{
-                'fa-solid fa-heart': userLikedList.includes(a.activityId),
-                'fa-regular fa-heart': !userLikedList.includes(a.activityId),
-              }"
-              style="color: #fb6068"
-            ></i>
-          </button>
-        </div>
-      </a>
+  <div class="wall">
+    <div id="title">
+      <h4>
+        <b>我的收藏</b
+        ><img
+          src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1712386226/vxnuv2o0jurjvimcw5oi.png"
+          alt="🐶"
+          id="managerPic"
+        />
+      </h4>
     </div>
-  </section>
+    <div id="sumCat" v-if="activities.length > 0" class="summary">
+      <h6 class="sunText">
+        總共收藏了 {{ activities.length }} 項活動 !! 🌼 寵保健：{{
+          careCount
+        }}　🥯寵試吃：{{ eatCount }}　🫧寵跑跳：{{ runCount }}
+      </h6>
+    </div>
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
+      rel="stylesheet"
+    />
+
+    <section class="hero-section">
+      <div class="card-grid" v-if="activities.length > 0">
+        <a class="card" href="#" v-for="a of activities" :key="a.activityId">
+          <router-link
+            :to="{
+              name: 'activityInfo',
+              params: { activityId: a.activityId },
+            }"
+          >
+            <div
+              class="card__background"
+              :style="{ 'background-image': 'url(' + a.galleryImgUrl + ')' }"
+            ></div
+          ></router-link>
+
+          <div class="card__content">
+            <p class="card__category">{{ a.activityTypeName }}</p>
+            <h6 class="card__heading">{{ a.activityTitle }}</h6>
+            <button class="likebtn" @click="toggleLike(a.activityId)">
+              <i
+                :class="{
+                  'fa-solid fa-heart': userLikedList.includes(a.activityId),
+                  'fa-regular fa-heart': !userLikedList.includes(a.activityId),
+                }"
+                style="color: #fb6068"
+              ></i>
+            </button>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
 </template>
 <script>
 import axios from "axios";
@@ -176,6 +178,12 @@ export default {
 #managerPic {
   height: 80px;
 }
+.sunText {
+  text-align: center;
+  font-weight: 800;
+  font-size: medium;
+  color: #e4545d;
+}
 .likebtn {
   background-color: rgba(255, 255, 255, 0.6);
   border: none;
@@ -184,7 +192,7 @@ export default {
   border-radius: 50%;
 }
 :root {
-  /* --background-dark: #2d3548; */
+  --background-dark: #2d3548;
   --text-light: rgba(255, 255, 255, 0.6);
   --text-lighter: rgba(255, 255, 255, 0.9);
   --spacing-s: 8px;

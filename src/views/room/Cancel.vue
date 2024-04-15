@@ -1,20 +1,25 @@
 <template>
-  <div>
-    <h2 class="page-title">取消訂房紀錄</h2>
-    <table class="room-table">
+  <div class="main">
+    <div class="flex">
+      <h2 class="page-title">取消訂房紀錄</h2>
+    </div>
+    <table class="table room-table">
       <thead>
         <tr>
           <th>訂房時段</th>
           <th>訂房Id</th>
-          <th>房間Id</th>
-          <th>Dog名稱</th>
+          <th>房號</th>
+          <th>寵物名稱</th>
           <th>費用</th>
           <th>訂房時間</th>
-          <th>取消時間</th>
           <th>取消原因</th>
+          <th>取消時間</th>
         </tr>
       </thead>
       <tbody>
+        <tr v-if="filteredReservations.length === 0">
+          <td colspan="8">沒有取消紀錄</td>
+        </tr>
         <tr
           v-for="(reservation, reservationId) in filteredReservations"
           :key="reservationId"
@@ -24,12 +29,12 @@
             {{ formatDate(reservation.endTime) }}
           </td>
           <td>{{ reservation.reservationId }}</td>
-          <td>{{ reservation.room.roomId }}</td>
+          <td>{{ reservation.room.roomName }}</td>
           <td>{{ reservation.dog.dogName }}</td>
           <td>{{ reservation.totalPrice }}</td>
           <td>{{ formatDate(reservation.reservationTime) }}</td>
-          <td>{{ formatDate(reservation.cancelTime) }}</td>
           <td>{{ reservation.cancelDirection }}</td>
+          <td>{{ formatDate(reservation.cancelTime) }}</td>
         </tr>
       </tbody>
     </table>
@@ -54,9 +59,9 @@ onMounted(() => {
 
 const filteredReservations = computed(() => {
   return reservations.value.filter((reservation) => {
-    if (reservation.cancelTime != null) {
-      return true;
-    }
+    // console.log(reservation.reservationId);
+    // console.log(reservation.cancelTime);
+    return reservation.cancelTime != null;
   });
 });
 
@@ -77,6 +82,17 @@ const handleModifyReservation = (reservationId, str) => {
 </script>
 
 <style scoped>
+.main {
+  margin: 2rem;
+}
+
+.flex {
+  width: 95%;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
 .page-title {
   font-size: 24px;
   margin-bottom: 20px;
@@ -89,20 +105,30 @@ const handleModifyReservation = (reservationId, str) => {
   margin-bottom: 2rem;
 }
 
-.room-table th,
+.room-table th {
+  background-color: rgb(255, 231, 137);
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+}
+
 .room-table td {
   /* border: 1px solid #c2bdbd; */
-  padding: 12px;
+  padding: 20px;
+}
+
+.room-table th,
+.room-table td {
   text-align: center;
 }
 
-.room-table th {
-  background-color: rgb(254, 241, 222);
+/* .room-table th {
+  background-color: rgb(255, 216, 157);
 }
 
 .room-table tr:nth-child(even) {
-  background-color: rgb(255, 243, 223);
-}
+  background-color: rgb(248, 248, 244);
+} */
 
 .btn {
   padding: 8px 16px;

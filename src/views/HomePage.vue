@@ -38,6 +38,15 @@
           您寵寵物，我們寵你!<br />提供您各式狗狗用品、寵平台社交、預訂寵物旅館、参加精彩活動，一站式滿足您與寵物的所有需求，一切由您的指尖玩轉，享受樂園般的寵生活體驗！
         </p>
       </div>
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3671.958509419894!2d120.22380107531383!3d23.025295579171846!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x346e771f2995cba5%3A0x3bfd449f1e46ffef!2z5Y2X6Ie656eR5oqA5aSn5a24!5e0!3m2!1szh-TW!2stw!4v1712898963324!5m2!1szh-TW!2stw"
+        width="100%"
+        height="600"
+        style="border: 0"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
     </div>
   </main>
 </template>

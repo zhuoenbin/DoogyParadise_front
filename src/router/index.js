@@ -80,9 +80,6 @@ const router = createRouter({
         {
           path: "tweetsMyNotificationPath",
           component: () => import("@/views/tweet/TweetNotification.vue"),
-        },{
-          path: "card2",
-          component: () => import("@/components/tweet/TweetCard2.vue"),
         }
       ],
     },
@@ -108,7 +105,8 @@ const router = createRouter({
           path: "u_page/:reservationId/:str",
           name: "u_page",
           component: () => import("@/views/room/UpdateFrom.vue"),
-        },{
+        },
+        {
           path: "c_page",
           name: "c_page",
           component: () => import("@/views/room/Cancel.vue"),
@@ -194,28 +192,26 @@ const router = createRouter({
     {
       path: "/employee",
       component: () => import("@/views/employee/Employee.vue"),
+    },
+    {
+      path: "/employee/tweet",
+      component: () => import("@/views/employee/TweetManage.vue"),
       children: [
-        // {
-        //   path: "r_page",
-        //   component: () => import("@/views/employee/RoomReservation.vue"),
-        // },
         {
-          path: "pm_page",
-          component: () => import("@/views/employee/ProductManage.vue"),
-        },
-        {
-          path: "om_page",
-          component: () => import("@/views/employee/OrderManage.vue"),
+          path: "tweetChart",
+          component: () => import("@/views/employee/tweet/TweetChart.vue"),
         },
         {
           path: "t_page",
-          component: () => import("@/views/employee/TweetManage.vue"),
-        },
-      ],
-    },
-    {
-      path: "/forum",
-      component: () => import("@/views/forum/Forum.vue"),
+          component: () => import("@/views/employee/tweet/TweetReport.vue"),
+        },{
+          path: "tweetOfficial",
+          component: () => import("@/views/employee/tweet/TweetOfficialTweet.vue"),
+        },{
+          path: "tweetOfficialPost",
+          component: () => import("@/components/tweet/TweetOfficalPost.vue"),
+        }
+      ]
     },
     {
       path: "/employee/room",
@@ -236,8 +232,8 @@ const router = createRouter({
         {
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
-        }
-      ]
+        },
+      ],
     },
     {
       path: "/employee/activity",
@@ -268,6 +264,13 @@ const router = createRouter({
           name: "activityUpdater",
           component: () =>
             import("@/views/employee/activity/OffiActsUpdater.vue"),
+        },
+        // 動態綁定參數
+        {
+          path: "act_PastManager/comment/:activityId",
+          name: "activityComment",
+          component: () =>
+            import("@/views/employee/activity/OffiCommentChecker.vue"),
         },
       ],
     },

@@ -22,6 +22,12 @@
               <b>🗓️更新日期:</b
               >{{ this.dateFormat(activityInfo.activityUpdateDate) }}
             </p>
+            <p class="liked_txt">
+              <b
+                ><i class="fa-solid fa-heart fa-lg" style="color: #e85454"></i
+                >&nbsp;{{ activityInfo.likedTime }} liked!</b
+              >
+            </p>
             <p class="producat_des">
               <b>活動日期:&nbsp;</b>{{ activityInfo.activityDate }}
               {{ this.timeFormat(activityInfo.activityStart) }} ~
@@ -86,6 +92,7 @@
                   <button
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
+                    id="joinbtn"
                     v-if="
                       activityInfo.activityDogNumber -
                         activityInfo.currentDogNumber >
@@ -238,134 +245,135 @@
         </div>
       </div>
     </div>
-  </div>
-  <!-- Modal -->
-  <div
-    class="modal fade"
-    id="exampleModal"
-    tabindex="-1"
-    aria-labelledby="exampleModalLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5
-            class="modal-title"
-            id="exampleModalLabel"
-            v-if="this.myDogsNotAttend.length > 0"
-          >
-            請選擇要參加的狗狗!🐶
-          </h5>
-          <h5
-            class="modal-title"
-            id="exampleModalLabel"
-            v-if="this.myDogsNotAttend.length == 0"
-          >
-            喔嗚!您的狗狗都已經報名過了喔!🐶
-          </h5>
-
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <!-- 表單內容 -->
-        <div class="modal-body">
-          <form v-if="this.myDogsNotAttend.length == 0">
-            可以至我的活動中查看喔 ૮⍝• ᴥ •⍝ა &nbsp;<a
-              class="btn btn-outline-success"
-              href="/activity/myJoinedManager"
-              role="button"
-              >前往 ᕕ( ᐛ )ᕗ</a
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+      v-if="isUser"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5
+              class="modal-title"
+              id="exampleModalLabel"
+              v-if="this.myDogsNotAttend.length > 0"
             >
-          </form>
+              請選擇要參加的狗狗!🐶
+            </h5>
+            <h5
+              class="modal-title"
+              id="exampleModalLabel"
+              v-if="this.myDogsNotAttend.length == 0"
+            >
+              喔嗚!您的狗狗都已經報名過了喔!🐶
+            </h5>
 
-          <form v-if="this.myDogsNotAttend.length > 0">
-            <div class="mb-3">
-              <label for="recipient-name" class="col-form-label"
-                >您所選擇的活動</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="recipient-name"
-                :value="chooseActTitle"
-                readonly
-              />
-            </div>
-            <!-- 檢查用 -->
-            <!-- <div>Checked names: {{ chooseDogs }}</div> -->
-            <div>
-              <label for="" class="col-form-label"> 要參與的狗狗~ </label>
-              <div v-for="d in myDogsNotAttend" :key="d.dogId" class="mb-2">
-                <div class="checkbox-wrapper-33">
-                  <label class="checkbox">
-                    <input
-                      class="checkbox__trigger visuallyhidden"
-                      type="checkbox"
-                      :value="d.dogId"
-                      @change="checkComplete"
-                      v-model="chooseDogs"
-                    />
-                    <span class="checkbox__symbol">
-                      <svg
-                        aria-hidden="true"
-                        class="icon-checkbox"
-                        width="28px"
-                        height="28px"
-                        viewBox="0 0 28 28"
-                        version="1"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M4 14l8 7L24 7"></path>
-                      </svg>
-                    </span>
-                    <p class="checkbox__textwrapper">{{ d.dogName }}</p>
-                  </label>
-                </div>
-              </div>
-              <br />
-            </div>
-            <div class="mb-2">
-              <label for="message-text" class="col-form-label"
-                >有甚麼想備註的嗎~</label
-              >
-              <textarea
-                class="form-control"
-                id="message-text"
-                v-model="note"
-              ></textarea>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <div
-            class="text-danger text-center mt-3"
-            v-if="this.myDogsNotAttend.length > 0"
-          >
-            {{ message }}
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
-          <button
-            v-if="this.myDogsNotAttend.length > 0"
-            type="button"
-            class="btn btn-primary"
-            data-bs-dismiss="modal"
-            id="liveToastBtn"
-            @click="joinActivity"
-            disabled
-          >
-            快速報名
-          </button>
+          <!-- 表單內容 -->
+          <div class="modal-body">
+            <form v-if="this.myDogsNotAttend.length == 0">
+              可以至我的活動中查看喔 ૮⍝• ᴥ •⍝ა &nbsp;<a
+                class="btn btn-outline-success"
+                href="/activity/myJoinedManager"
+                role="button"
+                >前往 ᕕ( ᐛ )ᕗ</a
+              >
+            </form>
+
+            <form v-if="this.myDogsNotAttend.length > 0">
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label"
+                  >您所選擇的活動</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="recipient-name"
+                  :value="chooseActTitle"
+                  readonly
+                />
+              </div>
+              <!-- 檢查用 -->
+              <!-- <div>Checked names: {{ chooseDogs }}</div> -->
+              <div>
+                <label for="" class="col-form-label"> 要參與的狗狗~ </label>
+                <div v-for="d in myDogsNotAttend" :key="d.dogId" class="mb-2">
+                  <div class="checkbox-wrapper-33">
+                    <label class="checkbox">
+                      <input
+                        class="checkbox__trigger visuallyhidden"
+                        type="checkbox"
+                        :value="d.dogId"
+                        @change="checkComplete"
+                        v-model="chooseDogs"
+                      />
+                      <span class="checkbox__symbol">
+                        <svg
+                          aria-hidden="true"
+                          class="icon-checkbox"
+                          width="28px"
+                          height="28px"
+                          viewBox="0 0 28 28"
+                          version="1"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M4 14l8 7L24 7"></path>
+                        </svg>
+                      </span>
+                      <p class="checkbox__textwrapper">{{ d.dogName }}</p>
+                    </label>
+                  </div>
+                </div>
+                <br />
+              </div>
+              <div class="mb-2">
+                <label for="message-text" class="col-form-label"
+                  >有甚麼想備註的嗎~</label
+                >
+                <textarea
+                  class="form-control"
+                  id="message-text"
+                  v-model="note"
+                ></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <div
+              class="text-danger text-center mt-3"
+              v-if="this.myDogsNotAttend.length > 0"
+            >
+              {{ message }}
+            </div>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              v-if="this.myDogsNotAttend.length > 0"
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+              id="liveToastBtn"
+              @click="joinActivity"
+              disabled
+            >
+              快速報名
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -383,6 +391,7 @@ export default {
       ImgList: [],
       activityId: "",
       isCustomer: true,
+      isEmployee: false,
       myDogsNotAttend: [],
       userId: "",
       chooseAct: "",
@@ -393,18 +402,20 @@ export default {
       note: "",
       isUser: false,
       joinSuccess: false,
-      isJoinButtonVisible: true,
-      isJoinButtonDisabled: false,
       message: "",
     };
   },
   mounted() {
     const memberStore = useMemberStore();
     console.log(memberStore.memberRole);
-    if (!memberStore.memberRole.startsWith("Act")) {
+    if (memberStore.memberRole.startsWith("R")) {
       this.isCustomer = false;
-      this.isJoinButtonVisible = false;
-      this.isJoinButtonDisabled = true;
+      this.isUser = false;
+      this.isEmployee = true;
+    } else if (memberStore.memberRole.startsWith("Act")) {
+      this.isUser = true;
+      this.isCustomer = false;
+      this.userId = memberStore.memberId;
     }
     this.activityId = this.$route.params.activityId;
     axios
@@ -419,9 +430,17 @@ export default {
         console.log(this.mainImg);
         console.log("圖片長度", this.ImgList.length);
         console.log(this.ImgList);
+      })
+      .then((rs) => {
+        if (this.isEmployee) {
+          this.joinBtnDisabled();
+        }
       });
   },
   methods: {
+    joinBtnDisabled() {
+      document.getElementById("joinbtn").disabled = true;
+    },
     timeFormat(time) {
       if (time && time.length >= 3) {
         time = time.substring(0, time.length - 3);
@@ -453,8 +472,8 @@ export default {
       this.currentDogNumber = currentDogNumber;
       this.note = "";
       console.log("所選擇的活動id: ", this.chooseAct);
-      if (memberStore.memberRole.startsWith("Act")) {
-        this.isUser = true;
+      if (this.isUser) {
+        // this.isUser = true;
         this.userId = memberStore.memberId;
         console.log(this.userId);
         //直接給沒參加過的狗
@@ -474,7 +493,7 @@ export default {
           .catch((error) => {
             console.error("Error dogs:", error);
           });
-      } else if (memberStore.memberRole == null) {
+      } else if (this.isCustomer) {
         this.$router.push("/login");
       }
     },
@@ -915,6 +934,14 @@ export default {
   font-weight: 600;
   letter-spacing: 2px;
   font-size: 0.8rem;
+}
+.liked_txt {
+  color: #65576c;
+  text-transform: uppercase;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  font-size: 0.7rem;
+  margin: 0;
 }
 .producat_content {
   width: 150%;

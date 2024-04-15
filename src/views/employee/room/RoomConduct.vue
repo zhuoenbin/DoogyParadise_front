@@ -14,7 +14,9 @@
         <option value="Date">訂房日期</option>
       </select>
       <input
-        v-if="searchType != 'all' && searchType != 'Date'"
+        v-if="
+          searchType != 'all' && searchType != 'Date' && searchType != 'size'
+        "
         v-model="searchTerm"
         type="text"
       />
@@ -26,9 +28,16 @@
         :options="datepickerOptions"
         :enable-time-picker="false"
       />
+      <div class="button">
+        <span>房型:</span>
+        <button class="btn" @click="changeDogSize(0)">全部</button>
+        <button class="btn" @click="changeDogSize(1)">小型犬</button
+        ><button class="btn" @click="changeDogSize(2)">中型犬</button
+        ><button class="btn" @click="changeDogSize(3)">大型犬</button>
+      </div>
     </div>
 
-    <table class="room-table mx-auto">
+    <table class="table room-table mx-auto">
       <thead>
         <tr>
           <th @click="sortByReservationId">
@@ -77,9 +86,14 @@
           </td>
           <td>{{ reservation.totalPrice }}</td>
         </tr>
-        <p class="record-count">
+        <td
+          class="record-count"
+          colspan="6"
+          v-if="filteredReservations.length != 0"
+        >
           總共 {{ filteredReservations.length }} 筆記錄
-        </p>
+        </td>
+        <td class="record-count" colspan="6" v-else>沒有紀錄</td>
       </tbody>
     </table>
   </div>
@@ -97,8 +111,10 @@ let sortDirection = ref("asc");
 let sortStartTimeDirection = ref("asc");
 let sortTotalPriceDirection = ref("asc");
 
-const searchType = ref("all"); // 默认按照名字查询
-const searchTerm = ref(""); // 查询关键字
+const searchType = ref("all");
+const searchTerm = ref("");
+
+const dogSize = ref(0);
 
 const selectedDates = ref([]); // 用於存儲所選日期的範圍
 
@@ -185,6 +201,10 @@ const formatDate = (dateString, number) => {
   }
 };
 
+const changeDogSize = (size) => {
+  dogSize.value = size;
+};
+
 const filteredReservations = computed(() => {
   const includeSearchTerm = (str) =>
     str.toLowerCase().includes(searchTerm.value.toLowerCase());
@@ -196,24 +216,64 @@ const filteredReservations = computed(() => {
     if (reservation.cancelTime == null) {
       switch (searchType.value) {
         case "name":
-          return includeSearchTerm(reservation.user.lastName) && isAfterToday;
+          if (dogSize.value == 0) {
+            return includeSearchTerm(reservation.lastName) && isAfterToday;
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              includeSearchTerm(reservation.lastName) &&
+              isAfterToday
+            );
+          }
         case "id":
-          return (
-            reservation.reservationId.toString().includes(searchTerm.value) &&
-            isAfterToday
-          );
+          if (dogSize.value == 0) {
+            return (
+              reservation.reservationId.toString().includes(searchTerm.value) &&
+              isAfterToday
+            );
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              reservation.reservationId.toString().includes(searchTerm.value) &&
+              isAfterToday
+            );
+          }
         case "roomName":
-          return (
-            reservation.room.roomName.toString().includes(searchTerm.value) &&
-            isAfterToday
-          );
+          if (dogSize.value == 0) {
+            return (
+              reservation.room.roomName.toString().includes(searchTerm.value) &&
+              isAfterToday
+            );
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              reservation.room.roomName.toString().includes(searchTerm.value) &&
+              isAfterToday
+            );
+          }
         case "petName":
-          return includeSearchTerm(reservation.dog.dogName) && isAfterToday;
+          if (dogSize.value == 0) {
+            return includeSearchTerm(reservation.dog.dogName) && isAfterToday;
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              includeSearchTerm(reservation.dog.dogName) &&
+              isAfterToday
+            );
+          }
         case "Date":
-          return (
-            RoomsDate(reservation.startTime, reservation.endTime) &&
-            isAfterToday
-          );
+          if (dogSize.value == 0) {
+            return (
+              RoomsDate(reservation.startTime, reservation.endTime) &&
+              isAfterToday
+            );
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              RoomsDate(reservation.startTime, reservation.endTime) &&
+              isAfterToday
+            );
+          }
         default:
           return isAfterToday;
       }
@@ -320,36 +380,31 @@ const RoomsDate = (beginTime, endTime) => {
 
 <style scoped>
 .container {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+  width: 90%;
+  margin: 2rem auto;
 }
+
 .room-table {
-  width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  border-spacing: 0;
+  margin-bottom: 2rem;
 }
 
-th {
-  border: none;
-  padding: 8px;
-  text-align: left;
-  background-color: rgb(254, 241, 222);
+.room-table th {
+  background-color: rgb(255, 231, 137);
+  padding: 1rem;
+  position: sticky;
+  top: 0;
 }
 
-.room-table tr:nth-child(even) {
-  background-color: rgb(255, 243, 223);
-  /* color: rgb(255, 255, 255); */
-}
-
-td {
-  /* border-bottom: 1px solid #dfd1a9; */
-  padding: 8px;
-  text-align: left;
-}
-
-.text-center {
+.room-table th,
+.room-table td {
   text-align: center;
+}
+
+.room-table td {
+  /* border: 1px solid #c2bdbd; */
+  padding: 0.5rem 0;
 }
 
 .search-bar {

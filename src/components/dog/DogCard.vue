@@ -5,7 +5,11 @@
       :src="dog.dogImgPathCloud"
       class="dog-image"
     />
-    <p v-else>找不到圖</p>
+    <img
+      v-else
+      class="dog-image"
+      src="https://res.cloudinary.com/dxz9qtntt/image/upload/f_auto,q_auto/v1/dogFolder/o88brizbheeecrszxhec"
+    />
     <!-- <img
       src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1711549113/accountFolder/yxq2tfhvpw8jtj1o8ifi.jpg"
       class="dog-image"
@@ -122,12 +126,48 @@
           <button
             type="button"
             class="btn btn-primary"
-            @click="update()"
+            @click="update(dog.dogId)"
             data-bs-dismiss="modal"
           >
             修改
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+  <!-- 修改成功 -->
+  <div class="modal" tabindex="-1" :id="'exampleModal01_' + dog.dogId">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="success">
+          <h2 class="modal-title">修改成功</h2>
+        </div>
+        <div class="modal-body success">
+          <svg width="400" height="400">
+            <circle
+              fill="none"
+              stroke="#68E534"
+              stroke-width="20"
+              stroke-linecap="round"
+              cx="200"
+              cy="200"
+              r="190"
+              class="circle"
+              transform="rotate(-90 200 200)"
+            />
+
+            <polyline
+              fill="none"
+              stroke="#68E534"
+              stroke-width="24"
+              points="88,214 173,284 304,138"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="tick"
+            />
+          </svg>
+        </div>
+        <!-- <p class="gray">已寄信至您的信箱</p> -->
       </div>
     </div>
   </div>
@@ -138,6 +178,7 @@ import axios from "axios";
 import { useMemberStore } from "@/stores/memberStore";
 
 export default {
+  emits: ["updateSuccess"],
   props: {
     dog: {
       type: Object,
@@ -159,7 +200,17 @@ export default {
       const day = date.getDate().toString().padStart(2, "0");
       return `${year}/${month}/${day}`;
     },
-    update() {
+    update(dogId) {
+      const myModal = new bootstrap.Modal(
+        document.getElementById(`exampleModal01_${dogId}`)
+      );
+      myModal.show();
+
+      // 五秒後自動關閉 modal
+      setTimeout(() => {
+        myModal.hide();
+        this.$emit("update-success");
+      }, 2600);
       axios
         .post(
           `http://localhost:8080/dog/update?dogId=${this.dog.dogId}`,
@@ -193,9 +244,6 @@ export default {
                 "Content-Type": "multipart/form-data",
               },
             })
-            .then(() => {
-              this.$router.go(0);
-            })
             .catch((error) => {
               console.error("圖片新增失敗", error);
             });
@@ -223,8 +271,9 @@ export default {
 }
 
 .dog-image {
-  max-width: 200px;
-  height: auto; /* 讓高度自動調整以保持圖像比例 */
+  width: 250px;
+  height: 300px;
+  object-fit: cover;
   border-radius: 10px;
   margin-bottom: 10px;
 }
@@ -247,5 +296,87 @@ export default {
 
 .dog-introduction {
   margin-bottom: 10px;
+}
+
+svg {
+  /* 將 SVG 元素等比例縮小到 50% */
+  transform: scale(0.4);
+}
+
+svg .circle {
+  animation: circle 1s ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+svg .tick {
+  animation: tick 0.8s ease-out;
+  animation-fill-mode: forwards;
+  animation-delay: 0.93s;
+}
+
+h2 {
+  font-family: Helvetica;
+  font-size: 36px;
+  /* margin-top: 40px; */
+  color: #333;
+  /* opacity: 0; */
+}
+
+.circle {
+  stroke-dasharray: 1194;
+  /***
+    2∏R=2*3.14*190=1194
+    ***/
+
+  stroke-dashoffset: 1194;
+}
+
+.tick {
+  stroke-dasharray: 350;
+  stroke-dashoffset: 350;
+}
+
+@keyframes circle {
+  from {
+    stroke-dashoffset: 1194;
+  }
+  to {
+    stroke-dashoffset: 2388;
+  }
+}
+
+@keyframes tick {
+  from {
+    stroke-dashoffset: 350;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes title {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  margin: auto;
+}
+
+.success {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+}
+
+.success .modal-title {
+  color: #874a33;
+  margin-top: 2rem;
+  font-size: 30px;
+  font-weight: 800;
 }
 </style>

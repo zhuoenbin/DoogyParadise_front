@@ -142,6 +142,9 @@ export default {
             case "MEDIUM":
                 this.dangerScore += 2;
                 break;
+            case "LOW":
+                this.dangerScore += 1;
+                break;
         }
 
         switch (this.report.hateSpeech) {
@@ -150,6 +153,9 @@ export default {
                 break;
             case "MEDIUM":
                 this.dangerScore += 2;
+                break;
+            case "LOW":
+                this.dangerScore += 1;
                 break;
         }
 
@@ -160,6 +166,9 @@ export default {
             case "MEDIUM":
                 this.dangerScore += 2;
                 break;
+            case "LOW":
+                this.dangerScore += 1;
+                break;
         }
 
         switch (this.report.dangerousContent) {
@@ -168,6 +177,9 @@ export default {
                 break;
             case "MEDIUM":
                 this.dangerScore += 2;
+                break;
+            case "LOW":
+                this.dangerScore += 1;
                 break;
         }
 
