@@ -5,6 +5,7 @@
         <tr>
           <th scope="col">案件編號</th>
           <th scope="col">訂單ID</th>
+          <th scope="col">訂單成立日期</th>
           <th scope="col">退貨日期</th>
           <th scope="col">狀態</th>
           <th scope="col">總金額</th>
@@ -18,6 +19,10 @@
           <td>{{ c.orders.orderId }}</td>
           {{
             dateFormat(c.orders.orderDate)
+          }}
+          <td>{{ date }}</td>
+          {{
+            dateFormat(c.orders.orderCancelDate)
           }}
           <td>{{ date }}</td>
           {{
@@ -62,7 +67,7 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body">確認取消該筆訂單？</div>
+          <div class="modal-body">確認審核該訂單取消？</div>
           <div class="modal-footer">
             <button
               type="button"
@@ -92,6 +97,7 @@ export default {
     return {
       case: [],
       date: "",
+      cancelDate: "",
       payMethod: "",
       payStatus: "",
     };
@@ -143,6 +149,7 @@ export default {
           break;
       }
     },
+    confirmCancel() {},
   },
 };
 </script>

@@ -97,7 +97,6 @@
 <script>
 import { useMemberStore } from "@/stores/memberStore";
 import axios from "axios";
-import { emptyProps } from "element-plus";
 export default {
   data() {
     return {
