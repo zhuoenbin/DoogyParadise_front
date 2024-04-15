@@ -1,16 +1,74 @@
 <template>
   <div class="container">
-    <h2 class="text-center">訂房管理</h2>
+    <h2 class="text-center">進行中</h2>
 
-    <table class="table mx-auto">
+    <!-- 添加查询功能 -->
+    <div class="search-bar">
+      <label for="searchType">選擇查詢方式：</label>
+      <select v-model="searchType" id="searchType" @change="changeSearchType">
+        <option value="all">全部資料</option>
+        <option value="id">訂單ID</option>
+        <option value="name">訂房用戶</option>
+        <option value="roomName">房號</option>
+        <option value="petName">寵物名稱</option>
+        <option value="Date">訂房日期</option>
+      </select>
+      <input
+        v-if="
+          searchType != 'all' && searchType != 'Date' && searchType != 'size'
+        "
+        v-model="searchTerm"
+        type="text"
+      />
+      <VueDatePicker
+        class="date-picker"
+        v-if="searchType == 'Date'"
+        v-model="selectedDates"
+        range
+        :options="datepickerOptions"
+        :enable-time-picker="false"
+      />
+      <div class="button">
+        <span>房型:</span>
+        <button class="btn" @click="changeDogSize(0)">全部</button>
+        <button class="btn" @click="changeDogSize(1)">小型犬</button
+        ><button class="btn" @click="changeDogSize(2)">中型犬</button
+        ><button class="btn" @click="changeDogSize(3)">大型犬</button>
+      </div>
+    </div>
+
+    <table class="table room-table mx-auto">
       <thead>
         <tr>
-          <th>訂房Id</th>
-          <th>訂房者</th>
-          <th>房號</th>
-          <th>寵物名</th>
-          <th>訂房時間</th>
-          <th>總金額</th>
+          <th @click="sortByReservationId">
+            訂單ID
+            <button class="sort">
+              <template v-if="sortReservationIdDirection === 'asc'">▲</template>
+              <template v-else>▼</template>
+            </button>
+          </th>
+          <th>訂購者</th>
+          <th @click="sortByRoomName">
+            房間號碼
+            <button class="sort">
+              <template v-if="sortDirection === 'asc'">▲</template>
+              <template v-else>▼</template>
+            </button>
+          </th>
+          <th>寵物名稱</th>
+          <th @click="sortByStartTime">
+            訂單時間
+            <button class="sort">
+              <template v-if="sortStartTimeDirection === 'asc'">▲</template>
+              <template v-else>▼</template>
+            </button>
+          </th>
+          <th @click="sortByTotalPrice">
+            總金額<button class="sort">
+              <template v-if="sortTotalPriceDirection === 'asc'">▲</template>
+              <template v-else>▼</template>
+            </button>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -19,15 +77,23 @@
           :key="reservationId"
         >
           <td>{{ reservation.reservationId }}</td>
-          <td>{{ reservation.user.lastName }}</td>
+          <td>{{ reservation.lastName }}</td>
           <td>{{ reservation.room.roomName }}</td>
           <td>{{ reservation.dog.dogName }}</td>
           <td>
-            {{ formatDate(reservation.startTime) }} -
-            {{ formatDate(reservation.endTime) }}
+            {{ formatDate(reservation.startTime, 0) }} -
+            {{ formatDate(reservation.endTime, 0) }}
           </td>
           <td>{{ reservation.totalPrice }}</td>
         </tr>
+        <td
+          class="record-count"
+          colspan="6"
+          v-if="filteredReservations.length != 0"
+        >
+          總共 {{ filteredReservations.length }} 筆記錄
+        </td>
+        <td class="record-count" colspan="6" v-else>沒有紀錄</td>
       </tbody>
     </table>
   </div>
@@ -40,6 +106,17 @@ import axios from "axios";
 let reversedData = ref([]);
 let reservations = ref([]);
 let reservationTime = ref([]);
+let sortReservationIdDirection = ref("asc");
+let sortDirection = ref("asc");
+let sortStartTimeDirection = ref("asc");
+let sortTotalPriceDirection = ref("asc");
+
+const searchType = ref("all");
+const searchTerm = ref("");
+
+const dogSize = ref(0);
+
+const selectedDates = ref([]); // 用於存儲所選日期的範圍
 
 onMounted(() => {
   axios
@@ -53,40 +130,307 @@ onMounted(() => {
   });
 });
 
-const formatDate = (dateString) => {
+const changeSearchType = () => {
+  searchTerm.value = "";
+};
+
+// datepicker 設定
+const en = {
+  days: [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ],
+  daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+  months: [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ],
+  monthsShort: [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ],
+  today: "Today",
+  clear: "Clear",
+  dateFormat: "MM/dd/yyyy",
+  timeFormat: "hh:mm aa",
+  firstDay: 0,
+};
+
+// datepicker 設定
+const datepickerOptions = {
+  locale: en,
+  range: true,
+  multipleDateSeparator: " - ",
+};
+
+const formatDate = (dateString, number) => {
   const date = new Date(dateString);
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const day = date.getDate().toString().padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  if (number == 1) {
+    return `${year}-${month}-${day}`;
+  } else {
+    return `${year}/${month}/${day}`;
+  }
+};
+
+const changeDogSize = (size) => {
+  dogSize.value = size;
 };
 
 const filteredReservations = computed(() => {
-  const currentDate = formatDate(new Date());
+  const includeSearchTerm = (str) =>
+    str.toLowerCase().includes(searchTerm.value.toLowerCase());
   return reservations.value.filter((reservation) => {
-    return reservationTime.value.some((element) => {
-      for (let i = 2; i < Object.keys(element).length; i++) {
-        if (
-          element[i] == currentDate &&
-          element[1] == reservation.reservationId
-        ) {
-          return true;
-        }
+    const isAfterToday = isBeginAndEndDate(
+      reservation.startTime,
+      reservation.endTime
+    );
+    if (reservation.cancelTime == null) {
+      switch (searchType.value) {
+        case "name":
+          if (dogSize.value == 0) {
+            return includeSearchTerm(reservation.lastName) && isAfterToday;
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              includeSearchTerm(reservation.lastName) &&
+              isAfterToday
+            );
+          }
+        case "id":
+          if (dogSize.value == 0) {
+            return (
+              reservation.reservationId.toString().includes(searchTerm.value) &&
+              isAfterToday
+            );
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              reservation.reservationId.toString().includes(searchTerm.value) &&
+              isAfterToday
+            );
+          }
+        case "roomName":
+          if (dogSize.value == 0) {
+            return (
+              reservation.room.roomName.toString().includes(searchTerm.value) &&
+              isAfterToday
+            );
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              reservation.room.roomName.toString().includes(searchTerm.value) &&
+              isAfterToday
+            );
+          }
+        case "petName":
+          if (dogSize.value == 0) {
+            return includeSearchTerm(reservation.dog.dogName) && isAfterToday;
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              includeSearchTerm(reservation.dog.dogName) &&
+              isAfterToday
+            );
+          }
+        case "Date":
+          if (dogSize.value == 0) {
+            return (
+              RoomsDate(reservation.startTime, reservation.endTime) &&
+              isAfterToday
+            );
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              RoomsDate(reservation.startTime, reservation.endTime) &&
+              isAfterToday
+            );
+          }
+        default:
+          return isAfterToday;
       }
-      return false;
-    });
+    }
   });
 });
+
+// 定義檢查結束日期是否大於當前日期的方法
+const isBeginAndEndDate = (beginDate, endDate) => {
+  const today = new Date();
+  const begin = new Date(beginDate);
+  const end = new Date(endDate);
+  return begin < today && end > today;
+};
+
+const sortByReservationId = () => {
+  sortReservationIdDirection.value =
+    sortReservationIdDirection.value === "asc" ? "desc" : "asc";
+  reservations.value.sort((a, b) => {
+    if (sortReservationIdDirection.value === "asc") {
+      return a.reservationId - b.reservationId;
+    } else {
+      return b.reservationId - a.reservationId;
+    }
+  });
+};
+
+// localeCompare 字串比較方法
+const sortByRoomName = () => {
+  sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc";
+  reservations.value.sort((a, b) => {
+    if (sortDirection.value === "asc") {
+      if (
+        typeof a.room.roomName === "string" &&
+        typeof b.room.roomName === "string"
+      ) {
+        return a.room.roomName.localeCompare(b.room.roomName);
+      } else {
+        // 如果 roomName 不是字串，則按照其在內存中的位置進行排序
+        return a.room.roomName - b.room.roomName;
+      }
+    } else {
+      if (
+        typeof a.room.roomName === "string" &&
+        typeof b.room.roomName === "string"
+      ) {
+        return b.room.roomName.localeCompare(a.room.roomName);
+      } else {
+        // 如果 roomName 不是字串，則按照其在內存中的位置進行排序
+        return b.room.roomName - a.room.roomName;
+      }
+    }
+  });
+};
+
+const sortByStartTime = () => {
+  sortStartTimeDirection.value =
+    sortStartTimeDirection.value === "asc" ? "desc" : "asc";
+  reservations.value.sort((a, b) => {
+    if (sortStartTimeDirection.value === "asc") {
+      return new Date(a.startTime) - new Date(b.startTime);
+    } else {
+      return new Date(b.startTime) - new Date(a.startTime);
+    }
+  });
+};
+
+const sortByTotalPrice = () => {
+  sortTotalPriceDirection.value =
+    sortTotalPriceDirection.value === "asc" ? "desc" : "asc";
+  reservations.value.sort((a, b) => {
+    if (sortTotalPriceDirection.value === "asc") {
+      return a.totalPrice - b.totalPrice;
+    } else {
+      return b.totalPrice - a.totalPrice;
+    }
+  });
+};
+
+const RoomsDate = (beginTime, endTime) => {
+  const begin = new Date(beginTime);
+  const endDate = new Date(endTime);
+  endDate.setDate(endDate.getDate() + 1);
+  if (selectedDates.value !== null) {
+    if (
+      selectedDates.value.length === 2 &&
+      selectedDates.value[1] !== null && // 添加这行检查
+      formatDate(selectedDates.value[1]) != "1970/01/01"
+    ) {
+      const start = new Date(selectedDates.value[0]);
+      const end = new Date(selectedDates.value[1]);
+      return start >= begin && end <= endDate;
+    } else if (formatDate(selectedDates.value[1]) == "1970/01/01") {
+      const day = new Date(selectedDates.value[0]);
+      return day >= begin && day <= endDate;
+    } else {
+      return true;
+    }
+  } else {
+    return true;
+  }
+};
 </script>
 
 <style scoped>
 .container {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+  width: 90%;
+  margin: 2rem auto;
 }
 
-.table {
+.room-table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 2rem;
+}
+
+.room-table th {
+  background-color: rgb(255, 231, 137);
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+}
+
+.room-table th,
+.room-table td {
+  text-align: center;
+}
+
+.room-table td {
+  /* border: 1px solid #c2bdbd; */
+  padding: 0.5rem 0;
+}
+
+.search-bar {
+  margin-bottom: 20px;
+}
+
+input[type="text"],
+select {
   width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.date-picker {
+  margin-top: 5px;
+}
+
+button.sort {
+  font-size: 12px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  color: rgb(205, 176, 141);
 }
 </style>

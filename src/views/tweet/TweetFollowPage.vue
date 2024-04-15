@@ -1,7 +1,8 @@
 <template>
     <div class="tweet-container">
         <h3>我的追蹤</h3>
-        <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" />
+        <TweetItem3 v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet"></TweetItem3>
+        <!-- <TweetItem v-for="tweet in tweets" :key="tweet.tweetId" :tweet="tweet" /> -->
     </div>
     <!-- 追蹤名單 -->
     <div class="follow-list">
@@ -19,10 +20,14 @@ import TweetItem from '@/components/tweet/TweetCard.vue';
 import { useMemberStore } from '@/stores/memberStore';
 import { useTweetStore } from '@/stores/tweetStore';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import TweetItem2 from '@/components/tweet/TweetCard2.vue';
+import TweetItem3 from '@/components/tweet/TweetCard3.vue'
 
 export default {
     components: {
         TweetItem,
+        TweetItem2,
+        TweetItem3
     },
     data() {
         return {
@@ -33,21 +38,24 @@ export default {
     mounted() {
         const memberStore = useMemberStore();
 
-        axios.get(`${this.API_URL}/tweet/getMyFollowTweets?userId=${memberStore.memberId}`)
-            .then(response => {
-                this.tweets = response.data;
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        if (memberStore.memberRole.startsWith("Act")) {
+            axios.get(`${this.API_URL}/tweet/getMyFollowTweets?userId=${memberStore.memberId}`)
+                .then(response => {
+                    this.tweets = response.data;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
 
-        axios.get(`${this.API_URL}/tweet/getMyFollowUsers?userId=${memberStore.memberId}`)
-            .then(response => {
-                this.users = response.data;
-            })
-            .catch(error => {
-                console.error(error);
-            });
+            axios.get(`${this.API_URL}/tweet/getMyFollowUsers?userId=${memberStore.memberId}`)
+                .then(response => {
+                    this.users = response.data;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+
 
     },
     methods: {
@@ -68,31 +76,31 @@ export default {
 <style scoped>
 .follow-list {
     margin-top: 39px;
-    /* 设置顶部外边距 */
+
     border: 2px solid #ccc;
-    /* 添加边框 */
+
     padding: 20px;
-    /* 添加内边距 */
+
     border-radius: 6px;
-    /* 设置圆角 */
+
 }
 
 .follow-list h4 {
     color: #333;
-    /* 设置标题颜色 */
+
     font-size: 1.5em;
-    /* 设置标题字体大小 */
+
     margin-bottom: 20px;
-    /* 设置底部外边距 */
+
 }
 
 .modal-body {
     cursor: pointer;
-    /* 鼠标指针样式为手型 */
+
 }
 
 .modal-body:hover {
     background-color: #f0f0f0;
-    /* 鼠标悬停时背景颜色变化 */
+
 }
 </style>

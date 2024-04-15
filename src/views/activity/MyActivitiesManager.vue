@@ -1,10 +1,24 @@
 <template>
-  <div class="col-lg-10 mx-auto col-lg-3">
-    <div id="title">
-      <h4>
-        <b>管理我的報名</b
-        ><img src="../../assets/managerPic.png" alt="🐶" id="managerPic" />
-      </h4>
+  <div>
+    <div id="titlemanager">
+      <table>
+        <tbody>
+          <tr>
+            <td style="vertical-align: middle">
+              <p class="titleh4" style="color: brown">
+                <b>管理我的報名</b>
+              </p>
+            </td>
+            <td style="vertical-align: middle">
+              <img
+                src="../../assets/managerPic.png"
+                alt="🐶"
+                id="managerPicc"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
       <div class="checkbox-wrapper-10 status">
@@ -30,7 +44,7 @@
 
     <div class="py-1 bg-light">
       <div class="container">
-        <table class="table table-striped">
+        <table class="table">
           <thead>
             <tr>
               <th scope="col">管理</th>
@@ -55,6 +69,7 @@
             </tr>
           </thead>
           <tbody
+            class="smallText"
             v-if="myJoinedList.length > 0"
             v-for="a of myJoinedList"
             :key="a.userJoinedId"
@@ -74,7 +89,8 @@
                       a.userNote,
                       a.activityDogNumber,
                       a.currentDogNumber,
-                      a.activityStatus
+                      a.activityStatus,
+                      a.activityCost
                     )
                   "
                 >
@@ -86,7 +102,17 @@
                 {{ a.activityDate }} {{ this.timeFormat(a.activityStart) }} ~
                 {{ this.timeFormat(a.activityEnd) }}
               </td>
-              <td>{{ a.activityTitle }}</td>
+              <td>
+                <router-link
+                  :to="{
+                    name: 'activityInfo',
+                    params: { activityId: a.activityId },
+                  }"
+                  ><button class="actTag btn smallText">
+                    {{ a.activityTitle }}
+                  </button>
+                </router-link>
+              </td>
               <td>{{ a.activityStatus }}</td>
               <td>
                 <span v-for="d of a.dogList">{{ d }}&nbsp;</span>
@@ -168,7 +194,10 @@
                 <br />
               </div>
               <div v-if="this.chooseActStatus != '報名截止'">
-                <label for="" class="col-form-label"> 還有狗狗想參與嗎~ </label>
+                <label for="" class="col-form-label">
+                  還有狗狗想參與嗎~ 💡:每位毛孩參與費用:
+                  {{ chooseActCost }} 元</label
+                >
                 <div v-if="this.activityDogNumber == this.currentDogNumber">
                   本活動已達參加狗之上限😥
                 </div>
@@ -217,6 +246,16 @@
                   v-model="newNote"
                 ></textarea>
               </div>
+              <div class="mb-2" v-if="chooseActCost > 0">
+                <label for="message-text" class="col-form-label">💰小計</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="message-text"
+                  readonly
+                  v-model="payCost"
+                />
+              </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -237,6 +276,7 @@
               data-bs-dismiss="modal"
               id="liveToastBtn"
               @click="joinActivity"
+              disabled
             >
               更新
             </button>
@@ -244,6 +284,7 @@
         </div>
       </div>
     </div>
+    <div id="pay"></div>
   </div>
 </template>
 <script>
@@ -257,6 +298,7 @@ export default {
       chooseAct: "",
       chooseActTitle: "",
       chooseActStatus: "",
+      chooseActCost: null,
       activityDogNumber: null,
       currentDogNumber: null,
       oldNote: "",
@@ -264,6 +306,8 @@ export default {
       message: "",
       myDogJoinedList: [],
       dogCancelledList: [],
+      payCost: null,
+      isDoPay: false,
       myDogNotApplyList: [],
       dogApplyList: [],
       completeChangeCount: null,
@@ -301,13 +345,15 @@ export default {
       userNote,
       activityDogNumber,
       currentDogNumber,
-      activityStatus
+      activityStatus,
+      activityCost
     ) {
       const memberStore = useMemberStore();
       console.log(memberStore.memberRole);
 
       this.chooseAct = activityId;
       this.chooseActTitle = activityTitle;
+      this.chooseActCost = activityCost;
       this.newNote = userNote;
       this.oldNote = userNote;
       this.activityDogNumber = activityDogNumber;
@@ -359,6 +405,8 @@ export default {
         let submitButton = document.getElementById("liveToastBtn");
         submitButton.disabled = true;
         this.message = "還沒做更改喔~";
+        this.payCost = 0;
+        this.isDoPay = false;
         // return false;
       } else if (
         this.dogApplyList.length + this.currentDogNumber >
@@ -367,11 +415,32 @@ export default {
         let submitButton = document.getElementById("liveToastBtn");
         submitButton.disabled = true;
         this.message = "很抱歉😥已超過🐶數上限!";
+        this.payCost = "⚠️";
+        this.isDoPay = false;
       } else {
         let submitButton = document.getElementById("liveToastBtn");
         submitButton.disabled = false;
         this.message = "";
-        // return true;
+        if (this.dogApplyList.length > this.dogCancelledList.length) {
+          this.payCost =
+            this.chooseActCost *
+            (this.dogApplyList.length - this.dogCancelledList.length);
+          this.isDoPay = true;
+        } else if (
+          this.dogApplyList.length > 0 &&
+          this.dogCancelledList.length > 0 &&
+          this.dogApplyList.length == this.dogCancelledList.length
+        ) {
+          this.payCost = "不需補差額";
+          this.isDoPay = false;
+        } else if (this.dogApplyList.length < this.dogCancelledList.length) {
+          this.payCost =
+            "將退款: " +
+            this.chooseActCost *
+              (this.dogCancelledList.length - this.dogApplyList.length) +
+            "元";
+          this.isDoPay = false;
+        }
       }
     },
     timeFormat(time) {
@@ -391,7 +460,9 @@ export default {
         this.doRenewUserNote();
         this.completeChangeCount++;
       }
-      this.doUpdatePage();
+      if (!this.isDoPay) {
+        this.doUpdatePage();
+      }
     },
     doDogApply() {
       console.log("i do new dog apply");
@@ -407,7 +478,11 @@ export default {
           console.log("報名成功", response.data);
           this.dogApplyList = [];
         })
-        // .then(this.$router.push("/activity/myJoinedManager"))
+        .then((rs) => {
+          if (this.payCost > 0) {
+            this.goEcPay();
+          }
+        })
         .catch((error) => {
           console.error("報名失敗", error);
           this.message = "報名失敗";
@@ -433,6 +508,18 @@ export default {
         .catch((error) => {
           console.error("取消失敗", error);
           this.message = "取消失敗";
+        });
+    },
+    goEcPay() {
+      axios
+        .post(
+          `http://localhost:8080/ecpayCheckout?price=${this.payCost}&url=activity/myJoinedManager`
+        )
+        .then((response) => {
+          // console.log(response.data);
+          const pay = document.getElementById("pay");
+          pay.innerHTML = response.data;
+          document.getElementById("allPayAPIForm").submit();
         });
     },
     doRenewUserNote() {
@@ -464,30 +551,51 @@ export default {
         setTimeout(function () {
           let loading = document.getElementById("loading");
           loading.style.display = "none";
-        }, 8000);
-        this.$router.push("/activity/myJoinedManager");
+        }, 3000);
+        window.location.reload();
       }
     },
   },
 };
 </script>
-<style>
-#title {
+<style scoped>
+#titlemanager {
   margin: auto 20px;
   padding: 20px 20px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+}
+.titleh4 {
+  font-weight: 700;
+  font-size: 20px;
 }
 .status {
   color: #2990aa;
 }
-#managerPic {
+#managerPicc {
   height: 75px;
+  margin: 0;
 }
 /* loading icon */
 #loading {
   display: none;
 }
-
+.smallText,
+td {
+  font-size: 15px;
+}
+.actTag {
+  background-color: white;
+  border-radius: 20px;
+  border: none;
+  /* transition: background-color 0.3s ease; */
+}
+th,
+td {
+  /* text-align: center; 水平居中 */
+  vertical-align: middle; /* 垂直居中 */
+}
 .checkbox-wrapper-33 {
   --s-xsmall: 0.625em;
   --s-small: 1.2em;

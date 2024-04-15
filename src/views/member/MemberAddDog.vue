@@ -1,5 +1,5 @@
 <template>
-  <div class="flex">
+  <div class="main flex">
     <form>
       <div class="mb-3">
         <label for="dogName" class="form-label">狗狗名稱</label>
@@ -71,6 +71,43 @@
       </div>
     </form>
     <button class="btn btn-primary" @click="addDog()">新增狗狗</button>
+
+    <!-- Modal 新增成功 -->
+    <div class="modal" tabindex="-1" id="exampleModal">
+      <div class="modal-dialog">
+        <div class="modal-content modalbgc">
+          <div class="success">
+            <h2 class="modal-title">新增成功</h2>
+          </div>
+          <div class="modal-body success">
+            <svg width="400" height="400">
+              <circle
+                fill="none"
+                stroke="#68E534"
+                stroke-width="20"
+                stroke-linecap="round"
+                cx="200"
+                cy="200"
+                r="190"
+                class="circle"
+                transform="rotate(-90 200 200)"
+              />
+
+              <polyline
+                fill="none"
+                stroke="#68E534"
+                stroke-width="24"
+                points="88,214 173,284 304,138"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="tick"
+              />
+            </svg>
+          </div>
+          <!-- <p class="gray">已寄信至您的信箱</p> -->
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -78,7 +115,7 @@
 // import { useMemberStore } from "@/stores/memberStore";
 import DogItem from "@/components/dog/DogCard.vue";
 import axios from "axios";
-import { useRouter } from "vue-router";
+// import { useRouter } from "vue-router";
 
 export default {
   components: {
@@ -115,6 +152,15 @@ export default {
     },
 
     addDog() {
+      const myModal = new bootstrap.Modal(
+        document.getElementById(`exampleModal`)
+      );
+      myModal.show();
+
+      // 五秒後自動關閉 modal
+      setTimeout(() => {
+        myModal.hide();
+      }, 3000);
       axios
         .post(
           `http://localhost:8080/dog/addUserDog`,
@@ -134,37 +180,39 @@ export default {
         )
         .then((response) => {
           this.dogImg(response.data);
+          setTimeout(() => {
+            this.$router.push({
+              name: "mydog", // 使用路由名稱
+            });
+          }, 3000);
         });
     },
     dogImg(data) {
-      if (this.memberId != null) {
-        if (this.$refs.dogImgPathCloud.files.length > 0) {
-          const fd = new FormData();
-          fd.append("dogId", data);
-          fd.append("dogImgPathCloud", this.$refs.dogImgPathCloud.files[0]);
-          axios
-            .post(`${this.API_URL}/dog/addDogImg`, fd, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            })
-            .then((response) => {
-              this.$router.push({
-                name: "mydog", // 使用路由名稱
-              });
-            })
-            .catch((error) => {
-              console.error("圖片新增失敗", error);
-            });
-        } else {
-          console.log("沒有選擇任何圖片");
-        }
+      if (this.$refs.dogImgPathCloud.files.length > 0) {
+        const fd = new FormData();
+        fd.append("dogId", data);
+        fd.append("dogImgPathCloud", this.$refs.dogImgPathCloud.files[0]);
+        axios
+          .post(`${this.API_URL}/dog/addDogImg`, fd, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .catch((error) => {
+            console.error("圖片新增失敗", error);
+          });
+      } else {
+        console.log("沒有選擇任何圖片");
       }
     },
   },
 };
 </script>
 <style scoped>
+.main {
+  width: 100%;
+}
+
 .flex {
   margin: 0 auto; /* 將彈性容器水平置中 */
   display: flex;
@@ -173,9 +221,9 @@ export default {
 }
 
 form {
-  margin: 20px;
+  margin-top: 2rem;
   padding: 20px;
-  width: 100%;
+  width: 80%;
   border: 1px solid #ccc;
   border-radius: 10px;
   background-color: #f9f9f9; /* 添加背景色 */
@@ -228,8 +276,8 @@ input[type="file"].form-control {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width: 100%;
-  margin: 20px 300px; /* 增加上邊距以與其他元素保持間距 */
+  width: 80%;
+  margin: 2rem 0; /* 增加上邊距以與其他元素保持間距 */
 }
 
 .btn-primary:hover {
@@ -240,5 +288,87 @@ input[type="file"].form-control {
 .btn-primary:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+svg {
+  /* 將 SVG 元素等比例縮小到 50% */
+  transform: scale(0.4);
+}
+
+svg .circle {
+  animation: circle 1s ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+svg .tick {
+  animation: tick 0.8s ease-out;
+  animation-fill-mode: forwards;
+  animation-delay: 0.93s;
+}
+
+h2 {
+  font-family: Helvetica;
+  font-size: 36px;
+  /* margin-top: 40px; */
+  color: #333;
+  /* opacity: 0; */
+}
+
+.circle {
+  stroke-dasharray: 1194;
+  /***
+    2∏R=2*3.14*190=1194
+    ***/
+
+  stroke-dashoffset: 1194;
+}
+
+.tick {
+  stroke-dasharray: 350;
+  stroke-dashoffset: 350;
+}
+
+@keyframes circle {
+  from {
+    stroke-dashoffset: 1194;
+  }
+  to {
+    stroke-dashoffset: 2388;
+  }
+}
+
+@keyframes tick {
+  from {
+    stroke-dashoffset: 350;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes title {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  margin: auto;
+}
+
+.success {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+}
+
+.success .modal-title {
+  color: #874a33;
+  margin-top: 2rem;
+  font-size: 30px;
+  font-weight: 800;
 }
 </style>

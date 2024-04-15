@@ -101,16 +101,17 @@ const router = createRouter({
           name: "u_page",
           component: () => import("@/views/room/UpdateFrom.vue"),
         },
+        {
+          path: "c_page",
+          name: "c_page",
+          component: () => import("@/views/room/Cancel.vue"),
+        },
       ],
     },
     {
       path: "/activity",
       component: () => import("@/views/activity/ActivityMainPage.vue"),
       children: [
-        {
-          path: "create",
-          component: () => import("@/views/activity/CreateActivity.vue"),
-        },
         {
           path: "all",
           component: () => import("@/views/activity/ActivityWall.vue"),
@@ -155,10 +156,6 @@ const router = createRouter({
           component: () => import("@/views/activity/VenuesIntro.vue"),
         },
         {
-          path: "myVenuesRental",
-          component: () => import("@/views/activity/MyVenueRental.vue"),
-        },
-        {
           path: "venueRental",
           component: () => import("@/views/activity/VenueRental.vue"),
         },
@@ -171,37 +168,44 @@ const router = createRouter({
           component: () =>
             import("@/views/activity/MyPastActivitiesManager.vue"),
         },
+        {
+          path: "myFavoriteManager",
+          component: () => import("@/views/activity/MyFavoriteWall.vue"),
+        },
+        // 動態綁定參數
+        {
+          path: "activityPage/:activityId",
+          name: "activityInfo",
+          component: () => import("@/views/activity/ActivityInfoPage.vue"),
+        },
       ],
     },
     {
       path: "/employee",
       component: () => import("@/views/employee/Employee.vue"),
+    },
+    {
+      path: "/employee/tweet",
+      component: () => import("@/views/employee/TweetManage.vue"),
       children: [
-        // {
-        //   path: "r_page",
-        //   component: () => import("@/views/employee/RoomReservation.vue"),
-        // },
         {
-          path: "pm_page",
-          component: () => import("@/views/employee/ProductManage.vue"),
-        },
-        {
-          path: "om_page",
-          component: () => import("@/views/employee/OrderManage.vue"),
+          path: "tweetChart",
+          component: () => import("@/views/employee/tweet/TweetChart.vue"),
         },
         {
           path: "t_page",
-          component: () => import("@/views/employee/TweetManage.vue"),
+          component: () => import("@/views/employee/tweet/TweetReport.vue"),
         },
         {
-          path: "act_page",
-          component: () => import("@/views/employee/ActivityManager.vue"),
+          path: "tweetOfficial",
+          component: () =>
+            import("@/views/employee/tweet/TweetOfficialTweet.vue"),
+        },
+        {
+          path: "tweetOfficialPost",
+          component: () => import("@/components/tweet/TweetOfficalPost.vue"),
         },
       ],
-    },
-    {
-      path: "/forum",
-      component: () => import("@/views/forum/Forum.vue"),
     },
     {
       path: "/employee/room",
@@ -222,6 +226,53 @@ const router = createRouter({
         {
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
+        },
+        {
+          path: "roomChart_page",
+          component: () => import("@/views/employee/room/RoomChart.vue"),
+        },
+        {
+          path: "cancel_page",
+          component: () => import("@/views/employee/room/RoomCancel.vue"),
+        },
+      ],
+    },
+    {
+      path: "/employee/activity",
+      component: () => import("@/views/employee/activity/Activity.vue"),
+      children: [
+        {
+          path: "act_PastManager",
+          component: () =>
+            import("@/views/employee/activity/OffiPastActsManager.vue"),
+        },
+        {
+          path: "act_HoldingManager",
+          component: () =>
+            import("@/views/employee/activity/OffiActsHoldingManager.vue"),
+        },
+        {
+          path: "act_Creater",
+          component: () =>
+            import("@/views/employee/activity/OffiActsCreater.vue"),
+        },
+        {
+          path: "act_Creater/FormStyle",
+          component: () =>
+            import("@/views/employee/activity/CreateActivity.vue"),
+        },
+        {
+          path: "act_UpdateManager/:activityId",
+          name: "activityUpdater",
+          component: () =>
+            import("@/views/employee/activity/OffiActsUpdater.vue"),
+        },
+        // 動態綁定參數
+        {
+          path: "act_PastManager/comment/:activityId",
+          name: "activityComment",
+          component: () =>
+            import("@/views/employee/activity/OffiCommentChecker.vue"),
         },
       ],
     },

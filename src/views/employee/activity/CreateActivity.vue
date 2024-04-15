@@ -1,10 +1,18 @@
 <template>
-  <main class="container col-xl-10 col-xxl-8 px-4 py-5">
-    <div class="row align-items-center g-lg-7 py-7">
-      <!-- <div class="col-lg-5 text-center text-lg-start">
-        <h1 @click="check" class="display-4 fw-bold lh-1 mb-3">辦活動!</h1>
-        <p class="col-lg-10 fs-4">由我開始的Doggy Paradise!</p>
-      </div> -->
+  <main class="">
+    <div class="">
+      <div id="title">
+        <h4>
+          <b>創建活動區</b
+          ><img
+            src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1712301343/activityFolder/uchxdgy1ccjnz0fd2lcm.png"
+            alt="🐶"
+            id="managerPic"
+          /><router-link to="/employee/activity/act_Creater">
+            <button class="btn btn-outline-secondary">點擊切換編輯模式</button>
+          </router-link>
+        </h4>
+      </div>
       <!-- 表單 -->
       <div class="col-lg-10 mx-auto col-lg-3">
         <form class="p-4 p-md-7 border rounded-3 bg-light">
@@ -27,7 +35,7 @@
                     {{ t.activityTypeName }}
                   </option>
                 </select>
-                <label for="floatingSelect">活動類型</label>
+                <label for="floatingSelect" style="margin: 0">活動類型</label>
               </div>
             </div>
             <div class="col-md">
@@ -48,7 +56,7 @@
                     {{ v.venueName }}
                   </option>
                 </select>
-                <label for="floatingSelect">場地選擇</label>
+                <label for="floatingSelect" style="margin: 0">場地選擇</label>
               </div>
             </div>
           </div>
@@ -65,7 +73,7 @@
                   max="2026-04-26"
                   v-model.lazy="activityDate"
                 />
-                <label>活動日期:</label>
+                <label style="margin: 0">活動日期:</label>
               </div>
             </div>
             <div class="col-md">
@@ -78,7 +86,7 @@
                   min="10:00"
                   max="18:00"
                   v-model.lazy="activityStart"
-                /><label>開始時間:</label>
+                /><label style="margin: 0">開始時間:</label>
               </div>
             </div>
             <div class="col-md">
@@ -91,7 +99,7 @@
                   min="10:00"
                   max="18:00"
                   v-model="activityEnd"
-                /><label>結束時間:</label>
+                /><label style="margin: 0">結束時間:</label>
               </div>
             </div>
           </div>
@@ -102,7 +110,7 @@
               class="form-control"
               v-model.lazy="activityTitle"
             />
-            <label>活動主題</label>
+            <label style="margin: 0">活動主題</label>
           </div>
           <div class="input-group mb-3">
             <input
@@ -112,7 +120,10 @@
               ref="mainImgUpload"
               accept="image/*"
             />
-            <label class="input-group-text" for="inputGroupFile02"
+            <label
+              style="margin: 0"
+              class="input-group-text"
+              for="inputGroupFile02"
               >主題圖片上傳</label
             >
           </div>
@@ -123,7 +134,7 @@
               class="form-control"
               v-model.lazy="activityDescription"
             ></textarea>
-            <label>活動簡介</label>
+            <label style="margin: 0">活動簡介</label>
           </div>
           <div class="form-floating mb-3">
             <textarea
@@ -131,7 +142,7 @@
               class="form-control"
               v-model="activityProcess"
             ></textarea>
-            <label>活動流程</label>
+            <label style="margin: 0">活動流程</label>
           </div>
           <div class="form-floating mb-3">
             <textarea
@@ -139,7 +150,7 @@
               class="form-control"
               v-model="activityNotice"
             ></textarea>
-            <label>注意事項</label>
+            <label style="margin: 0">注意事項</label>
           </div>
           <div class="input-group mb-3">
             <input
@@ -150,12 +161,15 @@
               accept="image/*"
               multiple
             />
-            <label class="input-group-text" for="inputGroupFile02"
+            <label
+              style="margin: 0"
+              class="input-group-text"
+              for="inputGroupFile02"
               >其他說明圖片上傳</label
             >
           </div>
 
-          <!-- <div class="row g-2">
+          <div class="row g-2">
             <div class="col-md-2">
               <div class="form-floating mb-3">
                 <input
@@ -177,7 +191,7 @@
                 <label>費用敘述</label>
               </div>
             </div>
-          </div> -->
+          </div>
 
           <div class="row g-3">
             <div class="col-md">
@@ -191,7 +205,7 @@
                   max="2026-04-30T00:00"
                   v-model="activityClosingDate"
                   required
-                /><label>報名截止時間:</label>
+                /><label style="margin: 0">報名截止時間:</label>
               </div>
             </div>
             <div class="col-md">
@@ -213,7 +227,7 @@
                     {{ n }}
                   </option>
                 </select>
-                <label for="floatingSelect">預計狗數</label>
+                <label style="margin: 0" for="floatingSelect">預計狗數</label>
               </div>
             </div>
           </div>
@@ -221,7 +235,7 @@
             <div class="col-md">
               <div class="form-floating mb-3">
                 <input type="text" class="form-control" v-model="contactMail" />
-                <label>連絡信箱</label>
+                <label style="margin: 0">連絡信箱</label>
               </div>
             </div>
             <div class="col-md">
@@ -231,7 +245,7 @@
                   class="form-control"
                   v-model="contactPhone"
                 />
-                <label>連絡電話</label>
+                <label style="margin: 0">連絡電話</label>
               </div>
             </div>
           </div>
@@ -402,11 +416,19 @@ export default {
             console.log(rs.data);
             console.log(activityStore.activityTitle);
             console.log(activityStore.activityId);
+          })
+          .then((rs) => {
             this.mainImgUpload();
+          })
+          .then((rs) => {
             if (this.$refs.normalImage.files.length > 0) {
               this.normalImgUpload();
+            } else {
+              console.log("no other image");
             }
-            this.$router.push("/");
+          })
+          .then((rs) => {
+            this.$router.push("/employee/activity/act_HoldingManager");
           })
           .catch((error) => {
             this.message = "創建失敗";
@@ -439,4 +461,14 @@ export default {
   },
 };
 </script>
-<style></style>
+<style scoped>
+#title {
+  color: #3f427f;
+  margin: auto 20px;
+  padding: 20px 20px;
+  text-align: center;
+}
+#managerPic {
+  height: 60px;
+}
+</style>

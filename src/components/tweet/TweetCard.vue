@@ -118,10 +118,19 @@
             <br>
 
             <!-- 推文圖片 -->
-            <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0" class="tweet-galleries">
+            <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0 && !imgOnline" class="tweet-galleries">
                 <div class="d-flex justify-content-center">
                     <div v-for="(gallery, index) in tweet.tweetGalleries" :key="index" class="gallery-item">
                         <img :src="getImageUrl(gallery.imgPath)" alt="Gallery Image" class="gallery-image">
+                    </div>
+                </div>
+            </div>
+            <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0 && imgOnline" class="tweet-galleries">
+                <div class="d-flex justify-content-center">
+                    <div class="gallery-item">
+                        <a :href="activityLink">
+                            <img :src="imgOnlinePath" alt="Gallery Image" class="gallery-image">
+                        </a>
                     </div>
                 </div>
             </div>
@@ -166,8 +175,8 @@
             <!-- 顯示留言數 -->
             <span v-if="this.numOfComment > 0" class="comment-count" style="margin-right: 10px;">
                 <button @click="getCommentsLink(tweet.tweetId)" type="button" class="btn btn-outline-dark">有{{
-                this.numOfComment
-            }}則留言
+                    this.numOfComment
+                    }}則留言
                 </button>
             </span>
 
@@ -227,6 +236,9 @@ export default {
             userDogs: [],
             reportPost: [],//檢舉內容
             reportPostText: '',
+            imgOnlinePath: "",
+            imgOnline: false,
+            activityLink: "http://localhost:5173/activity/all",
         }
     },
     props: {
@@ -244,18 +256,33 @@ export default {
                 console.error('Error fetching number of comments:', error);
             });
 
-        axios.get(`${this.API_URL}/tweet/getTweetLikesNum`, {
-            params: {
-                tweetId: this.tweet.tweetId,
-                userId: this.userId
-            }
-        }).then(re => {
-            this.tweetLikeNum = re.data.tweetLikesNum;
-            //確認使用者是否已經按讚
-            if (re.data.isUserLiked == 1) {
-                this.liked = true
-            }
-        })
+        if (this.userId) {
+            axios.get(`${this.API_URL}/tweet/getTweetLikesNum`, {
+                params: {
+                    tweetId: this.tweet.tweetId,
+                    userId: this.userId
+                }
+            }).then(re => {
+                this.tweetLikeNum = re.data.tweetLikesNum;
+                //確認使用者是否已經按讚
+                if (re.data.isUserLiked == 1) {
+                    this.liked = true
+                }
+            })
+        } else {
+            axios.get(`${this.API_URL}/tweet/getTweetLikesNumForVisitor`, {
+                params: {
+                    tweetId: this.tweet.tweetId,
+                }
+            }).then(re => {
+                this.tweetLikeNum = re.data.tweetLikesNum;
+                //確認使用者是否已經按讚
+                if (re.data.isUserLiked == 1) {
+                    this.liked = true
+                }
+            })
+        }
+
 
         //載入使用者的狗狗們
         axios.get(`${this.API_URL}/tweet/getTweetDogTags/${this.tweet.tweetId}`).then(re => {
@@ -266,15 +293,15 @@ export default {
         })
     },
     mounted() {
-        // if (this.tweet.preNode != 0) {
-        //     axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.preNode}`).then(re => {
-        //         this.preNodeUserName = re.data.lastName;
-        //         this.preNodeUserId = re.data.userId;
-        //     })
-        //     axios.get(`${this.API_URL}/tweet/getTweetById/${this.tweet.preNode}`).then(re => {
-        //         this.preNodeTweet = re.data;
-        //     })
-        // }
+        if (this.tweet.preNode != 0) {
+            axios.get(`${this.API_URL}/tweet/getUserByTweetId/${this.tweet.preNode}`).then(re => {
+                this.preNodeUserName = re.data.lastName;
+                // this.preNodeUserId = re.data.userId;
+            })
+            // axios.get(`${this.API_URL}/tweet/getTweetById/${this.tweet.preNode}`).then(re => {
+            //     this.preNodeTweet = re.data;
+            // })
+        }
 
 
         if (this.tweet.preNode == 0) {
@@ -299,6 +326,12 @@ export default {
     },
     methods: {
         getImageUrl(imgPath) {
+            if (imgPath.startsWith('http')) {
+                this.imgOnlinePath = imgPath;
+                console.log(this.imgOnlinePath)
+                this.imgOnline = true;
+                return;
+            }
             return `${this.API_URL}/tweet/getImage/${imgPath}`;
         },
         getCommentsLink() {

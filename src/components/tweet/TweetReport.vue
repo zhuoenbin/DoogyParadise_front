@@ -14,6 +14,9 @@
                 <code>狀態 :<span v-if="buttonControll">未處理</span>
                     <span v-else>已處理</span></code>
 
+
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span v-if="this.dangerSigle">AI判定:異常推文</span>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
                 <span v-if="!buttonControll">處理員工ID : {{ empName }}</span>
@@ -23,17 +26,37 @@
         <div :id="'collapseOne' + report.reportsId" class="accordion-collapse collapse "
             :aria-labelledby="'headingOne' + report.reportsId" data-bs-parent="#accordionExample">
             <div class="accordion-body">
+
                 <div>檢舉型態 : {{ report.reportReason }}</div>
                 <div>其他意見 : {{ report.reportDescription }}</div>
                 <hr>
                 <div>推文內容 :{{ tweet.tweetContent }}</div>
-                <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0" class="tweet-galleries">
+                <!-- 推文圖片 -->
+                <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0 && !imgOnline"
+                    class="tweet-galleries">
                     <div class="d-flex justify-content-center">
                         <div v-for="(gallery, index) in tweet.tweetGalleries" :key="index" class="gallery-item">
                             <img :src="getImageUrl(gallery.imgPath)" alt="Gallery Image" class="gallery-image">
                         </div>
                     </div>
                 </div>
+                <div v-if="tweet.tweetGalleries && tweet.tweetGalleries.length > 0 && imgOnline"
+                    class="tweet-galleries">
+                    <div class="d-flex justify-content-center">
+                        <div class="gallery-item">
+                            <img :src="imgOnlinePath" alt="Gallery Image" class="gallery-image">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h5>AI自動審核結果</h5>
+                <div>情色露骨內容 : {{ this.report.sexuallyExplicit }}</div>
+                <div>仇恨言論 : {{ this.report.hateSpeech }}</div>
+                <div>騷擾內容 : {{ this.report.harassment }}</div>
+                <div>危險內容 : {{ this.report.dangerousContent }}</div>
+                <strong :style="{ color: dangerScore >= 4 ? 'red' : 'inherit' }">分數 : {{ this.dangerScore
+                    }}</strong><code>(越高則越危險)</code>
+
                 <hr>
                 <div>檢舉人 : {{ user.lastName }}</div>
 
@@ -74,10 +97,17 @@ export default {
             tweet: "",
             user: "",
             emp: "",
+            imgOnlinePath: "",
+            imgOnline: false,
             buttonControll: true,
             empName: "已在其他檢舉中處理",
             tweetMode: "保留",
-
+            sexuallyExplicit: "",
+            hateSpeech: "",
+            harassment: "",
+            dangerousContent: "",
+            dangerScore: 0,
+            dangerSigle: false,
         }
     },
     mounted() {
@@ -104,9 +134,69 @@ export default {
             })
 
         }
+
+        switch (this.report.sexuallyExplicit) {
+            case "HIGH":
+                this.dangerScore += 4;
+                break;
+            case "MEDIUM":
+                this.dangerScore += 2;
+                break;
+            case "LOW":
+                this.dangerScore += 1;
+                break;
+        }
+
+        switch (this.report.hateSpeech) {
+            case "HIGH":
+                this.dangerScore += 4;
+                break;
+            case "MEDIUM":
+                this.dangerScore += 2;
+                break;
+            case "LOW":
+                this.dangerScore += 1;
+                break;
+        }
+
+        switch (this.report.harassment) {
+            case "HIGH":
+                this.dangerScore += 4;
+                break;
+            case "MEDIUM":
+                this.dangerScore += 2;
+                break;
+            case "LOW":
+                this.dangerScore += 1;
+                break;
+        }
+
+        switch (this.report.dangerousContent) {
+            case "HIGH":
+                this.dangerScore += 4;
+                break;
+            case "MEDIUM":
+                this.dangerScore += 2;
+                break;
+            case "LOW":
+                this.dangerScore += 1;
+                break;
+        }
+
+
+        if (this.dangerScore >= 4) {
+            this.dangerSigle = true;
+        }
+
+
     },
     methods: {
         getImageUrl(imgPath) {
+            if (imgPath.startsWith('http')) {
+                this.imgOnlinePath = imgPath;
+                this.imgOnline = true;
+                return;
+            }
             return `${this.API_URL}/tweet/getImage/${imgPath}`;
         },
         formatPostDate(dateString) {
@@ -160,8 +250,13 @@ export default {
 
 .btn-custom {
     background-color: #d4e6ff;
-    /* 设置背景色为红色 */
     color: #000000;
-    /* 设置文字颜色为白色 */
+}
+
+.gallery-image {
+    width: 400px;
+    /* 調整圖片的寬度 */
+    height: auto;
+    /* 讓高度根據比例自動調整 */
 }
 </style>

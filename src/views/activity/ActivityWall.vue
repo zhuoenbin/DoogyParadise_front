@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-10 mx-auto col-lg-3">
+  <div>
     <div id="title">
       <h5>
         <b>所有活動</b>
@@ -48,7 +48,30 @@
           <!-- v-for -->
           <div class="col" v-for="a in activities" :key="a.activityId">
             <div class="card">
-              <img :src="`${a.galleryImgUrl}`" class="card-img-top" alt="..." />
+              <router-link
+                :to="{
+                  name: 'activityInfo',
+                  params: { activityId: a.activityId },
+                }"
+              >
+                <img :src="`${a.galleryImgUrl}`" class="card-img-top" alt="..."
+              /></router-link>
+              <div class="card-img-overlay" style="height: 50px" v-if="isUser">
+                <button class="likebtn" @click="toggleLike(a.activityId)">
+                  <i
+                    :class="{
+                      'fa-solid fa-heart': userLikedList.includes(a.activityId),
+                      'fa-regular fa-heart': !userLikedList.includes(
+                        a.activityId
+                      ),
+                    }"
+                    style="color: #ff0550"
+                  ></i>
+                </button>
+                <span style="color: beige; font-weight: 600; font-size: small"
+                  >&nbsp;{{ a.likedTime }}</span
+                >
+              </div>
 
               <div class="card-body">
                 <h5 class="card-title">
@@ -60,6 +83,8 @@
                   {{ this.timeFormat(a.activityEnd) }}
                   <br />
                   <b>活動場地:&nbsp;</b>{{ a.venueName }}
+                  <br />
+                  <b>活動費用:&nbsp;</b>{{ a.activityCost }} 元/每🐶
                   <br />
                   <b>現在報名狀況:&nbsp;</b>毛孩:{{ a.currentDogNumber }}/{{
                     a.activityDogNumber
@@ -89,7 +114,8 @@
                             a.activityId,
                             a.activityTitle,
                             a.activityDogNumber,
-                            a.currentDogNumber
+                            a.currentDogNumber,
+                            a.activityCost
                           )
                         "
                       >
@@ -111,136 +137,176 @@
         </div>
       </div>
     </div>
-  </div>
-  <!-- Modal -->
-  <div
-    class="modal fade"
-    id="exampleModal"
-    tabindex="-1"
-    aria-labelledby="exampleModalLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5
-            class="modal-title"
-            id="exampleModalLabel"
-            v-if="this.myDogsNotAttend.length > 0"
-          >
-            請選擇要參加的狗狗!🐶
-          </h5>
-          <h5
-            class="modal-title"
-            id="exampleModalLabel"
-            v-if="this.myDogsNotAttend.length == 0"
-          >
-            喔嗚!您的狗狗都已經報名過了喔!🐶
-          </h5>
-
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <!-- 表單內容 -->
-        <div class="modal-body">
-          <form v-if="this.myDogsNotAttend.length == 0">
-            可以至我的活動中查看喔 ૮⍝• ᴥ •⍝ა &nbsp;<a
-              class="btn btn-outline-success"
-              href="/activity/myJoinedManager"
-              role="button"
-              >前往 ᕕ( ᐛ )ᕗ</a
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5
+              class="modal-title"
+              id="exampleModalLabel"
+              v-if="this.myDogsNotAttend.length > 0"
             >
-          </form>
+              請選擇要參加的狗狗!🐶
+            </h5>
+            <h5
+              class="modal-title"
+              id="exampleModalLabel"
+              v-if="this.myDogsNotAttend.length == 0"
+            >
+              喔嗚!您的狗狗都已經報名過了喔!🐶
+            </h5>
 
-          <form v-if="this.myDogsNotAttend.length > 0">
-            <div class="mb-3">
-              <label for="recipient-name" class="col-form-label"
-                >您所選擇的活動</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="recipient-name"
-                :value="chooseActTitle"
-                readonly
-              />
-            </div>
-            <!-- 檢查用 -->
-            <!-- <div>Checked names: {{ chooseDogs }}</div> -->
-            <div>
-              <label for="" class="col-form-label"> 要參與的狗狗~ </label>
-              <div v-for="d in myDogsNotAttend" :key="d.dogId" class="mb-2">
-                <div class="checkbox-wrapper-33">
-                  <label class="checkbox">
-                    <input
-                      class="checkbox__trigger visuallyhidden"
-                      type="checkbox"
-                      :value="d.dogId"
-                      @change="checkComplete"
-                      v-model="chooseDogs"
-                    />
-                    <span class="checkbox__symbol">
-                      <svg
-                        aria-hidden="true"
-                        class="icon-checkbox"
-                        width="28px"
-                        height="28px"
-                        viewBox="0 0 28 28"
-                        version="1"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M4 14l8 7L24 7"></path>
-                      </svg>
-                    </span>
-                    <p class="checkbox__textwrapper">{{ d.dogName }}</p>
-                  </label>
-                </div>
-              </div>
-              <br />
-            </div>
-            <div class="mb-2">
-              <label for="message-text" class="col-form-label"
-                >有甚麼想備註的嗎~</label
-              >
-              <textarea
-                class="form-control"
-                id="message-text"
-                v-model="note"
-              ></textarea>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <div
-            class="text-danger text-center mt-3"
-            v-if="this.myDogsNotAttend.length > 0"
-          >
-            {{ message }}
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
-          <button
-            v-if="this.myDogsNotAttend.length > 0"
-            type="button"
-            class="btn btn-primary"
-            data-bs-dismiss="modal"
-            id="liveToastBtn"
-            @click="joinActivity"
-          >
-            快速報名
-          </button>
+          <!-- 表單內容 -->
+          <div class="modal-body">
+            <form v-if="this.myDogsNotAttend.length == 0">
+              可以至我的活動中查看喔 ૮⍝• ᴥ •⍝ა &nbsp;<a
+                class="btn btn-outline-success"
+                href="/activity/myJoinedManager"
+                role="button"
+                >前往 ᕕ( ᐛ )ᕗ</a
+              >
+            </form>
+
+            <form v-if="this.myDogsNotAttend.length > 0">
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label"
+                  >您所選擇的活動</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="recipient-name"
+                  :value="chooseActTitle"
+                  readonly
+                />
+              </div>
+              <!-- 檢查用 -->
+              <!-- <div>Checked names: {{ chooseDogs }}</div> -->
+              <div>
+                <label for="" class="col-form-label">
+                  要參與的狗狗~ 💡:每位毛孩參與費用:
+                  {{ chooseActCost }} 元</label
+                >
+                <div v-for="d in myDogsNotAttend" :key="d.dogId" class="mb-2">
+                  <div class="checkbox-wrapper-33">
+                    <label class="checkbox">
+                      <input
+                        class="checkbox__trigger visuallyhidden"
+                        type="checkbox"
+                        :value="d.dogId"
+                        @change="checkComplete"
+                        v-model="chooseDogs"
+                      />
+                      <span class="checkbox__symbol">
+                        <svg
+                          aria-hidden="true"
+                          class="icon-checkbox"
+                          width="28px"
+                          height="28px"
+                          viewBox="0 0 28 28"
+                          version="1"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M4 14l8 7L24 7"></path>
+                        </svg>
+                      </span>
+                      <p class="checkbox__textwrapper">{{ d.dogName }}</p>
+                    </label>
+                  </div>
+                </div>
+                <br />
+              </div>
+              <div class="mb-2">
+                <label for="message-text" class="col-form-label"
+                  >有甚麼想備註的嗎~</label
+                >
+                <textarea
+                  class="form-control"
+                  id="message-text"
+                  v-model="note"
+                ></textarea>
+              </div>
+              <div class="mb-2" v-if="chooseActCost > 0">
+                <label for="message-text" class="col-form-label">💰小計</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="message-text"
+                  readonly
+                  v-model="payCost"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <div
+              class="text-danger text-center mt-3"
+              v-if="this.myDogsNotAttend.length > 0"
+            >
+              {{ message }}
+            </div>
+            <div
+              class="checkbox-wrapper-33"
+              v-if="this.myDogsNotAttend.length > 0"
+            >
+              <label class="checkbox">
+                <p class="checkbox__textwrapper">發布貼文&nbsp;</p>
+                <input
+                  class="checkbox__trigger visuallyhidden"
+                  type="checkbox"
+                  v-model="isPostTweet"
+                />
+                <span class="checkbox__symbol">
+                  <svg
+                    aria-hidden="true"
+                    class="icon-checkbox"
+                    width="28px"
+                    height="28px"
+                    viewBox="0 0 28 28"
+                    version="1"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M4 14l8 7L24 7"></path>
+                  </svg>
+                </span>
+              </label>
+            </div>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              v-if="this.myDogsNotAttend.length > 0"
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+              id="liveToastBtn"
+              @click="joinActivity"
+            >
+              快速報名
+            </button>
+          </div>
         </div>
       </div>
     </div>
+    <div id="pay"></div>
   </div>
 </template>
 <script>
@@ -253,38 +319,53 @@ export default {
   data() {
     return {
       activities: [],
+      userLikedList: [],
       myDogsNotAttend: [],
       userId: "",
       chooseAct: "",
       chooseActTitle: "",
+      chooseActCost: null,
       activityDogNumber: null,
       currentDogNumber: null,
       chooseDogs: [],
+      payCost: null,
       note: "",
       isUser: false,
       joinSuccess: false,
       currentPage: 1,
       totalPage: 0,
       message: "",
+      isPostTweet: "",
       isJoinButtonVisible: true,
       isJoinButtonDisabled: false,
     };
   },
   mounted() {
-    axios.get(`${this.API_URL}/activity/api/all/1`).then((rs) => {
-      console.log(rs.data);
-      this.activities = rs.data.content;
-      this.totalPage = rs.data.totalPages;
-      this.currentPage = rs.data.number + 1;
-      console.log("現在是", this.currentPage);
-    });
-
     const memberStore = useMemberStore();
     console.log(memberStore.memberRole);
     if (!memberStore.memberRole.startsWith("Act")) {
       this.isJoinButtonVisible = false;
       this.isJoinButtonDisabled = true;
     }
+    if (memberStore.memberRole.startsWith("Act")) {
+      this.isUser = true;
+      this.userId = memberStore.memberId;
+    }
+    axios
+      .get(`${this.API_URL}/activity/api/all/1`)
+      .then((rs) => {
+        console.log(rs.data);
+        this.activities = rs.data.content;
+        this.totalPage = rs.data.totalPages;
+        this.currentPage = rs.data.number + 1;
+        console.log("現在是", this.currentPage);
+        console.log(this.isUser);
+      })
+      .then((rs) => {
+        if (this.isUser) {
+          this.getLikedActs();
+        }
+      });
   },
   computed: {
     showPageBar() {
@@ -327,6 +408,64 @@ export default {
     },
   },
   methods: {
+    getLikedActs() {
+      axios
+        .get(`${this.API_URL}/activity/api/usersLiked/${this.userId}`)
+        .then((rs) => {
+          this.userLikedList = rs.data;
+          console.log(this.userLikedList);
+        });
+    },
+    toggleLike(activityId) {
+      const index = this.userLikedList.indexOf(activityId);
+      if (index === -1) {
+        this.userLikedList.push(activityId); //不在list就加進去
+        this.incrementLikedTime(activityId); ///////
+        if (this.isUser) {
+          const fd = new FormData();
+          fd.append("userId", this.userId);
+          fd.append("activityId", activityId);
+          axios
+            .post(`${this.API_URL}/activity/api/userDo/like`, fd)
+            .then((response) => {
+              console.log("like成功", response.data);
+            })
+            .catch((error) => {
+              console.error("like失敗", error);
+            });
+        }
+      } else {
+        this.userLikedList.splice(index, 1);
+        this.decrementLikedTime(activityId); ///////
+        if (this.isUser) {
+          const fd = new FormData();
+          fd.append("userId", this.userId);
+          fd.append("activityId", activityId);
+          axios
+            .post(`${this.API_URL}/activity/api/userDo/dislike`, fd)
+            .then((response) => {
+              console.log("dislike成功", response.data);
+            })
+            .catch((error) => {
+              console.error("dislike失敗", error);
+            });
+        }
+      }
+    },
+    incrementLikedTime(activityId) {
+      // 尋找到對應的 activity，並將 likedTime 屬性加 1
+      const activity = this.activities.find((a) => a.activityId === activityId);
+      if (activity) {
+        activity.likedTime++;
+      }
+    },
+    decrementLikedTime(activityId) {
+      // 尋找到對應的 activity，並將 likedTime 屬性減 1
+      const activity = this.activities.find((a) => a.activityId === activityId);
+      if (activity && activity.likedTime > 0) {
+        activity.likedTime--;
+      }
+    },
     goForwardPage() {
       this.currentPage = this.currentPage - 1;
     },
@@ -344,6 +483,7 @@ export default {
         let submitButton = document.getElementById("liveToastBtn");
         submitButton.disabled = true;
         this.message = "請選擇要參與的狗狗!";
+        this.payCost = 0;
       } else if (
         this.chooseDogs.length + this.currentDogNumber >
         this.activityDogNumber
@@ -351,16 +491,15 @@ export default {
         let submitButton = document.getElementById("liveToastBtn");
         submitButton.disabled = true;
         this.message = "很抱歉😥已超過🐶數上限!";
+        this.payCost = "⚠️";
       } else {
         let submitButton = document.getElementById("liveToastBtn");
         submitButton.disabled = false;
         this.message = "";
+        this.payCost = this.chooseActCost * this.chooseDogs.length;
+        console.log(this.isPostTweet);
       }
     },
-    showSuccess() {
-      window.alert("報名成功!!");
-    },
-
     timeFormat(time) {
       time = time.substring(0, time.length - 3);
       return time;
@@ -380,7 +519,13 @@ export default {
 
       return formattedDate;
     },
-    joinPrepare(activityId, activityName, activityDogNumber, currentDogNumber) {
+    joinPrepare(
+      activityId,
+      activityName,
+      activityDogNumber,
+      currentDogNumber,
+      activityCost
+    ) {
       const memberStore = useMemberStore();
       console.log(memberStore.memberRole);
 
@@ -388,6 +533,7 @@ export default {
       this.chooseActTitle = activityName;
       this.activityDogNumber = activityDogNumber;
       this.currentDogNumber = currentDogNumber;
+      this.chooseActCost = activityCost;
       this.note = "";
       console.log("所選擇的活動id: ", this.chooseAct);
       if (memberStore.memberRole.startsWith("Act")) {
@@ -432,11 +578,22 @@ export default {
             .then((response) => {
               console.log("報名成功", response.data);
               this.chooseDogs = [];
-              this.chooseAct = "";
               this.chooseActTitle = "";
-              // 在換成別的路徑 重新導向會無法即時更新
             })
-            .then(this.$router.push("/activity/all"))
+            .then((rs) => {
+              if (this.isPostTweet) {
+                this.doTweet();
+              }
+              console.log("tweet check");
+            })
+            .then((rs) => {
+              this.chooseAct = "";
+              if (this.payCost > 0) {
+                this.goEcPay();
+              } else {
+                this.$router.push("/activity/myJoinedManager");
+              }
+            })
             .catch((error) => {
               console.error("報名失敗", error);
               this.message = "報名失敗";
@@ -447,6 +604,30 @@ export default {
       } else {
         this.message = "你應該看不到才對?";
       }
+    },
+    doTweet() {
+      axios
+        .post(
+          `${this.API_URL}/tweet/postTweetForActivityShare?userId=${this.userId}&activityId=${this.chooseAct}`
+        )
+        .then((rs) => {
+          console.log("tweet success");
+        })
+        .catch((error) => {
+          console.log("tweet error", error);
+        });
+    },
+    goEcPay() {
+      axios
+        .post(
+          `http://localhost:8080/ecpayCheckout?price=${this.payCost}&url=activity/myJoinedManager`
+        )
+        .then((response) => {
+          // console.log(response.data);
+          const pay = document.getElementById("pay");
+          pay.innerHTML = response.data;
+          document.getElementById("allPayAPIForm").submit();
+        });
     },
     showToast() {
       const toastTrigger = document.getElementById("liveToastBtn");
@@ -462,8 +643,6 @@ export default {
     },
   },
 };
-//bug 報名完後應該要不能再報
-//活動過期要換掉
 </script>
 
 <style>
@@ -472,6 +651,13 @@ export default {
   margin: auto 20px;
   padding: 20px 20px;
   text-align: center;
+}
+.likebtn {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
 }
 .checkbox-wrapper-33 {
   --s-xsmall: 0.625em;

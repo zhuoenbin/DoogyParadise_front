@@ -27,21 +27,11 @@
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
                 <div class="modal-body" v-if="this.tweet">
-                    <TweetItem :key="this.tweet.tweetId" :tweet="this.tweet" />
+                    <TweetItem3 :key="this.tweet.tweetId" :tweet="this.tweet" />
                 </div>
                 <div v-else>
                     <h5>此推文已不存在</h5>
-                </div>
-
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
                 </div>
             </div>
         </div>
@@ -51,10 +41,14 @@
 import TweetItem from '@/components/tweet/TweetCard.vue';
 import axios from "axios";
 import { useMemberStore } from "@/stores/memberStore";
+import TweetItem2 from '@/components/tweet/TweetCard2.vue'
+import TweetItem3 from '@/components/tweet/TweetCard3.vue'
 
 export default {
     components: {
         TweetItem,
+        TweetItem2,
+        TweetItem3
     },
     data() {
         return {
@@ -65,15 +59,19 @@ export default {
     },
     mounted() {
         const memberStore = useMemberStore();
-        this.memberId = memberStore.memberId;
+        if (memberStore.memberRole.startsWith("Act")) {
+            this.memberId = memberStore.memberId;
 
-        // 第一次載入頁面
-        this.loadNotifications();
-
-        // 每隔5秒更新頁面
-        setInterval(() => {
+            // 第一次載入頁面
             this.loadNotifications();
-        }, 5000);
+
+            // 每隔5秒更新頁面
+            setInterval(() => {
+                this.loadNotifications();
+            }, 5000);
+        }
+
+
 
 
     },
@@ -135,5 +133,9 @@ export default {
 
 .card-body {
     padding: 1.5rem;
+}
+
+.modal-content {
+    background-color: transparent;
 }
 </style>

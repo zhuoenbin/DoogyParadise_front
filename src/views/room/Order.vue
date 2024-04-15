@@ -1,41 +1,57 @@
 <template>
-  <h2 class="page-title">預約訂房管理</h2>
-  <div class="table-container">
-    <table class="room-table">
+  <div class="main">
+    <div class="flex">
+      <h2 class="page-title">預約訂房管理</h2>
+      <!-- <button class="btn" data-hover="click me!">
+        <div>Button</div>
+      </button> -->
+    </div>
+    <table class="table room-table">
       <thead>
         <tr>
           <th>訂房時段</th>
           <th>訂房Id</th>
-          <th>房間Id</th>
-          <th>寵物名</th>
+          <th>房號</th>
+          <th>寵物名稱</th>
           <th>費用</th>
-          <th>取消時間</th>
-          <th>取消原因</th>
+          <th>訂房時間</th>
           <th>修改時段</th>
           <th>取消訂房</th>
         </tr>
       </thead>
       <tbody>
+        <tr v-if="filteredReservations.length === 0">
+          <td colspan="8">沒有預約紀錄</td>
+        </tr>
         <tr
-          v-for="(reservation, reservationId) in reservations"
+          v-for="(reservation, reservationId) in filteredReservations"
           :key="reservationId"
         >
           <td>
+            <span
+              class="icon"
+              v-if="
+                new Date(reservation.startTime) <= new Date() &&
+                new Date(reservation.endTime) > new Date()
+              "
+              ><i class="fa-solid fa-bookmark"></i
+            ></span>
             {{ formatDate(reservation.startTime) }} -
             {{ formatDate(reservation.endTime) }}
           </td>
           <td>{{ reservation.reservationId }}</td>
-          <td>{{ reservation.room.roomId }}</td>
+          <td>{{ reservation.room.roomName }}</td>
           <td>{{ reservation.dog.dogName }}</td>
           <td>{{ reservation.totalPrice }}</td>
-          <td v-if="formatDate(reservation.cancelTime) != '1970/01/01'">
+          <td>{{ formatDate(reservation.reservationTime) }}</td>
+          <!-- <td v-if="formatDate(reservation.cancelTime) != '1970/01/01'">
             {{ formatDate(reservation.cancelTime) }}
           </td>
           <td v-else></td>
           <td v-if="formatDate(reservation.cancelTime) != '1970/01/01'">
             {{ reservation.cancelDirection }}
           </td>
-          <td v-else></td>
+          <td v-else></td> -->
           <td>
             <button
               v-if="
@@ -71,7 +87,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 
@@ -84,8 +100,7 @@ onMounted(() => {
     .get("http://localhost:8080/room/allRoomReservationByUser")
     .then((response) => {
       // 日期排列順序反過來
-      const reversedData = response.data.reverse();
-      reservations.value = reversedData;
+      reservations.value = response.data.reverse();
     });
 });
 
@@ -96,6 +111,14 @@ const formatDate = (dateString) => {
   const day = date.getDate().toString().padStart(2, "0");
   return `${year}/${month}/${day}`;
 };
+
+const filteredReservations = computed(() => {
+  return reservations.value.filter((reservation) => {
+    if (reservation.cancelTime == null) {
+      return isEndDateAfterToday(reservation.endTime);
+    }
+  });
+});
 
 // 定義檢查結束日期是否大於當前日期的方法
 const isEndDateAfterToday = (endDate) => {
@@ -113,14 +136,27 @@ const isStartDateWithinThreeDays = (startDate) => {
 };
 
 const handleModifyReservation = (reservationId, str) => {
-  router.push({
-    name: "u_page",
-    params: { reservationId: reservationId, str: str },
-  });
+  setTimeout(() => {
+    router.push({
+      name: "u_page",
+      params: { reservationId, str },
+    });
+  }, 500); // 添加延遲，確保頁面跳轉完成後再刷新;
 };
 </script>
 
 <style scoped>
+.main {
+  margin: 2rem;
+}
+
+.flex {
+  width: 95%;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
 .page-title {
   font-size: 24px;
   margin-bottom: 20px;
@@ -133,44 +169,61 @@ const handleModifyReservation = (reservationId, str) => {
   margin-bottom: 2rem;
 }
 
+.room-table th {
+  background-color: rgb(255, 231, 137);
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+}
+
 .room-table th,
 .room-table td {
-  /* border: 1px solid #c2bdbd; */
-  padding: 12px;
   text-align: center;
 }
 
-.room-table th {
-  background-color: rgb(197, 195, 195);
+.room-table td {
+  /* border: 1px solid #c2bdbd; */
+  padding: 20px 0;
+}
+
+/* .room-table th {
+  background-color: rgb(255, 216, 157);
 }
 
 .room-table tr:nth-child(even) {
-  background-color: #e3e1e1;
-}
+  background-color: rgb(248, 248, 244);
+} */
 
 .btn {
   padding: 8px 16px;
-  border: none;
+  background-color: transparent;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.5s;
 }
 
 .btn-update {
-  background-color: #249527;
-  color: #fff;
+  border: 1px solid #49c936;
+  color: #49c936;
 }
 
 .btn-update:hover {
-  background-color: #145e18;
+  color: #fff;
+  background-color: #63dc50;
 }
 
 .btn-cancel {
-  background-color: #c72519;
-  color: #fff;
+  border: 1px solid #dc362a;
+  color: #dc362a;
 }
 
 .btn-cancel:hover {
-  background-color: #d6331d;
+  background-color: #e55c4a;
+  color: #fff;
+}
+
+.icon {
+  margin-right: 0.5rem;
+  color: rgb(241, 189, 101);
 }
 </style>

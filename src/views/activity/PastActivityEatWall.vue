@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-10 mx-auto col-lg-3">
+  <div>
     <div id="title">
       <h5>
         <b>Past Activities</b>
@@ -127,7 +127,30 @@
           <!-- v-for -->
           <div class="col" v-for="a in activities" :key="a.activityId">
             <div class="card">
-              <img :src="`${a.galleryImgUrl}`" class="card-img-top" alt="..." />
+              <router-link
+                :to="{
+                  name: 'activityInfo',
+                  params: { activityId: a.activityId },
+                }"
+              >
+                <img :src="`${a.galleryImgUrl}`" class="card-img-top" alt="..."
+              /></router-link>
+              <div class="card-img-overlay" style="height: 50px" v-if="isUser">
+                <button class="likebtn" @click="toggleLike(a.activityId)">
+                  <i
+                    :class="{
+                      'fa-solid fa-heart': userLikedList.includes(a.activityId),
+                      'fa-regular fa-heart': !userLikedList.includes(
+                        a.activityId
+                      ),
+                    }"
+                    style="color: #ff0550"
+                  ></i>
+                </button>
+                <span style="color: beige; font-weight: 600; font-size: small"
+                  >&nbsp;{{ a.likedTime }}</span
+                >
+              </div>
 
               <div class="card-body">
                 <h5 class="card-title">
@@ -139,6 +162,8 @@
                   {{ this.timeFormat(a.activityEnd) }}
                   <br />
                   <b>活動場地:&nbsp;</b>{{ a.venueName }}
+                  <br />
+                  <b>活動費用:&nbsp;</b>{{ a.activityCost }} 元/每🐶
                   <br />
                   <b>現在報名狀況:&nbsp;</b>毛孩:{{ a.currentDogNumber }}/{{
                     a.activityDogNumber
@@ -175,6 +200,8 @@ export default {
     return {
       chooseCat: 2,
       activities: [],
+      userLikedList: [],
+      isUser: false,
       userId: "",
       chooseAct: "",
       activityDogNumber: null,
@@ -184,6 +211,12 @@ export default {
     };
   },
   mounted() {
+    const memberStore = useMemberStore();
+    console.log(memberStore.memberRole);
+    if (memberStore.memberRole.startsWith("Act")) {
+      this.isUser = true;
+      this.userId = memberStore.memberId;
+    }
     axios
       .get(`${this.API_URL}/activity/api/pastAct/category/2/1`)
       .then((rs) => {
@@ -192,9 +225,72 @@ export default {
         this.totalPage = rs.data.totalPages;
         this.currentPage = rs.data.number + 1;
         console.log("現在是", this.currentPage);
+      })
+      .then((rs) => {
+        if (this.isUser) {
+          this.getLikedActs();
+        }
       });
   },
   methods: {
+    getLikedActs() {
+      axios
+        .get(`${this.API_URL}/activity/api/usersLiked/${this.userId}`)
+        .then((rs) => {
+          this.userLikedList = rs.data;
+          console.log(this.userLikedList);
+        });
+    },
+    toggleLike(activityId) {
+      const index = this.userLikedList.indexOf(activityId);
+      if (index === -1) {
+        this.userLikedList.push(activityId); //不在list就加進去
+        this.incrementLikedTime(activityId); ///////
+        if (this.isUser) {
+          const fd = new FormData();
+          fd.append("userId", this.userId);
+          fd.append("activityId", activityId);
+          axios
+            .post(`${this.API_URL}/activity/api/userDo/like`, fd)
+            .then((response) => {
+              console.log("like成功", response.data);
+            })
+            .catch((error) => {
+              console.error("like失敗", error);
+            });
+        }
+      } else {
+        this.userLikedList.splice(index, 1);
+        this.decrementLikedTime(activityId); ///////
+        if (this.isUser) {
+          const fd = new FormData();
+          fd.append("userId", this.userId);
+          fd.append("activityId", activityId);
+          axios
+            .post(`${this.API_URL}/activity/api/userDo/dislike`, fd)
+            .then((response) => {
+              console.log("dislike成功", response.data);
+            })
+            .catch((error) => {
+              console.error("dislike失敗", error);
+            });
+        }
+      }
+    },
+    incrementLikedTime(activityId) {
+      // 尋找到對應的 activity，並將 likedTime 屬性加 1
+      const activity = this.activities.find((a) => a.activityId === activityId);
+      if (activity) {
+        activity.likedTime++;
+      }
+    },
+    decrementLikedTime(activityId) {
+      // 尋找到對應的 activity，並將 likedTime 屬性減 1
+      const activity = this.activities.find((a) => a.activityId === activityId);
+      if (activity && activity.likedTime > 0) {
+        activity.likedTime--;
+      }
+    },
     changeCategory() {
       console.log(this.chooseCat);
       if (this.chooseCat == 1) {
@@ -288,6 +384,13 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+.likebtn {
+  background-color: rgba(255, 255, 255, 0.8);
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
 }
 .actCard {
   border-radius: 0.2rem;
