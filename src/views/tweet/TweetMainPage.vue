@@ -110,8 +110,13 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         Close
                     </button>
-                    <button type="button" class="btn btn-primary" @click="postTweet">
+                    <button v-if="!postTweettrigger" type="button" class="btn btn-primary" @click="postTweet">
                         Post
+                    </button>
+                    <button v-if="postTweettrigger" type="button" class="btn btn-primary">
+                        發文中<div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
                     </button>
                 </div>
             </div>
@@ -137,6 +142,7 @@ export default {
             userId: useMemberStore().memberId,
             userAouth: useMemberStore().memberRole,
             imagePreviewUrl: '',
+            postTweettrigger: false,
         };
     },
     mounted() {
@@ -164,6 +170,7 @@ export default {
                 this.noText = true;
                 return;
             }
+            this.postTweettrigger = true;
             this.noText = false;
             const memberStore = useMemberStore();
 
@@ -189,6 +196,7 @@ export default {
                                 // 清空推文内容
                                 this.postTweetContent = "";
                                 this.$refs.imageUpload.value = "";
+                                this.postTweettrigger = false;
                                 this.$router.go(0)
                             })
                             .catch(error => {
@@ -208,6 +216,7 @@ export default {
                         console.log("發文成功:", response.data);
                         // 清空推文内容
                         this.postTweetContent = "";
+                        this.postTweettrigger = false;
                         this.$router.go(0)
                     })
                     .catch(error => {

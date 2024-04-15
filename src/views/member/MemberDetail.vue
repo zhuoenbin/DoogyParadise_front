@@ -9,15 +9,8 @@
           </div>
           <img v-else :src="memberImgPath" class="w-100" />
           <div v-if="editing" class="input-group mb-3">
-            <input
-              type="file"
-              class="form-control"
-              id="mainImgUpload"
-              ref="mainImgUpload"
-              accept="image/*"
-              placeholder="自定義文字"
-              @change="previewImage"
-            />
+            <input type="file" class="form-control" id="mainImgUpload" ref="mainImgUpload" accept="image/*"
+              placeholder="自定義文字" @change="previewImage" />
           </div>
         </div>
 
@@ -25,12 +18,7 @@
           <div class="row mt-3 align-items-center">
             <div class="col-3 text-end">姓名</div>
             <span v-if="!editing" class="col">{{ memberName }}</span>
-            <input
-              v-else
-              v-model="memberName"
-              type="text"
-              class="form-control"
-            />
+            <input v-else v-model="memberName" type="text" class="form-control" />
           </div>
 
           <div class="row mt-3 align-items-center">
@@ -43,29 +31,11 @@
             <span v-if="!editing" class="col">{{ memberGender }}</span>
             <span v-else class="col">
               <label>
-                <input
-                  type="radio"
-                  name="gender"
-                  v-model="memberGender"
-                  value="男"
-                />男性</label
-              >
+                <input type="radio" name="gender" v-model="memberGender" value="男" />男性</label>
               <label>
-                <input
-                  type="radio"
-                  name="gender"
-                  v-model="memberGender"
-                  value="女"
-                />女性</label
-              >
+                <input type="radio" name="gender" v-model="memberGender" value="女" />女性</label>
               <label>
-                <input
-                  type="radio"
-                  name="gender"
-                  v-model="memberGender"
-                  value="其他"
-                />其他</label
-              >
+                <input type="radio" name="gender" v-model="memberGender" value="其他" />其他</label>
             </span>
           </div>
 
@@ -79,17 +49,13 @@
             </span>
           </div>
 
-          <div class="row mt-3">
+          <!-- <div class="row mt-3">
             <div class="col-3 text-end">違規次數</div>
             <div class="col">{{ memberViolationCount }}</div>
-          </div>
+          </div> -->
         </div>
         <div class="col">
-          <button
-            v-if="editing"
-            @click="showResetPasswordPage"
-            class="btn btn-primary"
-          >
+          <button v-if="editing" @click="showResetPasswordPage" class="btn btn-primary">
             修改密碼
           </button>
           <hr />
@@ -109,35 +75,19 @@
     </main>
 
     <!--重設密碼的彈出式視窗 -->
-    <div
-      ref="ResetPasswordPage"
-      class="modal fade"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
+    <div ref="ResetPasswordPage" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h3>重設密碼</h3>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <div v-if="!resetSuccess" class="col-md-10 mx-auto col-lg-11">
               <form class="p-4 p-md-5 border rounded-3 bg-light">
                 <div v-if="!googleFirstTime" class="form-floating mb-3">
-                  <input
-                    type="password"
-                    class="form-control"
-                    placeholder=""
-                    v-model="oldPassword"
-                    required
-                  />
+                  <input type="password" class="form-control" placeholder="" v-model="oldPassword" required />
                   <label>請輸入原始密碼</label>
                 </div>
                 <div v-if="googleFirstTime" class="text-center">
@@ -146,43 +96,23 @@
                 </div>
 
                 <div class="form-floating mb-3">
-                  <input
-                    type="password"
-                    class="form-control"
-                    placeholder=""
-                    v-model="newPassword"
-                    required
-                  />
+                  <input type="password" class="form-control" placeholder="" v-model="newPassword" required />
                   <label>請輸入新密碼</label>
                 </div>
                 <div class="form-floating mb-3">
-                  <input
-                    type="password"
-                    class="form-control"
-                    placeholder=""
-                    v-model="confirmPassword"
-                    required
-                  />
+                  <input type="password" class="form-control" placeholder="" v-model="confirmPassword" required />
                   <label>請再次輸入新密碼</label>
                 </div>
-                <button
-                  class="w-100 btn btn-lg btn-primary"
-                  @click.prevent="updatePassword"
-                  :disabled="showPassWordMismatch"
-                >
+                <button class="w-100 btn btn-lg btn-primary" @click.prevent="updatePassword"
+                  :disabled="showPassWordMismatch">
                   重設密碼
                 </button>
-                <div
-                  class="text-danger text-center mt-3"
-                  v-if="showPassWordMismatch"
-                >
+                <div class="text-danger text-center mt-3" v-if="showPassWordMismatch">
                   新密碼不一致
                 </div>
                 <hr class="my-4" />
-                <small class="text-muted"
-                  >謹慎操作，以免遺失密碼或造成不必要的麻煩。Doggy
-                  Paradise關心您</small
-                >
+                <small class="text-muted">謹慎操作，以免遺失密碼或造成不必要的麻煩。Doggy
+                  Paradise關心您</small>
               </form>
             </div>
 
