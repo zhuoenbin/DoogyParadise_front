@@ -20,11 +20,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-if="filteredReservations.length === 0">
+        <tr v-if="reservations.length === 0">
           <td colspan="8">沒有預約紀錄</td>
         </tr>
         <tr
-          v-for="(reservation, reservationId) in filteredReservations"
+          v-for="(reservation, reservationId) in reservations"
           :key="reservationId"
         >
           <td>
@@ -54,10 +54,7 @@
           <td v-else></td> -->
           <td>
             <button
-              v-if="
-                !isStartDateWithinThreeDays(reservation.startTime) &&
-                formatDate(reservation.cancelTime) == '1970/01/01'
-              "
+              v-if="!isStartDateWithinThreeDays(reservation.startTime)"
               class="btn btn-update"
               @click="
                 handleModifyReservation(reservation.reservationId, 'update')
@@ -68,10 +65,7 @@
           </td>
           <td>
             <button
-              v-if="
-                !isStartDateWithinThreeDays(reservation.startTime) &&
-                formatDate(reservation.cancelTime) == '1970/01/01'
-              "
+              v-if="!isStartDateWithinThreeDays(reservation.startTime)"
               class="btn btn-cancel"
               @click="
                 handleModifyReservation(reservation.reservationId, 'cancel')
@@ -96,12 +90,10 @@ const router = useRouter();
 const reservations = ref([]);
 
 onMounted(() => {
-  axios
-    .get("http://localhost:8080/room/allRoomReservationByUser")
-    .then((response) => {
-      // 日期排列順序反過來
-      reservations.value = response.data.reverse();
-    });
+  axios.get("http://localhost:8080/room/reservation/order").then((response) => {
+    // 日期排列順序反過來
+    reservations.value = response.data;
+  });
 });
 
 const formatDate = (dateString) => {
@@ -112,20 +104,20 @@ const formatDate = (dateString) => {
   return `${year}/${month}/${day}`;
 };
 
-const filteredReservations = computed(() => {
-  return reservations.value.filter((reservation) => {
-    if (reservation.cancelTime == null) {
-      return isEndDateAfterToday(reservation.endTime);
-    }
-  });
-});
+// const filteredReservations = computed(() => {
+//   return reservations.value.filter((reservation) => {
+//     if (reservation.cancelTime == null) {
+//       return isEndDateAfterToday(reservation.endTime);
+//     }
+//   });
+// });
 
-// 定義檢查結束日期是否大於當前日期的方法
-const isEndDateAfterToday = (endDate) => {
-  const today = new Date();
-  const end = new Date(endDate);
-  return end > today;
-};
+// // 定義檢查結束日期是否大於當前日期的方法
+// const isEndDateAfterToday = (endDate) => {
+//   const today = new Date();
+//   const end = new Date(endDate);
+//   return end > today;
+// };
 
 const isStartDateWithinThreeDays = (startDate) => {
   const today = new Date();

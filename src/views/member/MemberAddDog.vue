@@ -1,4 +1,5 @@
 <template>
+  <button class="btn" @click="add">新增資料</button>
   <div class="main flex">
     <form>
       <div class="mb-3">
@@ -150,7 +151,16 @@ export default {
 
       return `${year}-${month}-${day}`;
     },
-
+    add() {
+      (this.dogName = "Peter"),
+        (this.dogGender = "Male"),
+        (this.dogBirthDate = "2024-02-01"),
+        (this.dogBreed = "米克斯"),
+        (this.dogWeight = "20"),
+        (this.dogImgPathCloud =
+          "http://res.cloudinary.com/dxz9qtntt/image/upload/v1712907369/dogFolder/v8dfo7ifu15eafysi0jj.jpg"),
+        (this.dogIntroduce = "很帥的狗");
+    },
     addDog() {
       const myModal = new bootstrap.Modal(
         document.getElementById(`exampleModal`)
@@ -181,9 +191,13 @@ export default {
         .then((response) => {
           this.dogImg(response.data);
           setTimeout(() => {
-            this.$router.push({
-              name: "mydog", // 使用路由名稱
-            });
+            this.$router
+              .push({
+                name: "mydog", // 使用路由名稱
+              })
+              .then(() => {
+                location.reload();
+              });
           }, 3000);
         });
     },
@@ -211,6 +225,11 @@ export default {
 <style scoped>
 .main {
   width: 100%;
+}
+
+.btn {
+  margin: 2rem auto 0;
+  border: 1px solid blue;
 }
 
 .flex {

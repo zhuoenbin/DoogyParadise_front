@@ -20,8 +20,7 @@
           searchType != 'all' &&
           searchType != 'Date' &&
           searchType != 'cancelDirection' &&
-          searchType != 'cancelTime' &&
-          searchType != 'size'
+          searchType != 'cancelTime'
         "
         v-model="searchTerm"
         type="text"
@@ -56,10 +55,11 @@
         :enable-time-picker="false"
       />
       <div class="button">
-        <span>房型:</span>
-        <button class="btn" @click="changeRoom(1)">小型犬</button
-        ><button class="btn" @click="changeRoom(2)">中型犬</button
-        ><button class="btn" @click="changeRoom(3)">大型犬</button>
+        <span class="mr-1">房型:</span>
+        <button class="btn" @click="changeDogSize(0)">全部</button>
+        <button class="btn" @click="changeDogSize(1)">小型犬</button
+        ><button class="btn" @click="changeDogSize(2)">中型犬</button
+        ><button class="btn" @click="changeDogSize(3)">大型犬</button>
       </div>
     </div>
 
@@ -230,6 +230,8 @@ let sortCancelTimeDirection = ref("asc");
 const searchType = ref("all"); // 默认按照名字查询
 const searchTerm = ref(""); // 查询关键字
 
+const dogSize = ref(0);
+
 const selectedDates = ref([]); // 用於存儲所選日期的範圍
 
 onMounted(() => {
@@ -315,9 +317,8 @@ const formatDate = (dateString, number) => {
   }
 };
 
-const changeRoom = (size) => {
-  searchType.value = "size";
-  searchTerm.value = size;
+const changeDogSize = (size) => {
+  dogSize.value = size;
 };
 
 const filteredReservations = computed(() => {
@@ -329,40 +330,103 @@ const filteredReservations = computed(() => {
     if (reservation.cancelTime != null) {
       switch (searchType.value) {
         case "name":
-          return includeSearchTerm(reservation.lastName);
+          if (dogSize.value === 0) {
+            return includeSearchTerm(reservation.lastName);
+          } else {
+            return (
+              dogSize.value === reservation.room.roomSize &&
+              includeSearchTerm(reservation.lastName)
+            );
+          }
         case "id":
-          return reservation.reservationId
-            .toString()
-            .includes(searchTerm.value);
+          if (dogSize.value === 0) {
+            return reservation.reservationId
+              .toString()
+              .includes(searchTerm.value);
+          } else {
+            return (
+              dogSize.value === reservation.room.roomSize &&
+              reservation.reservationId.toString().includes(searchTerm.value)
+            );
+          }
         case "roomName":
-          return reservation.room.roomName
-            .toString()
-            .includes(searchTerm.value);
+          if (dogSize.value === 0) {
+            return reservation.room.roomName
+              .toString()
+              .includes(searchTerm.value);
+          } else {
+            return (
+              dogSize.value === reservation.room.roomSize &&
+              reservation.room.roomName.toString().includes(searchTerm.value)
+            );
+          }
         case "petName":
-          return includeSearchTerm(reservation.dog.dogName);
+          if (dogSize.value === 0) {
+            return includeSearchTerm(reservation.dog.dogName);
+          } else {
+            return (
+              dogSize.value === reservation.room.roomSize &&
+              includeSearchTerm(reservation.dog.dogName)
+            );
+          }
         case "Date":
-          return RoomsDate(reservation.startTime, reservation.endTime);
+          if (dogSize.value === 0) {
+            return RoomsDate(reservation.startTime, reservation.endTime);
+          } else {
+            return (
+              dogSize.value === reservation.room.roomSize &&
+              RoomsDate(reservation.startTime, reservation.endTime)
+            );
+          }
         case "cancelDirection":
           if (searchTerm.value == "其他") {
-            return !(
-              reservation.cancelDirection === "選錯房間" ||
-              reservation.cancelDirection === "行程取消" ||
-              reservation.cancelDirection === "找到其他家更便宜的旅館"
-            );
+            if (dogSize.value === 0) {
+              return !(
+                reservation.cancelDirection === "選錯房間" ||
+                reservation.cancelDirection === "行程取消" ||
+                reservation.cancelDirection === "找到其他家更便宜的旅館"
+              );
+            } else {
+              return (
+                dogSize.value === reservation.room.roomSize &&
+                !(
+                  reservation.cancelDirection === "選錯房間" ||
+                  reservation.cancelDirection === "行程取消" ||
+                  reservation.cancelDirection === "找到其他家更便宜的旅館"
+                )
+              );
+            }
           } else {
-            return includeSearchTerm(reservation.cancelDirection);
+            if (dogSize.value === 0) {
+              return includeSearchTerm(reservation.cancelDirection);
+            } else {
+              return (
+                dogSize.value === reservation.room.roomSize &&
+                includeSearchTerm(reservation.cancelDirection)
+              );
+            }
           }
         case "cancelTime":
           if (selectedDates.value != null && selectedDates.value.length != 0) {
-            return (
-              formatDate(selectedDates.value) ==
-              formatDate(reservation.cancelTime, 0)
-            );
+            if (dogSize.value === 0) {
+              return (
+                formatDate(selectedDates.value) ==
+                formatDate(reservation.cancelTime, 0)
+              );
+            } else {
+              return (
+                dogSize.value === reservation.room.roomSize &&
+                formatDate(selectedDates.value) ==
+                  formatDate(reservation.cancelTime, 0)
+              );
+            }
           }
-        case "size":
-          return reservation.room.roomSize === searchTerm.value && isAfterToday;
         default:
-          return true;
+          if (dogSize.value === 0) {
+            return true;
+          } else {
+            return dogSize.value === reservation.room.roomSize && true;
+          }
       }
     }
   });
@@ -465,7 +529,8 @@ const sortByCancelTime = () => {
 const RoomsDate = (beginTime, endTime) => {
   const begin = new Date(beginTime);
   const endDate = new Date(endTime);
-  endDate.setDate(endDate.getDate() + 1);
+  begin.setDate(begin.getDate() - 1);
+  // endDate.setDate(endDate.getDate() + 1);
   if (selectedDates.value !== null) {
     if (
       selectedDates.value.length === 2 &&
@@ -586,5 +651,9 @@ button.sort {
   to {
     transform: translateX(0);
   }
+}
+
+.mr-1 {
+  margin-right: 1rem;
 }
 </style>

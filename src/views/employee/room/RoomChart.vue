@@ -1,30 +1,37 @@
 <template>
-  <div class="flex">
-    <RoomChart class="chart-canvas" />
-    <RoomStarChart class="chart-canvas" />
+  <div>
+    <div class="flex">
+      <RoomChart class="chart-canvas" :reservations="reservationsData" />
+      <RoomStarChart class="chart-canvas" />
+    </div>
+    <RoomPieChart class="chart-canvas" :reservations="reservationsData" />
   </div>
 </template>
 
 <script>
 import RoomChart from "@/components/room/RoomChart.vue";
 import RoomStarChart from "@/components/room/RoomStarChart.vue";
+import RoomPieChart from "@/components/room/RoomPieChart.vue";
 
 export default {
   components: {
     RoomChart,
     RoomStarChart,
+    RoomPieChart,
+  },
+  data() {
+    return {
+      reservationsData: [], // 你的预订数据应该在这里
+    };
   },
 };
 </script>
-<style scoped>
-template {
-  height: 100%;
-}
 
+<style scoped>
 .chart-canvas {
   width: 48%;
   height: 350px;
-  margin: auto;
+  margin: 2rem auto;
   padding: 20px;
   border: 1px solid rgb(216, 215, 215);
   border-radius: 10px;
@@ -34,7 +41,6 @@ template {
 .flex {
   display: flex;
   width: 100%;
-  height: 100%;
-  justify-content: space-between; /* 左右对齐 */
+  /* justify-content: space-between; */
 }
 </style>

@@ -122,6 +122,42 @@
         </div>
       </div>
     </div>
+    <!-- Modal 修改成功 -->
+    <div class="modal" tabindex="-1" id="exampleModal">
+      <div class="modal-dialog">
+        <div class="modal-content modalbgc">
+          <div class="success">
+            <h2 class="modal-title">修改成功</h2>
+          </div>
+          <div class="modal-body success">
+            <svg width="400" height="400">
+              <circle
+                fill="none"
+                stroke="#68E534"
+                stroke-width="20"
+                stroke-linecap="round"
+                cx="200"
+                cy="200"
+                r="190"
+                class="circle"
+                transform="rotate(-90 200 200)"
+              />
+
+              <polyline
+                fill="none"
+                stroke="#68E534"
+                stroke-width="24"
+                points="88,214 173,284 304,138"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="tick"
+              />
+            </svg>
+          </div>
+          <!-- <p class="gray">已寄信至您的信箱</p> -->
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -190,6 +226,16 @@ export default {
       this.editing = !this.editing;
     },
     saveChanges() {
+      const myModal = new bootstrap.Modal(
+        document.getElementById(`exampleModal`)
+      );
+      myModal.show();
+
+      // 五秒後自動關閉 modal
+      setTimeout(() => {
+        myModal.hide();
+      }, 2600);
+
       this.editing = false;
 
       axios
@@ -319,5 +365,87 @@ img {
   width: 400px;
   height: 400px;
   object-fit: cover;
+}
+
+svg {
+  /* 將 SVG 元素等比例縮小到 50% */
+  transform: scale(0.4);
+}
+
+svg .circle {
+  animation: circle 1s ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+svg .tick {
+  animation: tick 0.8s ease-out;
+  animation-fill-mode: forwards;
+  animation-delay: 0.93s;
+}
+
+h2 {
+  font-family: Helvetica;
+  font-size: 36px;
+  /* margin-top: 40px; */
+  color: #333;
+  /* opacity: 0; */
+}
+
+.circle {
+  stroke-dasharray: 1194;
+  /***
+    2∏R=2*3.14*190=1194
+    ***/
+
+  stroke-dashoffset: 1194;
+}
+
+.tick {
+  stroke-dasharray: 350;
+  stroke-dashoffset: 350;
+}
+
+@keyframes circle {
+  from {
+    stroke-dashoffset: 1194;
+  }
+  to {
+    stroke-dashoffset: 2388;
+  }
+}
+
+@keyframes tick {
+  from {
+    stroke-dashoffset: 350;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes title {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  margin: auto;
+}
+
+.success {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+}
+
+.success .modal-title {
+  color: #874a33;
+  margin-top: 2rem;
+  font-size: 30px;
+  font-weight: 800;
 }
 </style>
