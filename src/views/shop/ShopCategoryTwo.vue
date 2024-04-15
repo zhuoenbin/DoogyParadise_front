@@ -37,12 +37,34 @@
           <!-- v-for渲染 -->
           <div class="col" v-for="p in products" :key="p.productId">
             <div class="card shadow-sm">
+              <!--圖片處理(當庫存為0的時候不能跳轉商品頁面)-->
+              <!-- <router-link
+                :to="{ name: 'product', params: { productId: p.productId } }"
+              >
+                <img :src="p.imgPath[0]" class="w-100 fixed-size-img" />
+              </router-link> -->
+              <div
+                class="product-image-wrapper"
+                :class="{ 'disabled-link': p.stock === 0 }"
+              >
+                <router-link
+                  v-if="p.stock !== 0"
+                  :to="{ name: 'product', params: { productId: p.productId } }"
+                >
+                  <img :src="p.imgPath[0]" class="w-100 fixed-size-img" />
+                </router-link>
+                <img v-else :src="p.imgPath[0]" class="w-100 fixed-size-img" />
+              </div>
               <!--圖片處理-->
-              <img :src="p.imgPath[0]" class="w-100 fixed-size-img" />
-              <!--圖片處理-->
-              <p class="card-text mt-2 px-3 text-truncate">
-                {{ p.productName }}
-              </p>
+              <div
+                class="card-text mt-2 px-3 text-truncate d-flex justify-content-between align-items-center"
+              >
+                <div>{{ p.productName }}</div>
+                <div v-if="salesVolume[p.productId] !== undefined">
+                  銷量: {{ salesVolume[p.productId] }}
+                </div>
+              </div>
+              <!-- 庫存:{{ p.stock }} -->
               <div class="d-flex justify-content-between align-items-center">
                 <div class="m-3">價格:{{ p.unitPrice }}</div>
                 <!-- 彈出視窗 -->
@@ -108,7 +130,7 @@
                     data-bs-toggle="modal"
                     :data-bs-target="'#exampleModal_' + p.productId"
                   >
-                    <i class="fa-solid fa-cart-plus"></i>
+                    <i class="fa-solid fa-cart-plus text-danger"></i>
                   </button>
                 </div>
                 <!-- 購物車按鈕 -->
@@ -133,11 +155,8 @@ export default {
     };
   },
   mounted() {
-    axios.get(`${this.API_URL}/category/${this.currentPage}/2`).then((rs) => {
-      this.currentPage = rs.data.number;
-      this.totalPage = rs.data.totalPages;
-      this.products = rs.data.content;
-    });
+    this.findProducts();
+    this.fetchSalesVolume();
   },
   computed: {
     showPageBar() {
@@ -151,6 +170,36 @@ export default {
     },
   },
   methods: {
+    //商品列表
+    findProducts() {
+      axios.get(`${this.API_URL}/category/${this.currentPage}/2`).then((rs) => {
+        this.currentPage = rs.data.number;
+        this.totalPage = rs.data.totalPages;
+        this.products = rs.data.content;
+      });
+    },
+    //銷量
+    fetchSalesVolume() {
+      axios
+        .get(`http://localhost:8080/orderDetail/salesVolume`)
+        .then((response) => {
+          console.log(response.data);
+          // 將銷售數量數據轉換為物件，以便更輕鬆地通過產品ID訪問
+          this.salesVolume = response.data.reduce((acc, curr) => {
+            acc[curr[0]] = curr[1];
+            return acc;
+          }, {});
+          // 如果某個產品ID在銷量數據中不存在，則設置一個默認值
+          this.products.forEach((p) => {
+            if (typeof this.salesVolume[p.productId] === "undefined") {
+              this.$set(this.salesVolume, p.productId, 0); // 設置默認銷量為0
+            }
+          });
+        })
+        .catch((error) => {
+          console.error("获取销售数量数据时发生错误：", error);
+        });
+    },
     //綁定頁碼點擊事件
     goToPage(p) {
       if (p == "...") {

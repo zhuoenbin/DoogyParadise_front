@@ -170,6 +170,25 @@
       </div>
     </div>
     <!-- 輪播 -->
+    <!-- <div class="carousel-container">
+            <div
+              id="carouselExampleSlidesOnly"
+              class="carousel slide fixed-carousel-size"
+              data-bs-ride="carousel"
+            >
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img
+                    src="https://cdn2.ettoday.net/images/5550/5550904.jpg"
+                    class="d-block w-100 fixed-size-image"
+                    alt="First slide"
+                  />
+                </div>
+              </div>
+            </div>
+          </div> -->
+    <!-- ----------------- -->
+    <!-- 輪播 -->
     <div>
       <div
         id="carouselExampleSlidesOnly"

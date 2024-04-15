@@ -15,6 +15,7 @@ import "vue-sidebar-menu/dist/vue-sidebar-menu.css";
 //element plus
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
+import * as ElementPlusIconsVue from "@element-plus/icons-vue"; 
 //ckeditor 5
 import CKEditor from "@ckeditor/ckeditor5-vue";
 
@@ -43,6 +44,9 @@ app.use(router);
 app.component("VueDatePicker", VueDatePicker);
 app.use(VueSidebarMenu);
 app.use(ElementPlus);
+for(const [key,component] of Object.entries(ElementPlusIconsVue)){
+  app.component(key,component)
+};
 app.use(CKEditor);
 app.config.globalProperties.API_URL = API_URL;
 

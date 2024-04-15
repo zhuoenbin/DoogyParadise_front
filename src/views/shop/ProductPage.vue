@@ -9,28 +9,13 @@
         </div>
         <div class="product-details">
           <!-- 輪播 -->
-          <div class="carousel-container">
-            <div
-              id="carouselExampleSlidesOnly"
-              class="carousel slide fixed-carousel-size"
-              data-bs-ride="carousel"
-            >
-              <div class="carousel-inner">
-                <div class="carousel-item active">
-                  <img
-                    src="https://cdn2.ettoday.net/images/5550/5550904.jpg"
-                    class="d-block w-100 fixed-size-image"
-                    alt="First slide"
-                  />
-                </div>
-                <div class="carousel-item">
-                  <img
-                    src="https://cdn2.ettoday.net/images/5465/5465162.jpg"
-                    class="d-block w-100 fixed-size-image"
-                    alt="Second slide"
-                  />
-                </div>
-              </div>
+          <div id="cont">
+            <div id="photo">
+              <img src="https://cdn2.ettoday.net/images/5550/5550904.jpg" />
+              <img src="https://cdn2.ettoday.net/images/5465/5465162.jpg" />
+              <img
+                src="https://image-cdn-flare.qdm.cloud/q64c525421aa98/image/data/2022/11/27/4ccdfb4dab48da9463d7662e993bd7ca.jpeg"
+              />
             </div>
           </div>
           <!-- 輪播 -->
@@ -39,10 +24,11 @@
             <svg
               width="24"
               height="20"
-              class="vgMiJB"
+              class="vgMiJB pointer-cursor"
               viewBox="0 0 24 20"
               @click="isHeartFilled ? deleteToCollect() : addToCollect()"
             >
+              <!-- class="vgMiJB" -->
               <!-- 當isHeartFilled為true調用deleteToCollect，為false調用addToCollect -->
               <path
                 :fill="isHeartFilled ? '#FF424F' : 'none'"
@@ -157,16 +143,16 @@ export default {
   mounted() {
     const productId = this.$route.params.productId;
     axios.get(`${this.API_URL}/productPage/${productId}`).then((response) => {
-      // console.log(response.data);
+      console.log(response.data);
       this.productpage = response.data;
       this.productId = productId;
-      this.$nextTick(() => {
-        this.initCarousel();
-      });
+      // this.$nextTick(() => {
+      //   this.initCarousel();
+      // });
     });
     //檢查愛心
     axios.get(`${this.API_URL}/checkCollect/${productId}`).then((response) => {
-      console.log(response.data);
+      // console.log(response.data);
       this.collection = response.data;
       //當isHeartFilled為true的時候是填滿的
       this.isHeartFilled = this.collection === 1;
@@ -240,35 +226,18 @@ export default {
           }
         });
     },
-    // 啟動輪播
-    // initCarousel() {
-    //   const carousel = new bootstrap.Carousel(
-    //     document.getElementById("carouselExampleSlidesOnly"),
-    //     {
-    //       interval: 2000, // 輪播間隔時間，以毫秒為單位，這裡設置為2秒
-    //       wrap: true, // 是否循環輪播
-    //     }
-    //   );
-    // },
   },
 };
 </script>
 
 <style>
+/* 愛心:讓滑鼠移到該元素時顯示手指頭指標 */
+.pointer-cursor {
+  cursor: pointer;
+}
 /* 設置愛心 */
 .filled-heart {
   fill: red;
-}
-/* 设置輪播的高度 */
-.carousel-inner {
-  width: 100%;
-  height: 200px;
-}
-/* 设置輪播照片 */
-.carousel-item img {
-  max-width: 100%; /* 最大寬度為100% */
-  max-height: 210px;
-  object-fit: contain;
 }
 /* 標題的CSS */
 .product-details-container {
@@ -282,12 +251,13 @@ export default {
 .product-img {
   width: 100%; /* 設置圖片的寬度為其父元素的寬度 */
   height: 100%; /* 設置圖片的高度為其父元素的高度 */
-  object-fit: cover; /* 讓圖片填滿整個容器 */
+  /* 讓圖片填滿整個容器 */
+  object-fit: cover;
 }
 
 .product-image {
-  width: 60%; /* 設置圖片區域寬度為頁面的一半 */
-  height: 100%;
+  width: 50%; /* 設置圖片區域寬度為頁面的一半 */
+  height: 50%;
   overflow: hidden;
 }
 
@@ -298,7 +268,6 @@ export default {
 .product-name {
   font-size: 50px;
   font-weight: bold;
-  /* margin-bottom: 10px; */
   margin-top: 20px;
 }
 
@@ -311,11 +280,6 @@ export default {
   width: 30%; /* 设置输入框的宽度 */
   height: 45px; /* 设置输入框的高度 */
 }
-/* 數量鍵的CSS */
-/* .quantity-input-section {
-  margin-top: 5%;
-  margin-bottom: 5%;
-} */
 /* 購物車按鈕CSS */
 .add-to-cart-button {
   padding: 10px 60px;
@@ -328,5 +292,34 @@ export default {
 /* 彈出視窗 */
 .modal-body {
   text-align: center;
+}
+/* 輪播2版 */
+#cont {
+  width: 400px;
+  height: 300px;
+  overflow: hidden;
+}
+#photo {
+  width: 1200px;
+  animation: switch 5s ease-out infinite;
+}
+#photo > img {
+  float: left;
+  width: 400px;
+  height: 300px;
+}
+@keyframes switch {
+  0%,
+  25% {
+    margin-left: 0;
+  }
+  35%,
+  60% {
+    margin-left: -400px;
+  }
+  70%,
+  100% {
+    margin-left: -800px;
+  }
 }
 </style>

@@ -38,7 +38,11 @@
           <div class="col" v-for="p in products" :key="p.productId">
             <div class="card shadow-sm">
               <!--圖片處理-->
-              <img :src="p.imgPath[0]" class="w-100 fixed-size-img" />
+              <router-link
+                :to="{ name: 'product', params: { productId: p.productId } }"
+              >
+                <img :src="p.imgPath[0]" class="w-100 fixed-size-img" />
+              </router-link>
               <!--圖片處理-->
               <p class="card-text mt-2 px-3 text-truncate">
                 {{ p.productName }}

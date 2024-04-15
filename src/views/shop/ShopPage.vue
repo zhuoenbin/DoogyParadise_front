@@ -1,8 +1,7 @@
 <template>
-  <!-- <div class="app-container"> -->
   <main>
     <div class="container mb-3">
-      <div class="row align-items-center text-center">
+      <div class="row align-items-center text-center custom-margin">
         <div class="col-1">
           <label for="inputPassword6" class="col-form-label">商品名稱</label>
         </div>
@@ -67,18 +66,30 @@
           <!-- v-for渲染 -->
           <div class="col" v-for="p in products" :key="p.productId">
             <div class="card shadow-sm">
-              <!--圖片處理-->
+              <!--圖片處理(當庫存為0的時候不能跳轉商品頁面)-->
               <!-- src="https://pets-zakka.com/wp-content/uploads/2022/05/deal-with-hot.jpg" -->
-              <router-link
-                :to="{ name: 'product', params: { productId: p.productId } }"
+              <div
+                class="product-image-wrapper"
+                :class="{ 'disabled-link': p.stock === 0 }"
               >
-                <img :src="p.imgPath[0]" class="w-100 fixed-size-img" />
-              </router-link>
+                <router-link
+                  v-if="p.stock !== 0"
+                  :to="{ name: 'product', params: { productId: p.productId } }"
+                >
+                  <img :src="p.imgPath[0]" class="w-100 fixed-size-img" />
+                </router-link>
+                <img v-else :src="p.imgPath[0]" class="w-100 fixed-size-img" />
+              </div>
               <!--圖片處理-->
-              <p class="card-text mt-2 px-3 text-truncate">
-                {{ p.productName }}
-                庫存:{{ p.stock }}
-              </p>
+              <div
+                class="card-text mt-2 px-3 text-truncate d-flex justify-content-between align-items-center"
+              >
+                <div>{{ p.productName }}</div>
+                <div v-if="salesVolume[p.productId] !== undefined">
+                  銷量: {{ salesVolume[p.productId] }}
+                </div>
+              </div>
+              <!-- 庫存:{{ p.stock }} -->
               <div class="d-flex justify-content-between align-items-center">
                 <div class="m-3">價格:{{ p.unitPrice }}</div>
                 <!-- 彈出視窗 -->
@@ -137,7 +148,9 @@
                     :data-bs-target="'#exampleModal_' + p.productId"
                     :disabled="p.stock === 0"
                   >
-                    <i class="fa-solid fa-cart-plus"></i>
+                    <!-- 如果:disabled="p.stock === 0"購物車的圖示不能點 -->
+                    <!-- text-danger=>變紅色圖示 -->
+                    <i class="fa-solid fa-cart-plus text-danger"></i>
                   </button>
                   <!-- :data-bs-target="'#exampleModal_' + p.productId"設置目標模態的 id 為基於商品的 productId -->
                 </div>
@@ -149,7 +162,6 @@
       </div>
     </div>
   </main>
-  <!-- </div> -->
 </template>
 <script>
 import axios from "axios";
@@ -162,10 +174,12 @@ export default {
       currentPage: 0,
       totalPage: 0,
       products: [],
+      salesVolume: {}, // 將 銷量 初始化為空對象
     };
   },
   mounted() {
     this.findProducts();
+    this.fetchSalesVolume();
   },
   computed: {
     showPageBar() {
@@ -179,6 +193,28 @@ export default {
     },
   },
   methods: {
+    //銷量
+    fetchSalesVolume() {
+      axios
+        .get(`http://localhost:8080/orderDetail/salesVolume`)
+        .then((response) => {
+          console.log(response.data);
+          // 將銷售數量數據轉換為物件，以便更輕鬆地通過產品ID訪問
+          this.salesVolume = response.data.reduce((acc, curr) => {
+            acc[curr[0]] = curr[1];
+            return acc;
+          }, {});
+          // 如果某個產品ID在銷量數據中不存在，則設置一個默認值
+          this.products.forEach((p) => {
+            if (typeof this.salesVolume[p.productId] === "undefined") {
+              this.$set(this.salesVolume, p.productId, 0); // 設置默認銷量為0
+            }
+          });
+        })
+        .catch((error) => {
+          console.error("获取销售数量数据时发生错误：", error);
+        });
+    },
     //綁定頁碼點擊事件
     goToPage(p) {
       if (p == "...") {
@@ -233,16 +269,28 @@ export default {
 };
 </script>
 <style>
+/* 調整商品卡的寬度 */
+.col {
+  width: 25%;
+}
+/* 調整商品卡的高度(這個調整會影響購物車) */
+/* .card {
+  height: 370px;
+} */
+/* 調整搜尋欄位子 */
+.custom-margin {
+  margin-top: 20px;
+}
+.product-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
 .fixed-size-img {
   height: 250px; /* 固定上下高度 */
 }
-/* 頁面底色 */
-/* #app {
-  background-color: #fff8d7; 
-} */
-/* 设置卡片的背景颜色 */
 .card.shadow-sm {
-  background-color: #ffd1a4;
+  background-color: #ffe6d9;
 }
 /* 將活動頁面按鈕的顏色設置為與非活動按鈕相同 */
 .page-item.active .page-link {
