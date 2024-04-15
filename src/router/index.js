@@ -29,6 +29,14 @@ const router = createRouter({
           component: () => import("@/views/member/MemberDetail.vue"),
         },
         {
+          path: "order",
+          component: () => import("@/views/member/MemberOrders.vue"),
+        },
+        {
+          path: "order/:orderId/orderdetails",
+          component: () => import("@/views/member/MemberOrderDetails.vue"),
+        },
+        {
           path: "mydog",
           name: "mydog",
           component: () => import("@/views/member/MemberDog.vue"),
@@ -37,6 +45,11 @@ const router = createRouter({
           path: "addDog",
           name: "addDog",
           component: () => import("@/views/member/MemberAddDog.vue"),
+        },
+        {
+          path: "collection",
+          name: "collection",
+          component: () => import("@/views/shop/CollectPage.vue"),
         },
       ],
     },
@@ -199,7 +212,6 @@ const router = createRouter({
         },
       ],
     },
-
     {
       path: "/employee/room",
       component: () => import("@/views/employee/room/Room.vue"),
@@ -219,14 +231,6 @@ const router = createRouter({
         {
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
-        },
-        {
-          path: "roomChart_page",
-          component: () => import("@/views/employee/room/RoomChart.vue"),
-        },
-        {
-          path: "cancel_page",
-          component: () => import("@/views/employee/room/RoomCancel.vue"),
         },
       ],
     },
@@ -284,6 +288,14 @@ const router = createRouter({
         {
           path: "category",
           component: () => import("@/views/shop/ShopCategory.vue"),
+        },
+        {
+          path: "categoryTwo",
+          component: () => import("@/views/shop/ShopCategoryTwo.vue"),
+        },
+        {
+          path: "categoryThree",
+          component: () => import("@/views/shop/ShopCategoryThree.vue"),
         },
         // :productId動態綁定參數道路由上傳遞
         {

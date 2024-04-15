@@ -6,28 +6,45 @@
         <ul class="nano-content">
           <li>
             <router-link to="/">
-              <i class="fa-solid fa-house"></i><span>商城首頁</span></router-link>
+              <i class="fa-solid fa-house"></i
+              ><span>商城首頁</span></router-link
+            >
           </li>
           <li>
-            <router-link to="/"><i class="fa-solid fa-circle-exclamation"></i><span>檢舉管理</span></router-link>
+            <router-link to="/"
+              ><i class="fa-solid fa-circle-exclamation"></i
+              ><span>檢舉管理</span></router-link
+            >
           </li>
           <li>
-            <router-link to="/employee/room/u_page"><i
-                class="fa-regular fa-calendar-days"></i><span>訂房管理</span></router-link>
+            <router-link to="/employee/room/u_page"
+              ><i class="fa-regular fa-calendar-days"></i
+              ><span>訂房管理</span></router-link
+            >
           </li>
           <li>
-            <router-link to="/"><i class="fa-regular fa-calendar-days"></i><span>商品管理</span></router-link>
+            <router-link to="/"
+              ><i class="fa-regular fa-calendar-days"></i
+              ><span>商品管理</span></router-link
+            >
           </li>
           <li>
-            <router-link to="/"><i class="fa-regular fa-calendar-days"></i><span>退貨處理</span></router-link>
+            <router-link to="/"
+              ><i class="fa-regular fa-calendar-days"></i
+              ><span>退貨處理</span></router-link
+            >
           </li>
           <li>
-            <router-link to="/employee/activity/act_HoldingManager"><i
-                class="fa-regular fa-calendar-days"></i><span>活動管理</span></router-link>
+            <router-link to="/employee/activity/act_HoldingManager"
+              ><i class="fa-regular fa-calendar-days"></i
+              ><span>活動管理</span></router-link
+            >
           </li>
           <li>
             <router-link to="/employee/tweet">
-              <i class="fa-regular fa-pen-to-square"></i><span>推文管理</span></router-link>
+              <i class="fa-regular fa-pen-to-square"></i
+              ><span>推文管理</span></router-link
+            >
           </li>
         </ul>
       </div>
@@ -39,8 +56,8 @@
         <template v-slot="{ Component }">
           <transition name="slide-left" mode="out-in">
             <component :is="Component" />
-          </transition>
-        </template></router-view>
+          </transition> </template
+      ></router-view>
     </div>
   </div>
 </template>
@@ -104,7 +121,7 @@ onMounted(() => {
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.sidebar #leftside-navigation ul li.active>a {
+.sidebar #leftside-navigation ul li.active > a {
   color: #6579eb;
 }
 

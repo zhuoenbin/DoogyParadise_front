@@ -14,7 +14,7 @@
 
           <li></li>
           <li>
-            <router-link to="">
+            <router-link to="/profile/order">
               <i class="fa-regular fa-calendar-days"></i>
               <span> 我的訂單 </span>
             </router-link>
