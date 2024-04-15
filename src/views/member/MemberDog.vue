@@ -24,6 +24,7 @@ export default {
     };
   },
   mounted() {
+    const emits = ["update-success"]; // 聲明自定義事件
     const memberStore = useMemberStore();
     this.memberId = memberStore.memberId;
 

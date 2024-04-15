@@ -53,12 +53,9 @@
 <script>
 import axios from "axios";
 import { useMemberStore } from "@/stores/memberStore";
-import Slideshow from "@/components/index/Slideshow.vue";
 
 export default {
-  components: {
-    Slideshow,
-  },
+  components: {},
   mounted() {
     axios.get(`${this.API_URL}/api/users/map`).then((re) => {
       console.log("in homepage axios.get(`${this.API_URL}/api/users/map`)");
