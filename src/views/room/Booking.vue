@@ -2,10 +2,7 @@
   <div id="app">
     <div class="main">
       <h2 class="page-title">訂房</h2>
-      <div
-        class="top"
-        v-if="dogs.length != 0 && (role == null || !role.startsWith('ROLE'))"
-      >
+      <div class="top" v-if="dogs.length != 0 && (role == null || !role.startsWith('ROLE'))">
         <span>請選擇要住宿的寵物:</span>
         <select v-model="selectedDog" @change="RoomsDate()" class="">
           <option v-for="(dog, dogId) in dogs" :key="dogId" :value="dog">
@@ -14,29 +11,14 @@
         </select>
         <br />
         <span>請選擇住宿的日期:</span>
-        <VueDatePicker
-          class="date-picker"
-          v-model="selectedDates"
-          range
-          :options="datepickerOptions"
-          :enable-time-picker="false"
-          :min-date="new Date()"
-          @blur="RoomsDate()"
-        />
+        <VueDatePicker class="date-picker" v-model="selectedDates" range :options="datepickerOptions"
+          :enable-time-picker="false" :min-date="new Date()" @blur="RoomsDate()" />
       </div>
       <span v-for="(room, roomId) in filteredRooms" :key="roomId">
-        <div
-          class="room-container"
-          v-if="!noVacancies.includes(`${room.roomId}`)"
-        >
+        <div class="room-container" v-if="!noVacancies.includes(`${room.roomId}`)">
           <div class="card">
-            <img
-              :src="room.roomImgPath"
-              class="card-img-top"
-              alt="..."
-              data-bs-toggle="modal"
-              :data-bs-target="'#exampleModal_' + room.roomId"
-            />
+            <img :src="room.roomImgPath" class="card-img-top" alt="..." data-bs-toggle="modal"
+              :data-bs-target="'#exampleModal_' + room.roomId" />
             <div class="card-body">
               <h5 class="card-title">房間名稱: {{ room.roomName }}</h5>
               <hr />
@@ -45,24 +27,13 @@
                 {{ roomSizeText(room.roomSize) }}<br />房間價格(一天):
                 {{ room.roomPrice }}<br />
               </p>
-              <a
-                @click="bookRoom(room)"
-                href="javascript: void(0)"
-                class="btn btn-primary"
-                v-if="
-                  dogs.length != 0 && (role == null || !role.startsWith('ROLE'))
-                "
-                >訂房<span></span><span></span><span></span><span></span
-              ></a>
+              <a @click="bookRoom(room)" href="javascript: void(0)" class="btn btn-primary" v-if="
+                dogs.length != 0 && (role == null || !role.startsWith('ROLE'))
+              ">訂房<span></span><span></span><span></span><span></span></a>
             </div>
             <!-- Modal 房間評價 -->
-            <div
-              class="modal fade"
-              :id="'exampleModal_' + room.roomId"
-              tabindex="-1"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true"
-            >
+            <div class="modal fade" :id="'exampleModal_' + room.roomId" tabindex="-1"
+              aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -80,19 +51,13 @@
                     </div>
                     <hr />
                     <span>房間評價: </span>
-                    <div
-                      v-for="(
+                    <div v-for="(
                         roomReservation, roomReservationId
-                      ) in roomReservations"
-                      :key="roomReservationId"
-                    >
-                      <div
-                        v-if="
-                          roomReservation.room.roomId == room.roomId &&
-                          roomReservation.star != null
-                        "
-                        class="space"
-                      >
+                      ) in roomReservations" :key="roomReservationId">
+                      <div v-if="
+                        roomReservation.room.roomId == room.roomId &&
+                        roomReservation.star != null
+                      " class="space">
                         <!-- <hr /> -->
                         用戶: {{ roomReservation.lastName }}
                         <br />
@@ -101,33 +66,17 @@
                         訂房時段: {{ formatDate(roomReservation.startTime) }} -
                         {{ formatDate(roomReservation.endTime) }}
                         <br />
-                        <span
-                          v-for="index in roomReservation.star"
-                          :key="index"
-                          class="star"
-                          >★</span
-                        >
-                        <span
-                          v-for="index in maxRating - roomReservation.star"
-                          :key="index"
-                          class="star"
-                          >☆</span
-                        >
+                        <span v-for="index in roomReservation.star" :key="index" class="star">★</span>
+                        <span v-for="index in maxRating - roomReservation.star" :key="index" class="star">☆</span>
                         <div class="jcsb">
-                          <span
-                            v-if="
-                              roomReservation.conments != '' &&
-                              roomReservation.conments != null
-                            "
-                            style="white-space: pre-wrap; width: 200px"
-                          >
+                          <span v-if="
+                            roomReservation.conments != '' &&
+                            roomReservation.conments != null
+                          " style="white-space: pre-wrap; width: 200px">
                             評分說明: {{ roomReservation.conments }}
                           </span>
-                          <span class="gray" v-else>無評分說明</span
-                          ><span class="gray"
-                            >評分時間:
-                            {{ formatDate(roomReservation.conmentsTime) }}</span
-                          >
+                          <span class="gray" v-else>無評分說明</span><span class="gray">評分時間:
+                            {{ formatDate(roomReservation.conmentsTime) }}</span>
                         </div>
                       </div>
                     </div>
@@ -136,11 +85,7 @@
               </div>
             </div>
             <!-- Modal 訂房成功 -->
-            <div
-              class="modal"
-              tabindex="-1"
-              :id="'exampleModal01_' + room.roomId"
-            >
+            <div class="modal" tabindex="-1" :id="'exampleModal01_' + room.roomId">
               <div class="modal-dialog">
                 <div class="modal-content modalbgc">
                   <div class="success">
@@ -148,27 +93,11 @@
                   </div>
                   <div class="modal-body success">
                     <svg width="400" height="400">
-                      <circle
-                        fill="none"
-                        stroke="#68E534"
-                        stroke-width="20"
-                        stroke-linecap="round"
-                        cx="200"
-                        cy="200"
-                        r="190"
-                        class="circle"
-                        transform="rotate(-90 200 200)"
-                      />
+                      <circle fill="none" stroke="#68E534" stroke-width="20" stroke-linecap="round" cx="200" cy="200"
+                        r="190" class="circle" transform="rotate(-90 200 200)" />
 
-                      <polyline
-                        fill="none"
-                        stroke="#68E534"
-                        stroke-width="24"
-                        points="88,214 173,284 304,138"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="tick"
-                      />
+                      <polyline fill="none" stroke="#68E534" stroke-width="24" points="88,214 173,284 304,138"
+                        stroke-linecap="round" stroke-linejoin="round" class="tick" />
                     </svg>
                   </div>
                   <!-- <p class="gray">已寄信至您的信箱</p> -->
@@ -365,8 +294,7 @@ const bookRoom = (room) => {
     const roomReservation = () => {
       axios
         .post(
-          `http://localhost:8080/ecpayCheckout?price=${
-            (dateRange.length - 1) * room.roomPrice
+          `http://localhost:8080/ecpayCheckout?price=${(dateRange.length - 1) * room.roomPrice
           }&url=room/o_page`
         )
         .then((response) => {
@@ -487,7 +415,7 @@ const RoomsDate = () => {
 
 .main {
   min-height: 82vh;
-  margin: 2rem 6rem;
+  margin: 2rem;
 }
 
 .top {
@@ -497,7 +425,8 @@ const RoomsDate = () => {
   background-color: #3e4452;
   padding: 1rem;
   color: aliceblue;
-  width: calc(60rem + 1.25rem); /* 0.625rem 等於 10px，因為 1rem = 16px */
+  width: calc(60rem + 1.25rem);
+  /* 0.625rem 等於 10px，因為 1rem = 16px */
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -523,7 +452,8 @@ select {
   white-space: nowrap;
   display: inline-block;
   justify-content: center;
-  margin-right: 20px; /* 調整卡片之間的間距 */
+  margin-right: 20px;
+  /* 調整卡片之間的間距 */
 }
 
 .room-container .room-details {
@@ -552,6 +482,7 @@ select {
   transition: 0.5s;
   padding: 10px 20px;
 }
+
 .btn span {
   position: absolute;
   width: 25%;
@@ -564,26 +495,33 @@ select {
   transition-delay: calc((var(--n) - 1) * 0.1s);
   z-index: -1;
 }
+
 .btn:hover {
   color: rgb(255, 255, 255);
 }
+
 .btn:hover span {
   transform: translateY(0) scale(2);
 }
+
 .btn span:nth-child(1) {
   --n: 1;
 }
+
 .btn span:nth-child(2) {
   --n: 2;
 }
+
 .btn span:nth-child(3) {
   --n: 3;
 }
+
 .btn span:nth-child(4) {
   --n: 4;
 }
 
 .card {
+  max-width: fit-content;
   flex-direction: row;
   align-items: center;
   padding: 1rem;
@@ -689,6 +627,7 @@ h2 {
   from {
     stroke-dashoffset: 1194;
   }
+
   to {
     stroke-dashoffset: 2388;
   }
@@ -698,6 +637,7 @@ h2 {
   from {
     stroke-dashoffset: 350;
   }
+
   to {
     stroke-dashoffset: 0;
   }
@@ -707,6 +647,7 @@ h2 {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }

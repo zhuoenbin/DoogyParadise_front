@@ -1,9 +1,7 @@
 <template>
     <div>
         <article class="tweetCard">
-
             <div class="tweetCardBody">
-
                 <div class="cardContent">
                     <div class="headerContent">
                         <div class="headerImgHolder">
@@ -86,8 +84,13 @@
                         class="tweet-galleries">
                         <div class="d-flex justify-content-center">
                             <div class="gallery-item">
-                                <a :href="activityLink">
-                                    <img :src="imgOnlinePath" alt="Gallery Image" class="gallery-image">
+                                <a v-if="tweet.tweetContent.startsWith('我的狗狗: ')" :href="roomLink">
+                                    <img :src="imgOnlinePath" style=" object-fit: cover" width="250" height="250"
+                                        alt="Gallery Image" class="gallery-image">
+                                </a>
+                                <a v-else :href="activityLink">
+                                    <img :src="imgOnlinePath" style=" object-fit: cover" width="250" height="250"
+                                        alt="Gallery Image" class="gallery-image">
                                 </a>
                             </div>
                         </div>
@@ -158,6 +161,52 @@
         </div>
     </div>
 
+    <!--檢舉的彈出式視窗 -->
+    <div ref="ReportPostPage" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>檢舉頁面</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 form-check">
+                        <div>
+                            <label>
+                                <input type="checkbox" value="不可愛" v-model="reportPost" /> 不可愛
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" value="太恐怖" v-model="reportPost" /> 太恐怖
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" value="政治不正確" v-model="reportPost" /> 政治不正確
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" value="我不爽" v-model="reportPost" /> 我不爽
+                            </label>
+                        </div>
+
+                    </div>
+                    <div class="mb-3">
+                        <label for="reportReason" class="form-label">其他意見</label>
+                        <textarea class="form-control" id="reportReason" rows="3" v-model="reportPostText"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" @click="submitReport" data-bs-dismiss="modal" aria-label="Close"
+                            class="btn btn-primary">送出</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </template>
 <script>
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -198,6 +247,7 @@ export default {
             imgOnlinePath: "",
             imgOnline: false,
             activityLink: "http://localhost:5173/activity/all",
+            roomLink: "http://localhost:5173/room/b_page",
         }
     },
     props: {
