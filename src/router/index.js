@@ -204,6 +204,10 @@ const router = createRouter({
           component: () => import("@/views/employee/ProductManage.vue"),
         },
         {
+          path: "om_page",
+          component: () => import("@/views/employee/OrderManage.vue"),
+        },
+        {
           path: "t_page",
           component: () => import("@/views/employee/TweetManage.vue"),
         },

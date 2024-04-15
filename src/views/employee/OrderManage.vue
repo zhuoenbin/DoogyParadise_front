@@ -3,46 +3,38 @@
     <table class="table table-striped table-hover">
       <thead>
         <tr>
+          <th scope="col">案件編號</th>
           <th scope="col">訂單ID</th>
-          <th scope="col">訂購日期</th>
+          <th scope="col">退貨日期</th>
           <th scope="col">狀態</th>
           <th scope="col">總金額</th>
           <th scope="col">付款方式</th>
           <th scope="col"></th>
-          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(o, index) in orders" :key="index">
-          <td>{{ o.orderId }}</td>
+        <tr v-for="(c, index) in case" :key="index">
+          <td>{{ c.caseId }}</td>
+          <td>{{ c.orders.orderId }}</td>
           {{
-            dateFormat(o.orderDate)
+            dateFormat(c.orders.orderDate)
           }}
           <td>{{ date }}</td>
           {{
-            paymentMethod(o.paymentMethod)
+            paymentStatus(c.orders.paymentStatus)
           }}
-          <td>{{ payMethod }}</td>
-
-          <td>{{ o.totalPrice }}</td>
+          <td>{{ payStatus }}</td>
+          <td>{{ c.orders.totalPrice }}</td>
           {{
-            paymentStatus(o.paymentStatus)
+            paymentStatus(c.orders.paymentStatus)
           }}
           <td>{{ payStatus }}</td>
           <td>
-            <router-link :to="'/profile/order/' + o.orderId + '/orderdetails'">
-              <button type="button" class="btn btn-success">查看詳細</button>
-            </router-link>
-          </td>
-          <td>
             <button
-              id="cancel"
-              name="cancel"
               type="button"
               class="btn btn-primary"
               data-bs-toggle="modal"
               data-bs-target="#staticBackdrop"
-              @click="setOrderId(o.orderId)"
             >
               取消訂單
             </button>
@@ -70,7 +62,7 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body">要取消該筆訂單？</div>
+          <div class="modal-body">確認取消該筆訂單？</div>
           <div class="modal-footer">
             <button
               type="button"
@@ -83,9 +75,8 @@
               type="button"
               class="btn btn-primary"
               data-bs-dismiss="modal"
-              @click="orderCancel"
+              @click=""
             >
-              <!--cancelOrder-->
               確定
             </button>
           </div>
@@ -95,29 +86,20 @@
   </main>
 </template>
 <script>
-import { useMemberStore } from "@/stores/memberStore";
 import axios from "axios";
-import { emptyProps } from "element-plus";
 export default {
   data() {
     return {
-      memberId: "",
-      memberName: "",
-      orders: [],
+      case: [],
       date: "",
       payMethod: "",
       payStatus: "",
-      activeOrderId: "",
     };
   },
   mounted() {
-    const memberStore = useMemberStore();
-    this.memberId = memberStore.memberId;
-    this.memberName = memberStore.memberName;
-
-    axios.get(`${this.API_URL}/order`).then((re) => {
-      this.orders = re.data;
-      console.log(this.orders);
+    axios.get(`${this.API_URL}/employee/showOrderCase`).then((re) => {
+      this.case = re.data;
+      console.log(re.data);
     });
   },
   methods: {
@@ -161,26 +143,7 @@ export default {
           break;
       }
     },
-    setOrderId(value) {
-      this.activeOrderId = value;
-      console.log(this.activeOrderId);
-    },
-    orderCancel() {
-      const formData = new FormData();
-      formData.append("orderId", this.activeOrderId);
-      axios
-        .post(`${this.API_URL}/order/doOrderCancel`, formData)
-        .then((response) => {
-          location.reload();
-        });
-    },
   },
 };
 </script>
-<style>
-router-link {
-  display: table-row;
-  text-decoration: none;
-  /* 添加其他必要的样式 */
-}
-</style>
+<style></style>
