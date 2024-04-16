@@ -277,6 +277,16 @@ const router = createRouter({
       ],
     },
     {
+      path: "/employee/productmanage",
+      name: "productmanage",
+      component: () => import("@/views/employee/ProductManage.vue"),
+    },
+    {
+      path: "/employee/ordermanage",
+      name: "productmanage",
+      component: () => import("@/views/employee/OrderManage.vue"),
+    },
+    {
       path: "/:pathMatch(.*)*",
       component: () => import("@/views/NotFound.vue"),
     },

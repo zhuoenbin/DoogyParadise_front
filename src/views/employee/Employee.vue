@@ -23,13 +23,13 @@
             >
           </li>
           <li>
-            <router-link to="/employee/pm_page"
+            <router-link to="/employee/productmanage"
               ><i class="fa-regular fa-calendar-days"></i
               ><span>商品管理</span></router-link
             >
           </li>
           <li>
-            <router-link to="/employee/om_page"
+            <router-link to="/employee/ordermanage"
               ><i class="fa-regular fa-calendar-days"></i
               ><span>退貨處理</span></router-link
             >
