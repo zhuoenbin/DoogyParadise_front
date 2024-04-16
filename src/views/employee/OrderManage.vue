@@ -14,6 +14,9 @@
         </tr>
       </thead>
       <tbody>
+        {{
+          sortCase(this.case)
+        }}
         <tr v-for="(c, index) in case" :key="index">
           <td>{{ c.caseId }}</td>
           <td>{{ c.orders.orderId }}</td>
@@ -157,6 +160,11 @@ export default {
           this.payStatus = "已付款，等待取消中";
           break;
       }
+    },
+    sortCase(list) {
+      list.sort((a, b) => {
+        return b.caseId - a.caseId;
+      });
     },
     confirmCancel() {},
   },
