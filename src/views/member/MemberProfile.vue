@@ -31,6 +31,12 @@
               <span> 新增狗勾 </span>
             </router-link>
           </li>
+          <li>
+            <router-link to="/profile/collection">
+              <i class="fa-regular fa-calendar-days"></i>
+              <span> 我的收藏 </span>
+            </router-link>
+          </li>
         </ul>
       </div>
     </div>

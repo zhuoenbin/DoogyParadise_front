@@ -103,7 +103,7 @@
                     data-bs-toggle="modal"
                     :data-bs-target="'#exampleModal_' + p.productId"
                   >
-                    <i class="fa-solid fa-cart-plus"></i>
+                    <i class="fa-solid fa-cart-plus text-danger"></i>
                   </button>
                 </div>
                 <!-- 購物車按鈕 -->
