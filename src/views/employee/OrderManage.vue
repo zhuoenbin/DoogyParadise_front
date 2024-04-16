@@ -7,9 +7,9 @@
           <th scope="col">訂單ID</th>
           <th scope="col">訂單成立日期</th>
           <th scope="col">退貨日期</th>
-          <th scope="col">狀態</th>
-          <th scope="col">總金額</th>
           <th scope="col">付款方式</th>
+          <th scope="col">總金額</th>
+          <th scope="col">狀態</th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -26,9 +26,9 @@
           }}
           <td>{{ date }}</td>
           {{
-            paymentStatus(c.orders.paymentStatus)
+            paymentMethod(c.orders.paymentMethod)
           }}
-          <td>{{ payStatus }}</td>
+          <td>{{ payMethod }}</td>
           <td>{{ c.orders.totalPrice }}</td>
           {{
             paymentStatus(c.orders.paymentStatus)
@@ -121,6 +121,7 @@ export default {
       });
     },
     paymentMethod(value) {
+      console.log(value);
       switch (true) {
         case value === 0:
           this.payMethod = "LinePay";
@@ -129,8 +130,10 @@ export default {
           this.payMethod = "貨到付款";
           break;
       }
+      console.log(this.payMethod);
     },
     paymentStatus(value) {
+      console.log(value);
       switch (true) {
         case value === 0:
           this.payStatus = "未付款";
@@ -146,6 +149,12 @@ export default {
           break;
         case value === 4:
           this.payStatus = "已取消，不須退款";
+          break;
+        case value === 5:
+          this.payStatus = "等待取消中";
+          break;
+        case value === 6:
+          this.payStatus = "已付款，等待取消中";
           break;
       }
     },
