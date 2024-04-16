@@ -161,11 +161,11 @@ const filteredRooms = computed(() => {
       return true;
     } else if (
       selectedDog.value.dogWeight >= 9 &&
-      selectedDog.value.dogWeight <= 22 &&
+      selectedDog.value.dogWeight < 22 &&
       room.roomSize === 2
     ) {
       return true;
-    } else if (selectedDog.value.dogWeight > 25 && room.roomSize === 3) {
+    } else if (selectedDog.value.dogWeight >= 22 && room.roomSize === 3) {
       return true;
     } else {
       return false;
@@ -292,26 +292,19 @@ const bookRoom = (room) => {
 
     // 新增訂房明細
     const roomReservation = () => {
-      axios
-        .post(
-          `http://localhost:8080/ecpayCheckout?price=${(dateRange.length - 1) * room.roomPrice
-          }&url=room/o_page`
-        )
-        .then((response) => {
-          // console.log(response.data);
-          const pay = document.getElementById("pay");
-          pay.innerHTML = response.data;
-          document.getElementById("allPayAPIForm").submit();
-        });
-      // const myModal = new bootstrap.Modal(
-      //   document.getElementById(`exampleModal01_${room.roomId}`)
-      // );
-      // myModal.show();
-
-      // // 五秒後自動關閉 modal
-      // setTimeout(() => {
-      //   myModal.hide();
-      // }, 2600);
+      // axios
+      //   .post(
+      //     `http://localhost:8080/ecpayCheckout?price=${
+      //       (dateRange.length - 1) * room.roomPrice
+      //     }&url=room/o_page`
+      //   )
+      //   .then((response) => {
+      //     // console.log(response.data);
+      //     const pay = document.getElementById("pay");
+      //     pay.innerHTML = response.data;
+      //     document.getElementById("allPayAPIForm").submit();
+      //   })
+      //   .then(() => {
       axios
         .post(
           `http://localhost:8080/room/roomReservation?roomId=${room.roomId}&dogId=${selectedDog.value.dogId}`,
@@ -330,15 +323,25 @@ const bookRoom = (room) => {
             `http://localhost:8080/room/email?roomReservationId=${response.data}`
           );
         });
+      // });
+      const myModal = new bootstrap.Modal(
+        document.getElementById(`exampleModal01_${room.roomId}`)
+      );
+      myModal.show();
+
+      // 五秒後自動關閉 modal
+      setTimeout(() => {
+        myModal.hide();
+      }, 2600);
     };
 
     if (formattedDates[1] != "1970-01-01") {
       roomReservation();
 
-      // setTimeout(() => {
-      //   // 成功的話頁面跳轉到 o_page 並重新加載
-      //   router.push({ name: "o_page" });
-      // }, 2700); // 添加延遲，確保頁面跳轉完成後再刷新
+      setTimeout(() => {
+        // 成功的話頁面跳轉到 o_page 並重新加載
+        router.push({ name: "o_page" });
+      }, 2700); // 添加延遲，確保頁面跳轉完成後再刷新
     } else if (formattedDates[1] == "1970-01-01") {
       alert("請選擇結束時間");
     }
@@ -374,7 +377,7 @@ const RoomsDate = () => {
             // 當訂房明細的 roomId 和 room.roomId 相同時
             if (reservation[0] == room.roomId) {
               // 訂房時間
-              // console.log(reservation);
+              console.log(reservation);
               for (let i = 0; i < reservation.length; i++) {
                 if (
                   reservation[i] == arr &&

@@ -98,7 +98,6 @@
 <script>
 import axios from "axios";
 import { useMemberStore } from "@/stores/memberStore";
-import Slideshow from "@/components/index/Slideshow.vue";
 
 export default {
   data() {
@@ -107,7 +106,7 @@ export default {
     }
   },
   components: {
-    Slideshow,
+
   },
   created() {
     axios.get(`${this.API_URL}/tweet/getTweetOfficialTop3`).then((re) => {

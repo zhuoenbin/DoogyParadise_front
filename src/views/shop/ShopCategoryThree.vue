@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="custom-header">狗狗零食</div>
+    <div class="custom-header">狗狗牽引繩</div>
     <hr />
     <div class="py-1 custom-bg-color">
       <!-- 上面這個是一個加顏色的區塊 -->
@@ -39,10 +39,10 @@
             <div class="card shadow-sm">
               <!--圖片處理(當庫存為0的時候不能跳轉商品頁面)-->
               <!-- <router-link
-                :to="{ name: 'product', params: { productId: p.productId } }"
-              >
-                <img :src="p.imgPath[0]" class="w-100 fixed-size-img" />
-              </router-link> -->
+                  :to="{ name: 'product', params: { productId: p.productId } }"
+                >
+                  <img :src="p.imgPath[0]" class="w-100 fixed-size-img" />
+                </router-link> -->
               <div
                 class="product-image-wrapper"
                 :class="{ 'disabled-link': p.stock === 0 }"
@@ -91,6 +91,15 @@
                       <div class="modal-body">
                         <h5>商品:{{ p.productName }}</h5>
                         <p>價格:{{ p.unitPrice }}</p>
+                        <!-- 錯誤訊息 -->
+                        <!-- <div
+                            v-if="errorMessage"
+                            class="alert alert-danger"
+                            role="alert"
+                          >
+                            {{ errorMessage }}
+                          </div> -->
+                        <!-- 錯誤訊息 -->
                       </div>
                       <div class="modal-footer">
                         <button
@@ -120,9 +129,7 @@
                     class="btn btn-sm btn-outline-secondary m-2"
                     data-bs-toggle="modal"
                     :data-bs-target="'#exampleModal_' + p.productId"
-                    :disabled="p.stock === 0"
                   >
-                    <!-- :disabled="p.stock === 0"當購物車為0的時候點擊失去效果 -->
                     <i class="fa-solid fa-cart-plus text-danger"></i>
                   </button>
                 </div>
@@ -144,7 +151,7 @@ export default {
       currentPage: 0,
       totalPage: 0,
       products: [],
-      salesVolume: {}, // 將 銷量 初始化為空對象
+      //   errorMessage: "", // 新增錯誤訊息變數
     };
   },
   mounted() {
@@ -165,7 +172,7 @@ export default {
   methods: {
     //商品列表
     findProducts() {
-      axios.get(`${this.API_URL}/category/${this.currentPage}/1`).then((rs) => {
+      axios.get(`${this.API_URL}/category/${this.currentPage}/3`).then((rs) => {
         this.currentPage = rs.data.number;
         this.totalPage = rs.data.totalPages;
         this.products = rs.data.content;
@@ -206,9 +213,11 @@ export default {
         .post(`http://localhost:8080/totalAddToCart/add/${productId}`)
         .then((response) => {
           console.log("已成功加入購物車！");
+          //   this.errorMessage = ""; // 清空錯誤訊息
         })
         .catch((error) => {
           console.error("加入購物車時發生錯誤：", error);
+          //   this.errorMessage = "需登入才能加入購物車"; // 更新錯誤訊息
           window.location.href = "http://localhost:5173/login";
         });
     },

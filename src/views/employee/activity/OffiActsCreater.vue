@@ -10,6 +10,9 @@
         /><router-link to="/employee/activity/act_Creater/FormStyle">
           <button class="btn btn-outline-secondary">點擊切換編輯模式</button>
         </router-link>
+        <button class="btn btn-outline-danger" @click="textData">
+          代入demo data
+        </button>
       </h4>
     </div>
     <div class="col-lg-10 mx-auto col-lg-3">
@@ -322,6 +325,22 @@ export default {
     },
   },
   methods: {
+    textData() {
+      this.activityTypeId = 1;
+      this.venueId = 2;
+      this.activityTitle =
+        "2024寵物節|汪汪家庭健康計畫-淺談中醫養生觀念在毛孩身上的應用";
+      this.activityDate = "2024-05-22";
+      this.activityStart = "13:30";
+      this.activityEnd = "15:30";
+
+      this.editorData =
+        '<h1>2024寵物節-Doggy Paradise計畫</h1><p style="text-align:justify"><span class="text-big" style="color:rgb(243,152,0);"><strong>中醫養生觀念在毛孩身上的應用 -13:30-14:20</strong></span></p><p style="text-align:justify;"><strong>主講人：寵博健康動物醫院 黃偉珍院長 &amp; 上璽中醫診所 余雅雯院長</strong></p><p style="text-align:justify;">你知道中醫理論也可以運用在動物身上嗎？ 當中醫養生觀念運用在犬貓身上時，是否也是一樣的道理和效果？「獸醫師×中醫師」的聯合講座會擦出什麼樣的火花，歡迎大家一起來交流吧！</p><p style="text-align:justify;"><span class="text-big" style="color:rgb(243,152,0);"><strong>寵物也有中醫和五行？一次深度了解中獸醫-14:30-15:30</strong></span><br><strong>主講人：興沛動物醫院 郭璟逸獸醫師</strong></p><p style="text-align:justify;">你知道生病除了吃藥，還有另一種選擇：食療！強調的是靠食物來吃出健康，依據動物狀況，提供能平衡身體狀態的食材，如此一來就能調節生物體內可能出現的各種不適症狀，讓飲食變成保健養生的一環。這次郭醫師就要來跟大家分享寵物的五行（金、木、水、火、土）與食療基礎觀念！</p>';
+
+      this.activityClosingDate = "2024-05-14T23:59";
+      this.dogNumber = 10;
+      this.activityCost = 0;
+    },
     textOuputer() {
       console.log(this.editorData);
     },

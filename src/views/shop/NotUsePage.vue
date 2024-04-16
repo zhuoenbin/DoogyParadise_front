@@ -170,6 +170,25 @@
       </div>
     </div>
     <!-- 輪播 -->
+    <!-- <div class="carousel-container">
+            <div
+              id="carouselExampleSlidesOnly"
+              class="carousel slide fixed-carousel-size"
+              data-bs-ride="carousel"
+            >
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img
+                    src="https://cdn2.ettoday.net/images/5550/5550904.jpg"
+                    class="d-block w-100 fixed-size-image"
+                    alt="First slide"
+                  />
+                </div>
+              </div>
+            </div>
+          </div> -->
+    <!-- ----------------- -->
+    <!-- 輪播 -->
     <div>
       <div
         id="carouselExampleSlidesOnly"
@@ -218,7 +237,41 @@ export default {
       products: [],
     };
   },
-  mounted() {},
+  mounted() {
+    // lineConfirm(totalCartPrice) {
+    //   console.log(totalCartPrice);
+    //   const data = {
+    //     totalCartPrice: totalCartPrice,
+    //   };
+    //   axios
+    //     .post(`http://localhost:8080/confirm/${totalCartPrice}`)
+    //     .then((response) => {
+    //       const redirectUrl = response.data;
+    //       window.location.href = redirectUrl;
+    //     })
+    //     .catch((error) => {
+    //       console.error("結帳時發生錯誤：", error);
+    //     });
+    // },
+    // 傳入一個totalCartPrice的參數到後端(請款)
+    // lineConfirm(totalCartPrice) {
+    //   const data = {
+    //     totalCartPrice: totalCartPrice,
+    //   };
+    //   // 延遲 15 秒後執行 API 請求
+    //   setTimeout(() => {
+    //     axios
+    //       .post(`http://localhost:8080/confirm/${totalCartPrice}`)
+    //       .then((response) => {
+    //         const redirectUrl = response.data;
+    //         window.location.href = redirectUrl;
+    //       })
+    //       .catch((error) => {
+    //         console.error("結帳時發生錯誤：", error);
+    //       });
+    //   }, 30000); // 15 秒延遲
+    // },
+  },
   computed: {
     //分頁處理showPageBar
     // showPageBar() {
@@ -256,5 +309,20 @@ export default {
 /* 數量鍵的CSS */
 .quantity-input input[type="number"] {
   text-align: center; /* 将输入框中的数字置中 */
+}
+/* 商品名稱的樣式 */
+.modal-body h5 {
+  font-size: 24px;
+  margin-top: 0;
+}
+/* 商品價格的樣式 */
+/* .modal-body p {
+  font-size: 18px;
+  color: #888;
+  margin-bottom: 20px;
+} */
+/* 橫線下面的區塊(對應class="py-1 custom-bg-color") */
+.custom-bg-color {
+  background-color: #fff8d7;
 }
 </style>

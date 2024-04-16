@@ -31,6 +31,9 @@
       >
         修改狗狗資訊
       </button>
+      <button class="btn btn-danger" @click="deleteDog(dog.dogId)">
+        刪除狗狗
+      </button>
     </div>
   </div>
 
@@ -251,6 +254,12 @@ export default {
           console.log("沒有選擇任何圖片");
         }
       }
+    },
+    deleteDog(dogId) {
+      axios.delete(`${this.API_URL}/dog/delete/Dogs/${dogId}`).then(() => {
+        // 確認請求成功後觸發事件
+        this.$emit("update-success");
+      });
     },
   },
 };

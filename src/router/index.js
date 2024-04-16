@@ -46,6 +46,11 @@ const router = createRouter({
           name: "addDog",
           component: () => import("@/views/member/MemberAddDog.vue"),
         },
+        {
+          path: "collection",
+          name: "collection",
+          component: () => import("@/views/shop/CollectPage.vue"),
+        },
       ],
     },
     {
@@ -301,6 +306,14 @@ const router = createRouter({
         {
           path: "category",
           component: () => import("@/views/shop/ShopCategory.vue"),
+        },
+        {
+          path: "categoryTwo",
+          component: () => import("@/views/shop/ShopCategoryTwo.vue"),
+        },
+        {
+          path: "categoryThree",
+          component: () => import("@/views/shop/ShopCategoryThree.vue"),
         },
         // :productId動態綁定參數道路由上傳遞
         {

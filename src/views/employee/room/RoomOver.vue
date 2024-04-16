@@ -13,15 +13,29 @@
         <option value="petName">寵物名稱</option>
         <option value="Date">訂房日期</option>
       </select>
-      <input v-if="
-        searchType != 'all' && searchType != 'Date' && searchType != 'size'
-      " v-model="searchTerm" type="text" placeholder="輸入關鍵字" />
-      <VueDatePicker class="date-picker" v-if="searchType == 'Date'" v-model="selectedDates" range
-        :options="datepickerOptions" :enable-time-picker="false" :max-date="new Date()" />
+      <input
+        v-if="
+          searchType != 'all' && searchType != 'Date' && searchType != 'size'
+        "
+        v-model="searchTerm"
+        type="text"
+        placeholder="輸入關鍵字"
+      />
+      <VueDatePicker
+        class="date-picker"
+        v-if="searchType == 'Date'"
+        v-model="selectedDates"
+        range
+        :options="datepickerOptions"
+        :enable-time-picker="false"
+        :max-date="new Date()"
+      />
       <div class="button">
-        <span>房型:</span>
-        <button class="btn" @click="changeRoom(1)">小型犬</button><button class="btn"
-          @click="changeRoom(2)">中型犬</button><button class="btn" @click="changeRoom(3)">大型犬</button>
+        <span class="mr-1">房型:</span>
+        <button class="btn" @click="changeDogSize(0)">全部</button>
+        <button class="btn" @click="changeDogSize(1)">小型犬</button
+        ><button class="btn" @click="changeDogSize(2)">中型犬</button
+        ><button class="btn" @click="changeDogSize(3)">大型犬</button>
       </div>
     </div>
 
@@ -61,7 +75,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(reservation, reservationId) in filteredReservations" :key="reservationId">
+        <tr
+          v-for="(reservation, reservationId) in filteredReservations"
+          :key="reservationId"
+        >
           <td>{{ reservation.reservationId }}</td>
           <td>{{ reservation.lastName }}</td>
           <td>{{ reservation.room.roomName }}</td>
@@ -72,8 +89,13 @@
           </td>
           <td>{{ reservation.totalPrice }}</td>
           <td>
-            <a v-if="reservation.reservationId != undefined" href="javascript: void(0)" class="btn"
-              data-bs-toggle="modal" :data-bs-target="'#exampleModal_' + reservation.reservationId">
+            <a
+              v-if="reservation.reservationId != undefined"
+              href="javascript: void(0)"
+              class="btn"
+              data-bs-toggle="modal"
+              :data-bs-target="'#exampleModal_' + reservation.reservationId"
+            >
               <span>詳情</span>
               <svg width="13px" height="10px" viewBox="0 0 13 10">
                 <path d="M1,5 L11,5"></path>
@@ -82,15 +104,25 @@
               </svg>
             </a>
             <!-- Modal -->
-            <div class="modal left-to-right fade" :id="'exampleModal_' + reservation.reservationId" tabindex="-1"
-              aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div
+              class="modal left-to-right fade"
+              :id="'exampleModal_' + reservation.reservationId"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
               <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
                       訂單ID: {{ reservation.reservationId }}
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
                   </div>
                   <div class="modal-body">
                     <div>訂購者: {{ reservation.lastName }}</div>
@@ -112,16 +144,29 @@
                     <hr />
                     <div v-if="reservation.star != null">
                       <div>
-                        <span v-for="index in reservation.star" :key="index" class="star">★</span>
-                        <span v-for="index in maxRating - reservation.star" :key="index" class="star">☆</span>
+                        <span
+                          v-for="index in reservation.star"
+                          :key="index"
+                          class="star"
+                          >★</span
+                        >
+                        <span
+                          v-for="index in maxRating - reservation.star"
+                          :key="index"
+                          class="star"
+                          >☆</span
+                        >
                       </div>
                       <br />
                       <div>
                         評價說明:
-                        <span v-if="
-                          reservation.conments != '' &&
-                          reservation.conments != null
-                        ">{{ reservation.conments }}</span>
+                        <span
+                          v-if="
+                            reservation.conments != '' &&
+                            reservation.conments != null
+                          "
+                          >{{ reservation.conments }}</span
+                        >
                         <span v-else class="gray">無評價說明</span>
                       </div>
                     </div>
@@ -141,7 +186,11 @@
             </div>
           </td>
         </tr>
-        <td class="record-count" colspan="7" v-if="filteredReservations.length != 0">
+        <td
+          class="record-count"
+          colspan="7"
+          v-if="filteredReservations.length != 0"
+        >
           總共 {{ filteredReservations.length }} 筆記錄
         </td>
         <td class="record-count" colspan="6" v-else>沒有紀錄</td>
@@ -165,6 +214,8 @@ const maxRating = 5; // 最大星數
 
 const searchType = ref("all"); // 默认按照名字查询
 const searchTerm = ref(""); // 查询关键字
+
+const dogSize = ref(0);
 
 const selectedDates = ref([]); // 用於存儲所選日期的範圍
 
@@ -240,9 +291,8 @@ const formatDate = (dateString) => {
   return `${year}/${month}/${day}`;
 };
 
-const changeRoom = (size) => {
-  searchType.value = "size";
-  searchTerm.value = size;
+const changeDogSize = (size) => {
+  dogSize.value = size;
 };
 
 // 查詢
@@ -256,28 +306,70 @@ const filteredReservations = computed(() => {
     if (reservation.cancelTime == null) {
       switch (searchType.value) {
         case "name":
-          return includeSearchTerm(reservation.lastName) && !isAfterToday;
+          if (dogSize.value === 0) {
+            return includeSearchTerm(reservation.lastName) && !isAfterToday;
+          } else {
+            return (
+              dogSize.value === reservation.room.roomSize &&
+              includeSearchTerm(reservation.lastName) &&
+              !isAfterToday
+            );
+          }
         case "id":
-          return (
-            reservation.reservationId.toString().includes(searchTerm.value) &&
-            !isAfterToday
-          );
+          if (dogSize.value === 0) {
+            return (
+              reservation.reservationId.toString().includes(searchTerm.value) &&
+              !isAfterToday
+            );
+          } else {
+            return (
+              dogSize.value === reservation.room.roomSize &&
+              reservation.reservationId.toString().includes(searchTerm.value) &&
+              !isAfterToday
+            );
+          }
         case "roomName":
-          return (
-            reservation.room.roomName.toString().includes(searchTerm.value) &&
-            !isAfterToday
-          );
+          if (dogSize.value === 0) {
+            return (
+              reservation.room.roomName.toString().includes(searchTerm.value) &&
+              !isAfterToday
+            );
+          } else {
+            return (
+              dogSize.value === reservation.room.roomSize &&
+              reservation.room.roomName.toString().includes(searchTerm.value) &&
+              !isAfterToday
+            );
+          }
         case "petName":
-          return includeSearchTerm(reservation.dog.dogName) && !isAfterToday;
+          if (dogSize.value === 0) {
+            return includeSearchTerm(reservation.dog.dogName) && !isAfterToday;
+          } else {
+            return (
+              dogSize.value === reservation.room.roomSize &&
+              includeSearchTerm(reservation.dog.dogName) &&
+              !isAfterToday
+            );
+          }
         case "Date":
-          return (
-            RoomsDate(reservation.startTime, reservation.endTime) &&
-            !isAfterToday
-          );
-        case "size":
-          return reservation.room.roomSize === searchTerm.value && isAfterToday;
+          if (dogSize.value === 0) {
+            return (
+              RoomsDate(reservation.startTime, reservation.endTime) &&
+              !isAfterToday
+            );
+          } else {
+            return (
+              dogSize.value === reservation.room.roomSize &&
+              RoomsDate(reservation.startTime, reservation.endTime) &&
+              !isAfterToday
+            );
+          }
         default:
-          return !isAfterToday;
+          if (dogSize.value === 0) {
+            return !isAfterToday;
+          } else {
+            return dogSize.value === reservation.room.roomSize && !isAfterToday;
+          }
       }
     }
   });
@@ -357,6 +449,7 @@ const sortByTotalPrice = () => {
 const RoomsDate = (beginTime, endTime) => {
   const begin = new Date(beginTime);
   const endDate = new Date(endTime);
+  begin.setDate(begin.getDate() - 1);
   // endDate.setDate(endDate.getDate() + 1);
   if (selectedDates.value !== null) {
     if (
@@ -492,5 +585,9 @@ button.sort {
 
 .gray {
   color: gray;
+}
+
+.mr-1 {
+  margin-right: 1rem;
 }
 </style>

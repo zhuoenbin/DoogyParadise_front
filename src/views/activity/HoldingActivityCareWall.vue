@@ -713,7 +713,7 @@ export default {
     goEcPay() {
       axios
         .post(
-          `http://localhost:8080/ecpayCheckout?price=${this.payCost}&url=activity/myJoinedManager`
+          `http://localhost:8080/order/ecpayCheckout?price=${this.payCost}&url=activity/myJoinedManager`
         )
         .then((response) => {
           // console.log(response.data);

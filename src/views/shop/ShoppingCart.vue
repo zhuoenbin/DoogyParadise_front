@@ -1,10 +1,10 @@
 <template>
-  <main class="h-100" style="background-color: #eee">
+  <main class="h-100">
     <div class="container h-100 py-5">
       <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-10">
+        <div class="col-11">
           <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-normal mb-0 text-black">Shopping Cart</h3>
+            <h3 class="fw-normal mb-0 text-black">購物車</h3>
             <div>
               排序：<select v-model="sortBy" @change="sortCart">
                 <option>價格低至高</option>
@@ -13,6 +13,10 @@
             </div>
           </div>
           <!-- 列頭 -->
+          <!-- ------------------------- -->
+          <!-- <div class="card rounded-3 mb-2" v-if="carts.length > 0"> -->
+          <!-- <div class="card-body p-4" v-if="carts.length > 0"> -->
+          <!-- ------------------------- -->
           <div class="card rounded-3 mb-2">
             <div class="card-body p-4">
               <div
@@ -39,6 +43,17 @@
               </div>
             </div>
           </div>
+          <!-- 空狀態 -->
+          <el-empty
+            description="購物車沒商品嘍！"
+            :image-size="200"
+            v-if="carts === null || carts.length === 0"
+          >
+            <router-link to="/shop/shopPage">
+              <el-button type="primary">商城</el-button>
+            </router-link>
+          </el-empty>
+          <!-- 空狀態 -->
           <!-- 列頭 -->
           <div class="card rounded-3 mb-4">
             <!-- v-for綁定 -->
@@ -145,8 +160,13 @@
                         type="button"
                         class="btn btn-primary"
                         data-bs-dismiss="modal"
-                        @click.native="linePay(totalCartPrice)"
+                        @click.native="
+                          linePay(totalCartPrice);
+                          deleteAllCart();
+                        "
                       >
+                        <!-- linePay(totalCartPrice); -->
+                        <!-- lineConfirm(totalCartPrice); -->
                         結帳
                       </button>
                     </div>
@@ -156,7 +176,7 @@
               <!-- 彈出視窗 -->
             </div>
           </div>
-          <!-- 結帳按鈕 -->
+          <!-- 下訂單按鈕 -->
           <div class="card">
             <div class="card-body text-center">
               <div class="checkout-container">
@@ -166,12 +186,13 @@
                   class="btn btn-warning btn-block btn-lg"
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
-                  @click="sendCartToBackend()"
+                  @click="sendCartToBackend(totalCartPrice)"
                 >
+                  <!-- @click="sendCartToBackend(totalCartPrice)" -->
                   下訂單
                 </button>
               </div>
-              <!-- 結帳按鈕 -->
+              <!-- 下訂單按鈕 -->
             </div>
           </div>
         </div>
@@ -187,6 +208,7 @@ export default {
     return {
       carts: [],
       sortBy: "價格低至高", // 添加 sortBy 變量來存儲排序方式
+      // redirectUrl: "",
     };
   },
   mounted() {
@@ -229,7 +251,18 @@ export default {
           console.error("刪除購物車時發生錯誤：", error); // 處理錯誤
         });
     },
-    // 傳入一個totalCartPrice的參數到後端
+    //結帳時刪除所有購物車商品
+    deleteAllCart() {
+      axios
+        .post(`http://localhost:8080/product/deleteByUser`)
+        .then((response) => {
+          console.log("已成功刪除購物車商品！"); // 處理後端回應
+        })
+        .catch((error) => {
+          console.error("刪除購物車時發生錯誤：", error); // 處理錯誤
+        });
+    },
+    // linepay傳入一個totalCartPrice的參數到後端
     linePay(totalCartPrice) {
       console.log(totalCartPrice);
       // 打包要傳遞的參數
@@ -239,20 +272,42 @@ export default {
       axios
         .post(`http://localhost:8080/linepay/${totalCartPrice}`)
         .then((response) => {
+          // this.redirectUrl = response.data; // 將redirectUrl儲存在组件的數據属性中
           const redirectUrl = response.data;
-          // console.log(redirectUrl);
           window.location.href = redirectUrl;
         })
         .catch((error) => {
           console.error("結帳時發生錯誤：", error);
         });
     },
+    // linepay請款
+    lineConfirm(totalCartPrice) {
+      const data = {
+        totalCartPrice: totalCartPrice,
+      };
+      setTimeout(() => {
+        axios
+          .post(`http://localhost:8080/confirm/${totalCartPrice}`)
+          .then((response) => {
+            console.log("確認請求已發送");
+            console.log(this.redirectUrl);
+            window.location.href = this.redirectUrl;
+          })
+          .catch((error) => {
+            console.error("結帳時發生錯誤：", error);
+          });
+      }, 10000); // 10 秒延遲
+    },
     //傳送購物車的訂單到後端
-    sendCartToBackend() {
-      const backendEndpoint = "http://localhost:8080/order";
+    sendCartToBackend(totalCartPrice) {
+      //`http://localhost:8080/order/${totalCartPrice}`這個要用反引號
+      const backendEndpoint = `http://localhost:8080/order/${totalCartPrice}`;
       // 將 this.carts 資料轉換為 JSON 字串，this.carts本來是proxy格式
       const jsonData = JSON.stringify(this.carts);
-
+      // const jsonData = JSON.stringify({
+      //   carts: this.carts, // 將購物車資料加入到要傳送的 JSON 物件中
+      //   totalPrice: this.totalCartPrice, // 添加 totalCartPrice 到要傳送的 JSON 物件中
+      // });
       axios
         .post(backendEndpoint, jsonData, {
           headers: {
@@ -261,10 +316,12 @@ export default {
         })
         .then((response) => {
           console.log("購物車資料已成功發送到後端");
-          // console.log(jsonData);
+          console.log(jsonData);
         })
         .catch((error) => {
           console.error("發送購物車資料到後端時發生錯誤：", error);
+          window.location.href = "http://localhost:5173/login";
+          console.log(jsonData);
         });
     },
   },
@@ -284,6 +341,12 @@ export default {
 };
 </script>
 <style>
+/* 讓頁面離footer為0 */
+main.h-100 {
+  background-color: #eee;
+  min-height: calc(100vh - 0px);
+  margin-bottom: 0;
+}
 /* 結帳按鈕效果 */
 .checkout-container {
   display: flex;
