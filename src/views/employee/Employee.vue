@@ -23,7 +23,7 @@
             >
           </li>
           <li>
-            <router-link to="/"
+            <router-link to="/employee/productmanage"
               ><i class="fa-regular fa-calendar-days"></i
               ><span>商品管理</span></router-link
             >
