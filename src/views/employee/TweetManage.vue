@@ -32,10 +32,16 @@
         <div class="main">
             <router-view>
                 <template v-slot="{ Component }">
+                    <component :is="Component" />
+                </template>
+            </router-view>
+            <!-- <router-view>
+                <template v-slot="{ Component }">
                     <transition name="slide-left" mode="out-in">
                         <component :is="Component" />
                     </transition>
-                </template></router-view>
+                </template>
+            </router-view> -->
         </div>
     </div>
 

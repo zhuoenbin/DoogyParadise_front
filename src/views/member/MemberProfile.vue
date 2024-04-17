@@ -44,10 +44,14 @@
     <div class="main">
       <router-view>
         <template v-slot="{ Component }">
+          <component :is="Component" />
+        </template></router-view>
+      <!-- <router-view>
+        <template v-slot="{ Component }">
           <transition name="slide-left" mode="out-in">
             <component :is="Component" />
           </transition> </template
-      ></router-view>
+      ></router-view> -->
     </div>
   </div>
 </template>
@@ -111,7 +115,7 @@ onMounted(() => {
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.sidebar #leftside-navigation ul li.active > a {
+.sidebar #leftside-navigation ul li.active>a {
   color: #6579eb;
 }
 
