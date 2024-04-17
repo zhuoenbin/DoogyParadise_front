@@ -9,15 +9,8 @@
           </div>
           <img v-else :src="memberImgPath" class="w-100" />
           <div v-if="editing" class="input-group mb-3">
-            <input
-              type="file"
-              class="form-control"
-              id="mainImgUpload"
-              ref="mainImgUpload"
-              accept="image/*"
-              placeholder="自定義文字"
-              @change="previewImage"
-            />
+            <input type="file" class="form-control" id="mainImgUpload" ref="mainImgUpload" accept="image/*"
+              placeholder="自定義文字" @change="previewImage" />
           </div>
         </div>
 
@@ -25,12 +18,7 @@
           <div class="row mt-3 align-items-center">
             <div class="col-3 text-end">姓名</div>
             <span v-if="!editing" class="col">{{ memberName }}</span>
-            <input
-              v-else
-              v-model="memberName"
-              type="text"
-              class="form-control"
-            />
+            <input v-else v-model="memberName" type="text" class="form-control" />
           </div>
 
           <div class="row mt-3 align-items-center">
@@ -43,29 +31,11 @@
             <span v-if="!editing" class="col">{{ memberGender }}</span>
             <span v-else class="col">
               <label>
-                <input
-                  type="radio"
-                  name="gender"
-                  v-model="memberGender"
-                  value="男"
-                />男性</label
-              >
+                <input type="radio" name="gender" v-model="memberGender" value="男" />男性</label>
               <label>
-                <input
-                  type="radio"
-                  name="gender"
-                  v-model="memberGender"
-                  value="女"
-                />女性</label
-              >
+                <input type="radio" name="gender" v-model="memberGender" value="女" />女性</label>
               <label>
-                <input
-                  type="radio"
-                  name="gender"
-                  v-model="memberGender"
-                  value="其他"
-                />其他</label
-              >
+                <input type="radio" name="gender" v-model="memberGender" value="其他" />其他</label>
             </span>
           </div>
 
@@ -79,17 +49,13 @@
             </span>
           </div>
 
-          <div class="row mt-3">
+          <!-- <div class="row mt-3">
             <div class="col-3 text-end">違規次數</div>
             <div class="col">{{ memberViolationCount }}</div>
-          </div>
+          </div> -->
         </div>
         <div class="col">
-          <button
-            v-if="editing"
-            @click="showResetPasswordPage"
-            class="btn btn-primary"
-          >
+          <button v-if="editing" @click="showResetPasswordPage" class="btn btn-primary">
             修改密碼
           </button>
           <hr />
@@ -109,35 +75,19 @@
     </main>
 
     <!--重設密碼的彈出式視窗 -->
-    <div
-      ref="ResetPasswordPage"
-      class="modal fade"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
+    <div ref="ResetPasswordPage" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h3>重設密碼</h3>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <div v-if="!resetSuccess" class="col-md-10 mx-auto col-lg-11">
               <form class="p-4 p-md-5 border rounded-3 bg-light">
                 <div v-if="!googleFirstTime" class="form-floating mb-3">
-                  <input
-                    type="password"
-                    class="form-control"
-                    placeholder=""
-                    v-model="oldPassword"
-                    required
-                  />
+                  <input type="password" class="form-control" placeholder="" v-model="oldPassword" required />
                   <label>請輸入原始密碼</label>
                 </div>
                 <div v-if="googleFirstTime" class="text-center">
@@ -146,49 +96,65 @@
                 </div>
 
                 <div class="form-floating mb-3">
-                  <input
-                    type="password"
-                    class="form-control"
-                    placeholder=""
-                    v-model="newPassword"
-                    required
-                  />
+                  <input type="password" class="form-control" placeholder="" v-model="newPassword" required />
                   <label>請輸入新密碼</label>
                 </div>
                 <div class="form-floating mb-3">
-                  <input
-                    type="password"
-                    class="form-control"
-                    placeholder=""
-                    v-model="confirmPassword"
-                    required
-                  />
+                  <input type="password" class="form-control" placeholder="" v-model="confirmPassword" required />
                   <label>請再次輸入新密碼</label>
                 </div>
-                <button
-                  class="w-100 btn btn-lg btn-primary"
-                  @click.prevent="updatePassword"
-                  :disabled="showPassWordMismatch"
-                >
+                <button class="w-100 btn btn-lg btn-primary" @click.prevent="updatePassword"
+                  :disabled="showPassWordMismatch">
                   重設密碼
                 </button>
-                <div
-                  class="text-danger text-center mt-3"
-                  v-if="showPassWordMismatch"
-                >
+                <div class="text-danger text-center mt-3" v-if="showPassWordMismatch">
                   新密碼不一致
                 </div>
                 <hr class="my-4" />
-                <small class="text-muted"
-                  >謹慎操作，以免遺失密碼或造成不必要的麻煩。Doggy
-                  Paradise關心您</small
-                >
+                <small class="text-muted">謹慎操作，以免遺失密碼或造成不必要的麻煩。Doggy
+                  Paradise關心您</small>
               </form>
             </div>
 
             <h3 v-if="resetSuccess">修改密碼成功，將自動導回個人資訊頁</h3>
           </div>
           <div class="modal-footer"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal 修改成功 -->
+    <div class="modal" tabindex="-1" id="exampleModal">
+      <div class="modal-dialog">
+        <div class="modal-content modalbgc">
+          <div class="success">
+            <h2 class="modal-title">修改成功</h2>
+          </div>
+          <div class="modal-body success">
+            <svg width="400" height="400">
+              <circle
+                fill="none"
+                stroke="#68E534"
+                stroke-width="20"
+                stroke-linecap="round"
+                cx="200"
+                cy="200"
+                r="190"
+                class="circle"
+                transform="rotate(-90 200 200)"
+              />
+
+              <polyline
+                fill="none"
+                stroke="#68E534"
+                stroke-width="24"
+                points="88,214 173,284 304,138"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="tick"
+              />
+            </svg>
+          </div>
+          <!-- <p class="gray">已寄信至您的信箱</p> -->
         </div>
       </div>
     </div>
@@ -260,6 +226,16 @@ export default {
       this.editing = !this.editing;
     },
     saveChanges() {
+      const myModal = new bootstrap.Modal(
+        document.getElementById(`exampleModal`)
+      );
+      myModal.show();
+
+      // 五秒後自動關閉 modal
+      setTimeout(() => {
+        myModal.hide();
+      }, 2600);
+
       this.editing = false;
 
       axios
@@ -389,5 +365,87 @@ img {
   width: 400px;
   height: 400px;
   object-fit: cover;
+}
+
+svg {
+  /* 將 SVG 元素等比例縮小到 50% */
+  transform: scale(0.4);
+}
+
+svg .circle {
+  animation: circle 1s ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+svg .tick {
+  animation: tick 0.8s ease-out;
+  animation-fill-mode: forwards;
+  animation-delay: 0.93s;
+}
+
+h2 {
+  font-family: Helvetica;
+  font-size: 36px;
+  /* margin-top: 40px; */
+  color: #333;
+  /* opacity: 0; */
+}
+
+.circle {
+  stroke-dasharray: 1194;
+  /***
+    2∏R=2*3.14*190=1194
+    ***/
+
+  stroke-dashoffset: 1194;
+}
+
+.tick {
+  stroke-dasharray: 350;
+  stroke-dashoffset: 350;
+}
+
+@keyframes circle {
+  from {
+    stroke-dashoffset: 1194;
+  }
+  to {
+    stroke-dashoffset: 2388;
+  }
+}
+
+@keyframes tick {
+  from {
+    stroke-dashoffset: 350;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes title {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  margin: auto;
+}
+
+.success {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+}
+
+.success .modal-title {
+  color: #874a33;
+  margin-top: 2rem;
+  font-size: 30px;
+  font-weight: 800;
 }
 </style>

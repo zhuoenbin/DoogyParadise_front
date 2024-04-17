@@ -29,7 +29,7 @@
         :enable-time-picker="false"
       />
       <div class="button">
-        <span>房型:</span>
+        <span class="mr-1">房型:</span>
         <button class="btn" @click="changeDogSize(0)">全部</button>
         <button class="btn" @click="changeDogSize(1)">小型犬</button
         ><button class="btn" @click="changeDogSize(2)">中型犬</button
@@ -275,7 +275,11 @@ const filteredReservations = computed(() => {
             );
           }
         default:
-          return isAfterToday;
+          if (dogSize.value == 0) {
+            return isAfterToday;
+          } else {
+            return reservation.room.roomSize === dogSize.value && isAfterToday;
+          }
       }
     }
   });
@@ -356,7 +360,8 @@ const sortByTotalPrice = () => {
 const RoomsDate = (beginTime, endTime) => {
   const begin = new Date(beginTime);
   const endDate = new Date(endTime);
-  endDate.setDate(endDate.getDate() + 1);
+  begin.setDate(begin.getDate() - 1);
+  // endDate.setDate(endDate.getDate() + 1);
   if (selectedDates.value !== null) {
     if (
       selectedDates.value.length === 2 &&
@@ -432,5 +437,9 @@ button.sort {
   cursor: pointer;
   background-color: transparent;
   color: rgb(205, 176, 141);
+}
+
+.mr-1 {
+  margin-right: 1rem;
 }
 </style>

@@ -1,14 +1,24 @@
 <template>
   <div class="">
     <div id="title">
-      <h4>
-        <b>過去活動區</b
-        ><img
-          src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1712297321/activityFolder/mr905ji1iaq9timwqvgx.png"
-          alt="🐶"
-          id="managerPic"
-        />
-      </h4>
+      <table style="text-align: center">
+        <tbody>
+          <tr>
+            <td class="titletd">
+              <p class="titleh4">
+                <b>過去活動區</b>
+              </p>
+            </td>
+            <td class="titletd">
+              <img
+                src="https://res.cloudinary.com/dxz9qtntt/image/upload/v1712297321/activityFolder/mr905ji1iaq9timwqvgx.png"
+                alt="🐶"
+                id="managerPic"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="py-1 bg-light cont">
@@ -333,6 +343,17 @@ export default {
   margin: auto 20px;
   padding: 20px 20px;
   text-align: center;
+  justify-content: center;
+  display: flex;
+}
+.titleh4 {
+  font-weight: 700;
+  font-size: 24px;
+  color: #804a42;
+  text-align: center;
+}
+.titletd {
+  vertical-align: center;
 }
 #managerPic {
   height: 70px;

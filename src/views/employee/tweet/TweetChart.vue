@@ -41,9 +41,22 @@ onMounted(() => {
         });
     });
 });
+
+const sendrequest = () => {
+    axios.get('http://localhost:8080/employee/sendTweetContentsToFlask')
+        .then(response => {
+            console.log('Request sent successfully:', response);
+            // 在這裡處理返回的數據，如果需要的話
+        })
+        .catch(error => {
+            console.error('Error sending request:', error);
+        });
+};
+
 </script>
 
 <template>
+    <button @click="sendrequest">分析熱門詞彙</button>
     <div class="card-content-image">
         <canvas id="heroChart" width="100%" height="380"></canvas>
     </div>

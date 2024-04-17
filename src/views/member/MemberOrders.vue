@@ -5,9 +5,9 @@
         <tr>
           <th scope="col">訂單ID</th>
           <th scope="col">訂購日期</th>
-          <th scope="col">狀態</th>
-          <th scope="col">總金額</th>
           <th scope="col">付款方式</th>
+          <th scope="col">總金額</th>
+          <th scope="col">訂單狀態</th>
           <th scope="col"></th>
           <th scope="col"></th>
         </tr>
@@ -34,7 +34,10 @@
               <button type="button" class="btn btn-success">查看詳細</button>
             </router-link>
           </td>
-          <td>
+          {{
+            readOnly(o.paymentStatus)
+          }}
+          <td v-if="isDisplay">
             <button
               id="cancel"
               name="cancel"
@@ -43,6 +46,20 @@
               data-bs-toggle="modal"
               data-bs-target="#staticBackdrop"
               @click="setOrderId(o.orderId)"
+            >
+              取消訂單
+            </button>
+          </td>
+          <td v-if="!isDisplay">
+            <button
+              id="cancel"
+              name="cancel"
+              type="button"
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop"
+              @click="setOrderId(o.orderId)"
+              disabled
             >
               取消訂單
             </button>
@@ -97,7 +114,6 @@
 <script>
 import { useMemberStore } from "@/stores/memberStore";
 import axios from "axios";
-import { emptyProps } from "element-plus";
 export default {
   data() {
     return {
@@ -108,6 +124,7 @@ export default {
       payMethod: "",
       payStatus: "",
       activeOrderId: "",
+      isDisplay: true,
     };
   },
   mounted() {
@@ -151,13 +168,19 @@ export default {
           this.payStatus = "已付款";
           break;
         case value === 2:
-          this.payStatus = "已取消，未退";
+          this.payStatus = "已完成取消，尚未退款";
           break;
         case value === 3:
-          this.payStatus = "完成退款";
+          this.payStatus = "已完成取消，已經退款";
           break;
         case value === 4:
-          this.payStatus = "已取消，不須退款";
+          this.payStatus = "已完成取消，不須退款";
+          break;
+        case value === 5:
+          this.payStatus = "等待取消中";
+          break;
+        case value === 6:
+          this.payStatus = "已付款，等待取消中";
           break;
       }
     },
@@ -173,6 +196,13 @@ export default {
         .then((response) => {
           location.reload();
         });
+    },
+    readOnly(status) {
+      if (status == 5 || status == 6) {
+        this.isDisplay = false;
+      } else {
+        this.isDisplay = true;
+      }
     },
   },
 };

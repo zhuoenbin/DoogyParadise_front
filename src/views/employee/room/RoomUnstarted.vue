@@ -14,9 +14,7 @@
         <option value="Date">訂房日期</option>
       </select>
       <input
-        v-if="
-          searchType != 'all' && searchType != 'Date' && searchType != 'size'
-        "
+        v-if="searchType != 'all' && searchType != 'Date'"
         v-model="searchTerm"
         type="text"
         placeholder="輸入關鍵字"
@@ -31,10 +29,11 @@
         :min-date="new Date()"
       />
       <div class="button">
-        <span>房型:</span>
-        <button class="btn" @click="changeRoom(1)">小型犬</button
-        ><button class="btn" @click="changeRoom(2)">中型犬</button
-        ><button class="btn" @click="changeRoom(3)">大型犬</button>
+        <span class="mr-1">房型:</span>
+        <button class="btn" @click="changeDogSize(0)">全部</button>
+        <button class="btn" @click="changeDogSize(1)">小型犬</button
+        ><button class="btn" @click="changeDogSize(2)">中型犬</button
+        ><button class="btn" @click="changeDogSize(3)">大型犬</button>
       </div>
     </div>
 
@@ -115,6 +114,8 @@ let sortTotalPriceDirection = ref("asc");
 
 const searchType = ref("all"); // 默认按照名字查询
 const searchTerm = ref(""); // 查询关键字
+
+const dogSize = ref(0);
 
 const selectedDates = ref([]); // 用於存儲所選日期的範圍
 
@@ -197,9 +198,8 @@ const formatDate = (dateString, number) => {
   }
 };
 
-const changeRoom = (size) => {
-  searchType.value = "size";
-  searchTerm.value = size;
+const changeDogSize = (size) => {
+  dogSize.value = size;
 };
 
 const filteredReservations = computed(() => {
@@ -214,28 +214,70 @@ const filteredReservations = computed(() => {
     if (reservation.cancelTime == null) {
       switch (searchType.value) {
         case "name":
-          return includeSearchTerm(reservation.lastName) && isAfterToday;
+          if (dogSize.value == 0) {
+            return includeSearchTerm(reservation.lastName) && isAfterToday;
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              includeSearchTerm(reservation.lastName) &&
+              isAfterToday
+            );
+          }
         case "id":
-          return (
-            reservation.reservationId.toString().includes(searchTerm.value) &&
-            isAfterToday
-          );
+          if (dogSize.value == 0) {
+            return (
+              reservation.reservationId.toString().includes(searchTerm.value) &&
+              isAfterToday
+            );
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              reservation.reservationId.toString().includes(searchTerm.value) &&
+              isAfterToday
+            );
+          }
         case "roomName":
-          return (
-            reservation.room.roomName.toString().includes(searchTerm.value) &&
-            isAfterToday
-          );
+          if (dogSize.value == 0) {
+            return (
+              reservation.room.roomName.toString().includes(searchTerm.value) &&
+              isAfterToday
+            );
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              reservation.room.roomName.toString().includes(searchTerm.value) &&
+              isAfterToday
+            );
+          }
         case "petName":
-          return includeSearchTerm(reservation.dog.dogName) && isAfterToday;
+          if (dogSize.value == 0) {
+            return includeSearchTerm(reservation.dog.dogName) && isAfterToday;
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              includeSearchTerm(reservation.dog.dogName) &&
+              isAfterToday
+            );
+          }
         case "Date":
-          return (
-            RoomsDate(reservation.startTime, reservation.endTime) &&
-            isAfterToday
-          );
-        case "size":
-          return reservation.room.roomSize === searchTerm.value && isAfterToday;
+          if (dogSize.value == 0) {
+            return (
+              RoomsDate(reservation.startTime, reservation.endTime) &&
+              isAfterToday
+            );
+          } else {
+            return (
+              reservation.room.roomSize === dogSize.value &&
+              RoomsDate(reservation.startTime, reservation.endTime) &&
+              isAfterToday
+            );
+          }
         default:
-          return isAfterToday;
+          if (dogSize.value == 0) {
+            return isAfterToday;
+          } else {
+            return reservation.room.roomSize === dogSize.value && isAfterToday;
+          }
       }
     }
   });
@@ -316,7 +358,8 @@ const sortByTotalPrice = () => {
 const RoomsDate = (beginTime, endTime) => {
   const begin = new Date(beginTime);
   const endDate = new Date(endTime);
-  endDate.setDate(endDate.getDate() + 1);
+  begin.setDate(begin.getDate() - 1);
+  // endDate.setDate(endDate.getDate() + 1);
   if (selectedDates.value !== null) {
     if (
       selectedDates.value.length === 2 &&
@@ -392,5 +435,9 @@ button.sort {
   cursor: pointer;
   background-color: transparent;
   color: rgb(205, 176, 141);
+}
+
+.mr-1 {
+  margin-right: 1rem;
 }
 </style>

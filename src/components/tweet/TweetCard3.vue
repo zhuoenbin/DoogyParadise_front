@@ -1,9 +1,7 @@
 <template>
     <div>
         <article class="tweetCard">
-
             <div class="tweetCardBody">
-
                 <div class="cardContent">
                     <div class="headerContent">
                         <div class="headerImgHolder">
@@ -19,8 +17,8 @@
                                 <!-- 使用的的狗狗們 -->
                                 <span v-if="userDogs.length > 0">與我的狗勾 :&nbsp;</span>
                                 <span v-for="(dog, index) in userDogs" :key="dog.dogId">
-
-                                    <span class="tweetTarget">@{{ dog.dogName }}</span>
+                                    <span class="tweetTarget" @click="showDogModal(dog)" style="cursor: pointer;">@{{
+                                        dog.dogName }}</span>
                                     <template v-if="index < userDogs.length - 1">、</template>
                                 </span>
 
@@ -28,7 +26,7 @@
                         </div>
                         &nbsp&nbsp&nbsp&nbsp&nbsp
                         <!-- ...按紐們 -->
-                        <div class="col-auto d-flex justify-content-end">
+                        <div v-if="userId" class="col-auto d-flex justify-content-end">
                             <div class="dropdown ml-auto">
                                 <button class="btn btn-secondary " type="button" id="dropdownMenuButton1"
                                     aria-expanded="false">
@@ -86,8 +84,17 @@
                         class="tweet-galleries">
                         <div class="d-flex justify-content-center">
                             <div class="gallery-item">
-                                <a :href="activityLink">
-                                    <img :src="imgOnlinePath" alt="Gallery Image" class="gallery-image">
+                                <a v-if="tweet.tweetContent.startsWith('我的狗狗: ')" :href="roomLink">
+                                    <img :src="imgOnlinePath" style=" object-fit: cover" width="250" height="250"
+                                        alt="Gallery Image" class="gallery-image">
+                                </a>
+                                <a v-else-if="tweet.tweetContent.startsWith('我與我的狗狗報名了超讚的活動:')" :href="activityLink">
+                                    <img :src="imgOnlinePath" style=" object-fit: cover" width="250" height="250"
+                                        alt="Gallery Image" class="gallery-image">
+                                </a>
+                                <a v-else href="#">
+                                    <img :src="imgOnlinePath" style=" object-fit: cover" width="250" height="250"
+                                        alt="Gallery Image" class="gallery-image">
                                 </a>
                             </div>
                         </div>
@@ -107,8 +114,9 @@
                         style="font-size: 25px;cursor: pointer;"></i>
                 </span>
 
-                <span @click="showLikeList" class="like-count" style=" font-size: 20px;cursor: pointer;">{{
-                    tweetLikeNum }}
+                <span v-if="tweet.preNode == 0 && userId" @click="showLikeList" class="like-count"
+                    style=" font-size: 20px;cursor: pointer;">{{
+                        tweetLikeNum }}
                 </span>
 
                 &nbsp&nbsp
@@ -158,6 +166,72 @@
         </div>
     </div>
 
+    <!--檢舉的彈出式視窗 -->
+    <div ref="ReportPostPage" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>檢舉頁面</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 form-check">
+                        <div>
+                            <label>
+                                <input type="checkbox" value="不可愛" v-model="reportPost" /> 不可愛
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" value="太恐怖" v-model="reportPost" /> 太恐怖
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" value="政治不正確" v-model="reportPost" /> 政治不正確
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" value="我不爽" v-model="reportPost" /> 我不爽
+                            </label>
+                        </div>
+
+                    </div>
+                    <div class="mb-3">
+                        <label for="reportReason" class="form-label">其他意見</label>
+                        <textarea class="form-control" id="reportReason" rows="3" v-model="reportPostText"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" @click="submitReport" data-bs-dismiss="modal" aria-label="Close"
+                            class="btn btn-primary">送出</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--狗狗的彈出式視窗 -->
+    <div ref="DogPage" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>{{ dogCardName }}</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4>狗狗介紹:</h4>{{ dogCarddogIntroduce }}
+                    <hr>
+                    <img v-if="dogCardImg != null" :src="dogCardImg" class="dog-image" />
+                    <img v-else class="dog-image"
+                        src="https://res.cloudinary.com/dxz9qtntt/image/upload/f_auto,q_auto/v1/dogFolder/o88brizbheeecrszxhec" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 </template>
 <script>
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -198,6 +272,11 @@ export default {
             imgOnlinePath: "",
             imgOnline: false,
             activityLink: "http://localhost:5173/activity/all",
+            roomLink: "http://localhost:5173/room/b_page",
+
+            dogCardName: '',
+            dogCarddogIntroduce: '',
+            dogCardImg: '',
         }
     },
     props: {
@@ -285,7 +364,6 @@ export default {
         getImageUrl(imgPath) {
             if (imgPath.startsWith('http')) {
                 this.imgOnlinePath = imgPath;
-                console.log(this.imgOnlinePath)
                 this.imgOnline = true;
                 return;
             }
@@ -511,6 +589,13 @@ export default {
                 .catch(error => {
                     console.error("Error submitting report:", error.message);
                 });
+        },
+        showDogModal(dog) {
+            const DogPage = new bootstrap.Modal(this.$refs.DogPage);
+            DogPage.show()
+            this.dogCardName = dog.dogName;
+            this.dogCarddogIntroduce = dog.dogIntroduce;
+            this.dogCardImg = dog.dogImgPathCloud;
         }
 
     }
@@ -650,5 +735,19 @@ body {
 
 .dropdown:hover .dropdown-menu {
     display: block;
+}
+
+.dog-image {
+    width: 250px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.gallery-image {
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 </style>

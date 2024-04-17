@@ -80,7 +80,7 @@ const router = createRouter({
         {
           path: "tweetsMyNotificationPath",
           component: () => import("@/views/tweet/TweetNotification.vue"),
-        }
+        },
       ],
     },
     {
@@ -161,10 +161,6 @@ const router = createRouter({
           component: () => import("@/views/activity/VenuesIntro.vue"),
         },
         {
-          path: "myVenuesRental",
-          component: () => import("@/views/activity/MyVenueRental.vue"),
-        },
-        {
           path: "venueRental",
           component: () => import("@/views/activity/VenueRental.vue"),
         },
@@ -204,14 +200,17 @@ const router = createRouter({
         {
           path: "t_page",
           component: () => import("@/views/employee/tweet/TweetReport.vue"),
-        },{
+        },
+        {
           path: "tweetOfficial",
-          component: () => import("@/views/employee/tweet/TweetOfficialTweet.vue"),
-        },{
+          component: () =>
+            import("@/views/employee/tweet/TweetOfficialTweet.vue"),
+        },
+        {
           path: "tweetOfficialPost",
           component: () => import("@/components/tweet/TweetOfficalPost.vue"),
-        }
-      ]
+        },
+      ],
     },
     {
       path: "/employee/room",
@@ -232,6 +231,14 @@ const router = createRouter({
         {
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
+        },
+        {
+          path: "roomChart_page",
+          component: () => import("@/views/employee/room/RoomChart.vue"),
+        },
+        {
+          path: "cancel_page",
+          component: () => import("@/views/employee/room/RoomCancel.vue"),
         },
       ],
     },

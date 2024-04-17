@@ -163,6 +163,8 @@
                   <br />
                   <b>活動場地:&nbsp;</b>{{ a.venueName }}
                   <br />
+                  <b>活動費用:&nbsp;</b>{{ a.activityCost }} 元/每🐶
+                  <br />
                   <b>現在報名狀況:&nbsp;</b>毛孩:{{ a.currentDogNumber }}/{{
                     a.activityDogNumber
                   }}&nbsp;&nbsp;(共{{ a.currentUserNumber }}位飼主 )

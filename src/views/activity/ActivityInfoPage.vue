@@ -36,6 +36,8 @@
               <b>報名截止:&nbsp;</b>
               {{ this.dateFormat(activityInfo.activityClosingDate) }}
               <br />
+              <b>活動費用:&nbsp;</b
+              >{{ activityInfo.activityCost }} 元/每🐶<br />
               <b>現在報名狀況:&nbsp;</b>毛孩:{{
                 activityInfo.currentDogNumber
               }}/{{ activityInfo.activityDogNumber }}&nbsp;&nbsp;(共{{
@@ -103,7 +105,8 @@
                         activityInfo.activityId,
                         activityInfo.activityTitle,
                         activityInfo.activityDogNumber,
-                        activityInfo.currentDogNumber
+                        activityInfo.currentDogNumber,
+                        activityInfo.activityCost
                       )
                     "
                   >
@@ -136,6 +139,28 @@
         <div class="infoHtml" v-if="activityInfo.activityProcess == null">
           <div v-html="activityInfo.activityDescription"></div>
         </div>
+        <div
+          v-if="
+            activityInfo.activityProcess == null &&
+            activityInfo.activityCost == 0
+          "
+          style="margin-left: 20px"
+        >
+          <h4><b>參與費用 :</b></h4>
+          <p>免費參加</p>
+        </div>
+        <div
+          style="margin-left: 20px"
+          v-if="
+            activityInfo.activityProcess == null &&
+            activityInfo.activityCost > 0
+          "
+        >
+          <h4><b>參與費用 :</b></h4>
+          <p>{{ activityInfo.activityCost }}</p>
+          <h4><b>費用詳細: </b></h4>
+          <p>{{ activityInfo.activityCostDescription }}</p>
+        </div>
 
         <div v-if="activityInfo.activityProcess != null">
           <div>
@@ -146,19 +171,11 @@
             <h4><b>活動流程 :</b></h4>
             <p style="white-space: pre">{{ activityInfo.activityProcess }}</p>
           </div>
-          <div
-            v-if="
-              activityInfo.activityCost == 0 || activityInfo.activity == null
-            "
-          >
+          <div v-if="activityInfo.activityCost == 0">
             <h4><b>參與費用 :</b></h4>
             <p>免費參加</p>
           </div>
-          <div
-            v-if="
-              activityInfo.activityCost > 0 || activityInfo.activity != null
-            "
-          >
+          <div v-if="activityInfo.activityCost > 0">
             <h4><b>參與費用 :</b></h4>
             <p>{{ activityInfo.activityCost }}</p>
             <h4><b>費用詳細: </b></h4>
@@ -306,7 +323,10 @@
               <!-- 檢查用 -->
               <!-- <div>Checked names: {{ chooseDogs }}</div> -->
               <div>
-                <label for="" class="col-form-label"> 要參與的狗狗~ </label>
+                <label for="" class="col-form-label">
+                  要參與的狗狗~ 💡:每位毛孩參與費用:
+                  {{ chooseActCost }} 元</label
+                >
                 <div v-for="d in myDogsNotAttend" :key="d.dogId" class="mb-2">
                   <div class="checkbox-wrapper-33">
                     <label class="checkbox">
@@ -346,6 +366,16 @@
                   v-model="note"
                 ></textarea>
               </div>
+              <div class="mb-2" v-if="chooseActCost > 0">
+                <label for="message-text" class="col-form-label">💰小計</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="message-text"
+                  readonly
+                  v-model="payCost"
+                />
+              </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -377,6 +407,7 @@
         </div>
       </div>
     </div>
+    <div id="pay"></div>
   </div>
 </template>
 <script>
@@ -396,9 +427,11 @@ export default {
       userId: "",
       chooseAct: "",
       chooseActTitle: "",
+      chooseActCost: null,
       activityDogNumber: null,
       currentDogNumber: null,
       chooseDogs: [],
+      payCost: null,
       note: "",
       isUser: false,
       joinSuccess: false,
@@ -462,7 +495,13 @@ export default {
 
       return formattedDate;
     },
-    joinPrepare(activityId, activityName, activityDogNumber, currentDogNumber) {
+    joinPrepare(
+      activityId,
+      activityName,
+      activityDogNumber,
+      currentDogNumber,
+      activityCost
+    ) {
       const memberStore = useMemberStore();
       console.log(memberStore.memberRole);
 
@@ -470,6 +509,7 @@ export default {
       this.chooseActTitle = activityName;
       this.activityDogNumber = activityDogNumber;
       this.currentDogNumber = currentDogNumber;
+      this.chooseActCost = activityCost;
       this.note = "";
       console.log("所選擇的活動id: ", this.chooseAct);
       if (this.isUser) {
@@ -503,6 +543,7 @@ export default {
 
         submitButton.disabled = true;
         this.message = "請選擇要參與的狗狗!";
+        this.payCost = 0;
       } else if (
         this.chooseDogs.length + this.currentDogNumber >
         this.activityInfo.activityDogNumber
@@ -510,11 +551,25 @@ export default {
         let submitButton = document.getElementById("liveToastBtn");
         submitButton.disabled = true;
         this.message = "很抱歉😥已超過🐶數上限!";
+        this.payCost = "⚠️";
       } else {
         let submitButton = document.getElementById("liveToastBtn");
         submitButton.disabled = false;
         this.message = "";
+        this.payCost = this.chooseActCost * this.chooseDogs.length;
       }
+    },
+    goEcPay() {
+      axios
+        .post(
+          `http://localhost:8080/order/ecpayCheckout?price=${this.payCost}&url=activity/myJoinedManager`
+        )
+        .then((response) => {
+          // console.log(response.data);
+          const pay = document.getElementById("pay");
+          pay.innerHTML = response.data;
+          document.getElementById("allPayAPIForm").submit();
+        });
     },
     joinActivity() {
       console.log(this.userId);
@@ -537,9 +592,14 @@ export default {
               this.chooseDogs = [];
               this.chooseAct = "";
               this.chooseActTitle = "";
-              // 在換成別的路徑 重新導向會無法即時更新
             })
-            .then(this.$router.push("/activity/all"))
+            .then((rs) => {
+              if (this.payCost > 0) {
+                this.goEcPay();
+              } else {
+                this.$router.push("/activity/myJoinedManager");
+              }
+            })
             .catch((error) => {
               console.error("報名失敗", error);
               this.message = "報名失敗";
