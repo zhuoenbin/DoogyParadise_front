@@ -198,7 +198,7 @@ export default {
         });
     },
     readOnly(status) {
-      if (status == 5 || status == 6) {
+      if (status == 5 || status == 6 || status == 3 || status == 4) {
         this.isDisplay = false;
       } else {
         this.isDisplay = true;

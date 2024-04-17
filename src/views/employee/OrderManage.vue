@@ -32,7 +32,6 @@
           }}
           <td>{{ date }}</td>
           {{
-            paymentMethod(c.orders.paymentMethod)
             dateFormat(c.orders.orderCancelDate)
           }}
           <td>{{ date }}</td>
