@@ -80,7 +80,7 @@ const router = createRouter({
         {
           path: "tweetsMyNotificationPath",
           component: () => import("@/views/tweet/TweetNotification.vue"),
-        }
+        },
       ],
     },
     {
@@ -238,6 +238,14 @@ const router = createRouter({
           path: "roomChart_page",
           component: () => import("@/views/employee/room/RoomChart.vue"),
         },
+        {
+          path: "roomChart_page",
+          component: () => import("@/views/employee/room/RoomChart.vue"),
+        },
+        {
+          path: "cancel_page",
+          component: () => import("@/views/employee/room/RoomCancel.vue"),
+        },
       ],
     },
     {
@@ -280,6 +288,16 @@ const router = createRouter({
       ],
     },
     {
+      path: "/employee/productmanage",
+      name: "productmanage",
+      component: () => import("@/views/employee/ProductManage.vue"),
+    },
+    {
+      path: "/employee/ordermanage",
+      name: "ordermanage",
+      component: () => import("@/views/employee/OrderManage.vue"),
+    },
+    {
       path: "/:pathMatch(.*)*",
       component: () => import("@/views/NotFound.vue"),
     },
@@ -319,4 +337,3 @@ const router = createRouter({
 });
 
 export default router;
-
