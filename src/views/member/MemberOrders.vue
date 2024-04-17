@@ -168,13 +168,13 @@ export default {
           this.payStatus = "已付款";
           break;
         case value === 2:
-          this.payStatus = "已取消，未退";
+          this.payStatus = "已完成取消，尚未退款";
           break;
         case value === 3:
-          this.payStatus = "完成退款";
+          this.payStatus = "已完成取消，已經退款";
           break;
         case value === 4:
-          this.payStatus = "已取消，不須退款";
+          this.payStatus = "已完成取消，不須退款";
           break;
         case value === 5:
           this.payStatus = "等待取消中";
