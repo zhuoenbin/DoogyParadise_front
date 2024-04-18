@@ -231,7 +231,13 @@ const router = createRouter({
         {
           path: "u_page",
           component: () => import("@/views/employee/room/RoomUpdate.vue"),
-        },
+        },{
+          path: "cancel_page",
+          component: () => import("@/views/employee/room/RoomCancel.vue"),
+        },{
+          path: "roomChart_page",
+          component: () => import("@/views/employee/room/RoomChart.vue"),
+        }
       ],
     },
     {
