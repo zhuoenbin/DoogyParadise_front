@@ -222,7 +222,7 @@
       </div>
     </el-tab-pane>
     <el-tab-pane label="三顆星">
-      <!-- <div v-for="cm3 in comment3" class="card">
+      <div v-for="cm3 in comment3" class="card">
         <div class="card-body">{{ cm3[8] }}**</div>
         <div class="card-body">
           <el-rate
@@ -248,8 +248,8 @@
               fit="cover"
             />
           </div>
-        </div></div
-    > -->
+        </div>
+      </div>
     </el-tab-pane>
     <el-tab-pane label="二顆星">
       <!-- <div v-for="cm2 in comment2" class="card">
@@ -331,7 +331,7 @@ export default {
       comment: [],
       comment5: [],
       comment4: [],
-      // comment3: [],
+      comment3: [],
       // comment2: [],
       // comment1: [],
     };
@@ -373,12 +373,12 @@ export default {
         this.comment4 = response.data;
       });
     //評論Data(三顆星)
-    // axios
-    //   .get(`${this.API_URL}/findAllCommentAndStar/${productId}/3`)
-    //   .then((response) => {
-    //     console.log(response.data);
-    //     this.comment3 = response.data;
-    //   });
+    axios
+      .get(`${this.API_URL}/findAllCommentAndStar/${productId}/3`)
+      .then((response) => {
+        console.log(response.data);
+        this.comment3 = response.data;
+      });
     //評論Data(二顆星)
     // axios
     //   .get(`${this.API_URL}/findAllCommentAndStar/${productId}/2`)
