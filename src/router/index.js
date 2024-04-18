@@ -237,15 +237,7 @@ const router = createRouter({
         },{
           path: "roomChart_page",
           component: () => import("@/views/employee/room/RoomChart.vue"),
-        },
-        {
-          path: "roomChart_page",
-          component: () => import("@/views/employee/room/RoomChart.vue"),
-        },
-        {
-          path: "cancel_page",
-          component: () => import("@/views/employee/room/RoomCancel.vue"),
-        },
+        }
       ],
     },
     {

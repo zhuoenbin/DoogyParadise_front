@@ -529,8 +529,8 @@ const sortByCancelTime = () => {
 const RoomsDate = (beginTime, endTime) => {
   const begin = new Date(beginTime);
   const endDate = new Date(endTime);
-  begin.setDate(begin.getDate() - 1);
-  // endDate.setDate(endDate.getDate() + 1);
+  // begin.setDate(begin.getDate() - 1);
+  endDate.setDate(endDate.getDate() + 1);
   if (selectedDates.value !== null) {
     if (
       selectedDates.value.length === 2 &&
