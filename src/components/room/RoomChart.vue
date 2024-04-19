@@ -62,12 +62,12 @@ export default {
           labels: labels,
           datasets: [
             {
-              label: "Order Counts",
+              label: "房間的訂房次數",
               data: orderCounts,
               backgroundColor: "rgb(75, 192, 192)",
             },
             {
-              label: "Total Price",
+              label: "房間營業額",
               data: totalPrices,
               backgroundColor: "rgb(255, 99, 132)",
               yAxisID: "price",
@@ -80,7 +80,7 @@ export default {
               beginAtZero: true,
               title: {
                 display: true,
-                text: "Order Counts",
+                text: "房間的訂房次數",
               },
               ticks: {
                 stepSize: 1, // 设置刻度间隔为1
@@ -91,13 +91,13 @@ export default {
               beginAtZero: true,
               title: {
                 display: true,
-                text: "Total Price",
+                text: "房間營業額",
               },
             },
             x: {
               title: {
                 display: true,
-                text: "Rooms",
+                text: "房號",
               },
             },
           },

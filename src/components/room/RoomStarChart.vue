@@ -70,12 +70,12 @@ export default {
           labels: labels,
           datasets: [
             {
-              label: "Number of Ratings",
+              label: "評價次數",
               data: ratingCounts,
               backgroundColor: "rgb(255, 120, 53)",
             },
             {
-              label: "Average Star",
+              label: "平均星數",
               data: averageStars,
               backgroundColor: "rgb(255, 238, 53)",
               yAxisID: "star",
@@ -88,7 +88,7 @@ export default {
               beginAtZero: true,
               title: {
                 display: true,
-                text: "Number of Ratings",
+                text: "評價次數",
               },
               ticks: {
                 stepSize: 1, // 设置刻度间隔为1
@@ -98,7 +98,7 @@ export default {
               position: "right",
               title: {
                 display: true,
-                text: "Average Star",
+                text: "平均星數",
               },
               ticks: {
                 stepSize: 1, // 设置刻度间隔为1
@@ -107,7 +107,7 @@ export default {
             x: {
               title: {
                 display: true,
-                text: "Rooms",
+                text: "房號",
               },
             },
           },
@@ -120,5 +120,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
