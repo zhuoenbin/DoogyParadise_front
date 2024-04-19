@@ -125,12 +125,12 @@
                     @click="getCommentsLink(tweet.tweetId)"></i>
                 <span class="comment-count" style="margin-right: 20px; font-size: 20px;">{{
                     this.numOfComment
-                }}
+                    }}
 
                 </span>
 
                 <!-- 子留言，內容 -->
-                <div v-if="showComments" class="comment-section">
+                <div v-if="showComments" class="comment-section" style="margin: 1rem;">
                     <div v-for="comment in tweetComments" :key="comment.id" class="comment-item">{{ comment.userName
                         }} : {{ comment.tweetContent }}</div>
                     <div>{{ currentReply }}</div>
@@ -138,7 +138,7 @@
                     <!-- 回覆推文的地方 -->
                     <span v-if="tweet.preNode == 0 && userId">
                         <input type="text" v-model="replyContent" placeholder="在此輸入回覆內容"
-                            style="height: 0px; padding-top: 16px; padding-bottom: 18px;">
+                            style="height: 0px; padding-top: 16px; padding-bottom: 18px; border-radius: 1rem; margin: 1rem;">
                         <span>&nbsp
                             <i @click="postReply" style="font-size: 20px;cursor: pointer;"
                                 class="fa-solid fa-paper-plane"></i>

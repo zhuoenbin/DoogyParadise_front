@@ -131,27 +131,11 @@
           </div>
           <div class="modal-body success">
             <svg width="400" height="400">
-              <circle
-                fill="none"
-                stroke="#68E534"
-                stroke-width="20"
-                stroke-linecap="round"
-                cx="200"
-                cy="200"
-                r="190"
-                class="circle"
-                transform="rotate(-90 200 200)"
-              />
+              <circle fill="none" stroke="#68E534" stroke-width="20" stroke-linecap="round" cx="200" cy="200" r="190"
+                class="circle" transform="rotate(-90 200 200)" />
 
-              <polyline
-                fill="none"
-                stroke="#68E534"
-                stroke-width="24"
-                points="88,214 173,284 304,138"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="tick"
-              />
+              <polyline fill="none" stroke="#68E534" stroke-width="24" points="88,214 173,284 304,138"
+                stroke-linecap="round" stroke-linejoin="round" class="tick" />
             </svg>
           </div>
           <!-- <p class="gray">已寄信至您的信箱</p> -->
@@ -214,6 +198,8 @@ export default {
     axios.get(`${this.API_URL}/account/checkPasswordIsEmpty`).then((re) => {
       console.log("checkPasswordIsEmpty: " + re.data);
       this.googleFirstTime = re.data;
+      console.log("00000000")
+      console.log(this.googleFirstTime)
     });
   },
   watch: {
@@ -409,6 +395,7 @@ h2 {
   from {
     stroke-dashoffset: 1194;
   }
+
   to {
     stroke-dashoffset: 2388;
   }
@@ -418,6 +405,7 @@ h2 {
   from {
     stroke-dashoffset: 350;
   }
+
   to {
     stroke-dashoffset: 0;
   }
@@ -427,6 +415,7 @@ h2 {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
