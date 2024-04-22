@@ -288,7 +288,7 @@ const router = createRouter({
     },
     {
       path: "/employee/ordermanage",
-      name: "productmanage",
+      name: "ordermanage",
       component: () => import("@/views/employee/OrderManage.vue"),
     },
     {

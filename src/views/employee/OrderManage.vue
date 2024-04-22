@@ -6,8 +6,11 @@
           <th scope="col">案件編號</th>
           <th scope="col">訂單ID</th>
           <th scope="col">訂單成立日期</th>
+          <th scope="col">訂單成立日期</th>
           <th scope="col">退貨日期</th>
           <th scope="col">付款方式</th>
+          <th scope="col">總金額</th>
+          <th scope="col">狀態</th>
           <th scope="col">總金額</th>
           <th scope="col">狀態</th>
           <th scope="col"></th>
@@ -29,8 +32,13 @@
           }}
           <td>{{ date }}</td>
           {{
+            dateFormat(c.orders.orderCancelDate)
+          }}
+          <td>{{ date }}</td>
+          {{
             paymentMethod(c.orders.paymentMethod)
           }}
+          <td>{{ payMethod }}</td>
           <td>{{ payMethod }}</td>
           <td>{{ c.orders.totalPrice }}</td>
           {{
@@ -172,6 +180,12 @@ export default {
           break;
         case value === 4:
           this.payStatus = "已完成取消，已經退款";
+          break;
+        case value === 5:
+          this.payStatus = "等待取消中";
+          break;
+        case value === 6:
+          this.payStatus = "已付款，等待取消中";
           break;
         case value === 5:
           this.payStatus = "等待取消中";

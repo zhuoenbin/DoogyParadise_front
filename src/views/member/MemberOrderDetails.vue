@@ -41,7 +41,7 @@
                     </div>
 
                     <div
-                      class="col-md-2 text-center d-flex justify-content-center align-items-center"
+                      class="col-md-1 text-center d-flex justify-content-center align-items-center"
                     >
                       <p class="text-muted mb-0 small">
                         數量: {{ quantity[index] }}
@@ -49,7 +49,7 @@
                       <!--product.stock-->
                     </div>
                     <div
-                      class="col-md-2 text-center d-flex justify-content-center align-items-center"
+                      class="col-md-3 text-center d-flex justify-content-center align-items-center"
                     >
                       <p class="text-muted mb-0 small">${{ p.unitPrice }}</p>
                       <!--product.unitPrice-->
@@ -63,7 +63,7 @@
                       <!-- 評價按鈕 -->
                       <button
                         type="button"
-                        class="btn btn-primary"
+                        class="btn btn-primary ms-5"
                         data-bs-toggle="modal"
                         data-bs-target="#exampleModal"
                         data-bs-whatever="@mdo"
