@@ -23,3 +23,6 @@ npm run dev
 ```sh
 npm run build
 ```
+###
+商城主頁
+![image](https://github.com/zhuoenbin/petshoppingmall_front/blob/main/image/%E5%95%86%E5%93%81%E4%B8%BB%E9%A0%81.jpg)
