@@ -1,14 +1,10 @@
-# demo-vue
+# DoogyParadise寵物平台網站
 
-This template should help get you started developing with Vue 3 in Vite.
+這是一個關於寵物的多系統平台，包含會員、商城、活動、旅館、動態牆。 會員系統:登入、註冊、忘記密碼、Google OAuth2第三方登入。
 
-## Recommended IDE Setup
+## 這是網站的前端程式
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+使用Vue3框架進行開發
 
 ## Project Setup
 
