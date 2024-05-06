@@ -4,7 +4,7 @@
 
 ## 這是網站的前端程式
 
-使用Vue3框架進行開發
+使用Vue3框架進行開發，套件部份是使用Bootstrap及Element Plus
 
 ## Project Setup
 
