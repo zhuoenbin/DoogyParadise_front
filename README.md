@@ -23,6 +23,15 @@ npm run dev
 ```sh
 npm run build
 ```
-###
+### 主要負責商城前端頁面
 商城主頁
 ![image](https://github.com/zhuoenbin/petshoppingmall_front/blob/main/image/%E5%95%86%E5%93%81%E4%B8%BB%E9%A0%81.jpg)
+商城詳細頁
+![image](https://github.com/zhuoenbin/petshoppingmall_front/blob/main/image/%E5%95%86%E5%93%81%E8%A9%B3%E7%B4%B0%E9%A0%81.jpg)
+購物車
+![image](https://github.com/zhuoenbin/petshoppingmall_front/blob/main/image/%E8%B3%BC%E7%89%A9%E8%BB%8A.jpg)
+收藏
+![image](https://github.com/zhuoenbin/petshoppingmall_front/blob/main/image/%E6%94%B6%E8%97%8F%E5%8A%9F%E8%83%BD.jpg)
+評論
+![image](https://github.com/zhuoenbin/petshoppingmall_front/blob/main/image/%E8%A9%95%E8%AB%962.jpg)
+![image](https://github.com/zhuoenbin/petshoppingmall_front/blob/main/image/%E8%A9%95%E8%AB%96%E5%8A%9F%E8%83%BD.jpg)
