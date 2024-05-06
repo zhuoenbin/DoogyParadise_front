@@ -4,10 +4,6 @@
 
 ## 這是網站的前端程式
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Customize configuration
-
 使用Vue3框架進行開發
 
 ## Project Setup
